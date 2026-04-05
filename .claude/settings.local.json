@@ -1,11 +1,14 @@
 {
+  "permissions": {
+    "allow": [
+      "Skill(design-system)",
+      "Skill(design-review)",
+      "Bash(xargs grep:*)",
+      "Skill(gdd-audit)"
+    ]
+  },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "unity"
-  ],
-  "permissions": {
-    "allow": [
-      "Skill(design-system)"
-    ]
-  }
+  ]
 }

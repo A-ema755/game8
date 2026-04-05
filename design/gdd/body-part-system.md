@@ -239,6 +239,7 @@ conflictTriggers = isHeavy && anyWingPartEquipped
 | Combat System (TurnManager) | Read | Weight/conflict rules affect grid movement cost; form access checked before move execution |
 | Party Management UI | Read/Write | Part equip/unequip interface; shows form access per part |
 | Save/Load System | Read/Write | Equipped parts, part levels, and XP persisted |
+| Data Configuration Pipeline | Read | ConfigLoader loads all BodyPartConfig assets at startup; BodySlot, PartCategory, BodyArchetype enums defined in Enums.cs |
 
 ## 7. Tuning Knobs
 

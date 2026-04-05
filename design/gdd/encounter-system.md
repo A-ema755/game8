@@ -229,6 +229,7 @@ Base retreat always succeeds if no enemy has used `preventsRetreat` this round.
 | Campaign Map | Read | Selects encounter by ID based on player position |
 | Save/Load System | Read/Write | Encounter completion flags persisted |
 | Combat UI | Read | Reads encounter type for UI mode (capture UI, boss bar, etc.) |
+| Data Configuration Pipeline | Read | ConfigLoader loads all EncounterConfig assets at startup; shared enums defined in Enums.cs |
 
 ## 7. Tuning Knobs
 

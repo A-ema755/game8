@@ -55,7 +55,7 @@
 
 - ADR-001: ScriptableObjects for all config data (not JSON, not Addressables for MVP)
 - ADR-002: Plain C# classes for pure logic systems (GridSystem, TurnManager, DamageCalculator, TypeChart)
-- ADR-003: Minimal singletons — GameStateManager (required), AudioManager, SettingsManager (convenience). All other systems use DI or serialized references.
+- ADR-003: Minimal singletons — GameStateManager (required), ConfigLoader (required — must initialize before all other systems), AudioManager, SettingsManager (convenience). All other systems use DI or serialized references.
 - ADR-004: C# events for system decoupling (not UnityEvents)
 - ADR-005: JSON saves via JsonUtility (not binary serialization)
 - ADR-006: Modular creature system — body parts as ScriptableObjects with slot-based equipping

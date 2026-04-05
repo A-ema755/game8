@@ -279,6 +279,7 @@ scoreDamage = Clamp(estimatedDamage / target.maxHp, 0, 2)
 | Terrain System | Read | Synergy tile checks per creature type |
 | Turn Manager | Read | Turn order, action execution pipeline |
 | Party System | Read | Trainer switch candidate enumeration |
+| Data Configuration Pipeline | Read | ConfigLoader loads all AIPersonalityConfig assets at startup; AIPersonalityType enum defined in Enums.cs |
 
 ## 7. Tuning Knobs
 
