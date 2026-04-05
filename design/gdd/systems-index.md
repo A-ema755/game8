@@ -2,12 +2,14 @@
 
 All 53 systems organized by dependency layer. **MVP requires 27 systems** (marked with *).
 
+> **Root creative reference:** All system GDDs must cite [`game-pillars.md`](game-pillars.md) when justifying a design decision. Before designing any system, read the pillar it primarily implements (see Dependencies section of `game-pillars.md`).
+
 ## Foundation Layer (No Dependencies)
 
 | # | System | MVP | Description |
 |---|--------|-----|-------------|
 | 1 | Data Configuration Pipeline* | Yes | ScriptableObjects, enums, ConfigLoader |
-| 2 | Grid / Tile System* | Yes | Isometric 3D grid, height, A*, flanking |
+| 2 | Grid / Tile System* | Yes | Isometric 3D grid, height, A*, flanking, line-of-sight (LoS owned here, not Terrain System) |
 | 3 | Game State Manager* | Yes | Scene state machine, transitions |
 | 4 | Save/Load System* | Yes | JSON persistence for all state |
 | 5 | Type Chart System* | Yes | Type effectiveness matrix, STAB |
@@ -49,7 +51,7 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 | # | System | MVP | Description |
 |---|--------|-----|-------------|
 | 21 | Campaign Map* | Yes | Habitat zones, branching paths, encounter nodes |
-| 22 | Rival Trainer System | No | Adaptive rival AI, recurring encounters, story arcs |
+| 22 | Rival Trainer System* | Yes | MVP scope: 1 type-counter adaptation per encounter, no story arcs. Full: adaptive AI, recurring encounters, story arcs |
 | 23 | Weather System | No | Per-region weather zones, type effectiveness shifts |
 | 24 | Day/Night Cycle | No | Time-based spawns, type effectiveness shifts |
 | 25 | Nesting System | No | Egg discovery, randomized innate DNA traits |
