@@ -12,16 +12,16 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 | 2 | Grid / Tile System* | Yes | Isometric 3D grid, height, A*, flanking, line-of-sight (LoS owned here, not Terrain System) |
 | 3 | Game State Manager* | Yes | Scene state machine, transitions |
 | 4 | Save/Load System* | Yes | JSON persistence for all state |
-| 5 | Type Chart System* | Yes | Type effectiveness matrix, STAB |
+| 5 | Type Chart System* | Yes | 14 genome types (3 tiers), 36 SE relationships, STAB, no immunities |
 
 ## Core Layer (Depends on Foundation)
 
 | # | System | MVP | Description |
 |---|--------|-----|-------------|
 | 6 | Creature Database* | Yes | Species configs: types, base stats, move pools, catch rates |
-| 7 | Move Database* | Yes | Move configs: type, power, accuracy, PP, effects, targeting |
+| 7 | Move Database* | Yes | Move configs: genome type, damage form, power, accuracy, PP, effects, targeting |
 | 8 | Turn Manager* | Yes | Phase-based combat sequencing, events |
-| 9 | Damage & Health System* | Yes | Combat math with type multipliers, terrain synergy, height bonus |
+| 9 | Damage & Health System* | Yes | Combat math with 3 damage forms (Physical/Energy/Bio), type multipliers, terrain synergy, height bonus |
 | 10 | Creature Instance* | Yes | Runtime creature state: HP, level, XP, moves, DNA mods |
 | 11 | Terrain System | No | Tile effects, type synergy tiles, LoS |
 | 39 | Terrain Alteration System | No | Select creatures alter tiles mid-battle (scorch, freeze, grow, flood) |

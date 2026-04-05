@@ -17,32 +17,39 @@ All enums live in `Assets/Scripts/Core/Enums.cs`.
 ```csharp
 namespace GeneForge.Core
 {
-    /// <summary>Primary elemental type for creatures and moves.</summary>
+    /// <summary>
+    /// Primary genome type for creatures and moves.
+    /// 14 types in 3 tiers: Standard (8), Extended (4), Apex (2).
+    /// </summary>
     public enum CreatureType
     {
         None = 0,
-        Fire = 1,
-        Water = 2,
-        Grass = 3,
-        Electric = 4,
-        Ice = 5,
-        Rock = 6,
-        Dark = 7,
-        Psychic = 8,
-        Poison = 9,
-        Dragon = 10,
-        Bug = 11,
-        Ghost = 12,
-        Steel = 13,
-        Flying = 14
+        Thermal = 1,
+        Aqua = 2,
+        Organic = 3,
+        Bioelectric = 4,
+        Cryo = 5,
+        Mineral = 6,
+        Toxic = 7,
+        Neural = 8,
+        Ferro = 9,
+        Kinetic = 10,
+        Aero = 11,
+        Sonic = 12,
+        Ark = 13,
+        Blight = 14
     }
 
-    /// <summary>Determines which stat pool a move draws from (ATK vs. SPAtk).</summary>
-    public enum MoveCategory
+    /// <summary>
+    /// Determines stat pairing and grid behavior for damaging moves.
+    /// Replaces the old Physical/Special/Status category system.
+    /// </summary>
+    public enum DamageForm
     {
-        Physical = 0,   // Uses attacker ATK vs. defender DEF
-        Special = 1,    // Uses attacker SPAtk vs. defender SPDef (post-MVP)
-        Status = 2      // No direct damage; applies effects
+        None = 0,       // Status moves — no damage form
+        Physical = 1,   // ATK vs DEF, melee range 1-2, blocked by walls/cover
+        Energy = 2,     // ATK vs SPD, ranged 3-5, requires LoS, cover reduces 50%
+        Bio = 3         // ACC vs DEF, mid-range 2-3, ignores cover, no height bonus
     }
 
     /// <summary>Body slot positions where parts can be equipped.</summary>
@@ -138,14 +145,14 @@ namespace GeneForge.Core
     public enum TerrainType
     {
         Neutral = 0,
-        Fire = 1,
-        Water = 2,
-        Grass = 3,
-        Electric = 4,
-        Ice = 5,
-        Rock = 6,
-        Dark = 7,
-        Psychic = 8,
+        Thermal = 1,      // Lava — synergy with Thermal type
+        Aqua = 2,         // Water — synergy with Aqua type
+        Organic = 3,      // Forest — synergy with Organic type
+        Cryo = 4,         // Ice — synergy with Cryo type
+        Mineral = 5,      // Rock — synergy with Mineral type
+        Kinetic = 6,      // Sand — synergy with Kinetic type
+        Neural = 7,       // Crystal — synergy with Neural type
+        Toxic = 8,        // Toxic — synergy with Toxic type
         Hazard = 9,       // Generic damage tile (set by abilities)
         Difficult = 10,   // Costs +1 movement
         Elevated = 11     // Height advantage source tile

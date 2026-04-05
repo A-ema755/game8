@@ -15,18 +15,31 @@ The grid is more than empty space — it's a strategic canvas. Positioning your 
 | Terrain | Movement Cost | LoS Blocking | Type Synergy | Special Notes |
 |---------|---------------|-------------|-------------|---------------|
 | Open | 1 | No | None | Default; allows flight over |
-| Forest | 2 | Partial (0.5x range) | Grass (+20% dmg, regen) | Cover; ranged attacks reduced |
-| Water | 2 | No | Water (+20% dmg, regen) | Non-fliers slow; water creatures swim freely |
-| Lava | 3 | No | Fire (+20% dmg, regen) | Non-fire creatures take 5% max HP damage per turn |
-| Ice | 2 | No | Ice (+20% dmg, regen) | Slippery; movement cost += 1 for non-ice creatures |
-| Rock | 2 | Partial (0.75x range) | Rock (+20% dmg, regen) | Heavy; blocks ranged pathing |
-| Sand | 2 | Partial (0.5x range) | Ground (+20% dmg, regen) | Windy; flying creatures take -25% accuracy |
-| Crystal | 2 | Partial (1.0x range) | Psychic (+20% dmg, regen) | Reflective; 10% chance to redirect projectiles |
-| Toxic | 3 | No | Poison (+20% dmg, regen) | Poisonous; non-poison creatures apply poison on end of turn |
+| Forest | 2 | Partial (0.5x range) | Organic (+20% dmg, regen) | Cover; Energy attacks reduced by cover penalty |
+| Water | 2 | No | Aqua (+20% dmg, regen) | Non-fliers slow; Aqua creatures swim freely |
+| Lava | 3 | No | Thermal (+20% dmg, regen) | Non-Thermal creatures take 5% max HP damage per turn |
+| Ice | 2 | No | Cryo (+20% dmg, regen) | Slippery; movement cost += 1 for non-Cryo creatures |
+| Rock | 2 | Partial (0.75x range) | Mineral (+20% dmg, regen) | Heavy; blocks Physical and Energy pathing |
+| Sand | 2 | Partial (0.5x range) | Kinetic (+20% dmg, regen) | Windy; Aero creatures take -25% accuracy |
+| Crystal | 2 | Partial (1.0x range) | Neural (+20% dmg, regen) | Reflective; 10% chance to redirect Energy projectiles |
+| Toxic | 3 | No | Toxic (+20% dmg, regen) | Poisonous; non-Toxic creatures apply poison on end of turn |
+
+### 3.1b Terrain Interaction by Damage Form
+
+Terrain cover and blocking interact differently with each damage form:
+
+| Terrain Feature | Physical | Energy | Bio |
+|----------------|----------|--------|-----|
+| Cover (Forest, partial) | Blocks targeting entirely | 50% damage reduction | Ignored — Bio bypasses cover |
+| Wall/Rock blocking | Blocks targeting entirely | Blocks LoS (cannot target) | Ignored — Bio bypasses walls |
+| Height advantage | +10% per level | +10% per level | No effect |
+| Crystal redirect | No redirect (melee) | 10% redirect chance | No redirect |
+
+See `damage-health-system.md` Section 3.6 for full form-terrain interaction rules.
 
 ### 3.2 Type Synergy Mechanics
 
-When a creature whose primary type matches a terrain's synergy type stands on that tile:
+When a creature whose primary genome type matches a terrain's synergy type stands on that tile:
 
 ```csharp
 public float GetSynergyBonus(CreatureInstance creature, TerrainType tileType)
@@ -50,11 +63,12 @@ public void ApplySynergyHealing(CreatureInstance creature, TerrainType tileType)
 
 ### 3.3 Line-of-Sight & Range
 
-LoS blocking types (Forest, Rock, Sand, Crystal) reduce effective attack range:
+LoS blocking types (Forest, Rock, Sand, Crystal) interact with damage forms differently:
 
-- Partial blocking (0.5x range, 0.75x range, 1.0x range) applies to ranged moves
-- Melee attacks ignore LoS blocking (adjacent only)
-- Blocked creatures can still see and target enemies; only range is reduced
+- **Energy form**: LoS blocking reduces effective range or blocks targeting entirely (see form-terrain table above)
+- **Physical form**: Cover and walls block targeting entirely (cannot target through)
+- **Bio form**: Ignores all cover and wall blocking — spores/parasites bypass physical barriers
+- LoS blocking is most relevant for Energy moves; Bio moves ignore it completely
 
 ### 3.4 Terrain Config
 
@@ -114,9 +128,11 @@ damagePerTurn = Round(creature.maxHP * 0.05)  [for Lava and Toxic if type doesn'
 
 | Scenario | Resolution |
 |----------|-----------|
-| Creature with dual type (e.g., Fire/Water) steps on Water tile | Synergy applies if either type matches water (Water matches); gain bonus |
-| Creature moves into Toxic tile with Poison type | No damage taken; healing applies instead |
-| Ranged move targets creature behind Lava with LoS blocking | LoS calculated before move; if creature is visible, move can target (blocking reduces range, not visibility) |
+| Creature with dual type (e.g., Thermal/Aqua) steps on Water tile | Synergy applies if either genome type matches Aqua; gain bonus |
+| Creature moves into Toxic tile with Toxic type | No damage taken; healing applies instead |
+| Energy move targets creature behind Rock with LoS blocking | LoS calculated before move; if blocked, Energy move cannot target |
+| Bio move targets creature behind Rock cover | Bio ignores cover — full damage, can target through |
+| Physical move targets creature behind cover | Cannot target — Physical is blocked by cover |
 | Creature on healing terrain but at max HP | Healing is wasted; no overflow |
 | Non-flying creature steps on Open tile (default) | Normal movement cost (1); can move freely |
 | Healing and damage both apply (dual-effect terrain) | Healing takes precedence; damage cancels if creature is synergy type |
@@ -126,8 +142,8 @@ damagePerTurn = Round(creature.maxHP * 0.05)  [for Lava and Toxic if type doesn'
 | System | Relationship |
 |--------|-------------|
 | Grid Tile System | Reads terrain type of each tile |
-| Creature Instance | Reads creature type for synergy matching |
-| Damage & Health System | Applies synergy multiplier to damage calculation |
+| Creature Instance | Reads creature genome type for synergy matching |
+| Damage & Health System | Applies synergy multiplier to damage calculation; form-terrain interactions |
 | Turn Manager | Applies hazard damage and synergy healing at end of turn |
 | Pathfinding (A*) | Uses movement cost for path cost calculation |
 | Combat UI | Displays terrain type and synergy bonus on hover |

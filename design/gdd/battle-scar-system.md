@@ -49,12 +49,12 @@ public void OnBattleEnd(List<CreatureInstance> participants)
 
 | Scar Type | Trigger | Color | Visual |
 |-----------|---------|-------|--------|
-| Burn | Fire-type damage at <10% HP | Orange-red (#FF4500) | Charred patch |
-| Frost | Ice-type damage at <10% HP | Pale blue (#B0E0E6) | Frost crystalline mark |
-| Claw | Physical damage (ATK move) at <10% HP | Red (#DC143C) | Parallel scratch lines |
-| Impact | Stat-down or priority move at <10% HP | Grey (#808080) | Dent or crater |
-| Poison | Poison-type damage at <10% HP | Green (#32CD32) | Chemical burn |
-| Electric | Electric-type damage at <10% HP | Yellow (#FFD700) | Burn marks, branching paths |
+| Burn | Thermal-type damage at <10% HP | Orange-red (#FF4500) | Charred patch |
+| Frost | Cryo-type damage at <10% HP | Pale blue (#B0E0E6) | Frost crystalline mark |
+| Claw | Physical-form damage at <10% HP | Red (#DC143C) | Parallel scratch lines |
+| Impact | Kinetic/Mineral-type damage at <10% HP | Grey (#808080) | Dent or crater |
+| Toxic | Toxic-type damage at <10% HP | Green (#32CD32) | Chemical burn |
+| Shock | Bioelectric-type damage at <10% HP | Yellow (#FFD700) | Burn marks, branching paths |
 
 ### 3.3 ScarData
 

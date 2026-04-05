@@ -230,7 +230,7 @@ Habitats, weather, day/night, and rival trainers that adapt to you create a worl
 ## What Makes Combat Unique
 
 ### Terrain-Type Synergy
-The grid isn't just space — it amplifies your creatures. Fire creatures power up on lava tiles. Water creatures heal on water. Grass creatures gain cover in forest. Positioning a creature on its synergy terrain is as important as type matchups.
+The grid isn't just space — it amplifies your creatures. Thermal creatures power up on lava tiles. Aqua creatures heal on water. Organic creatures gain cover in forest. **Three damage forms (Physical, Energy, Bio) create a second tactical axis** — Physical rewards melee and high ground, Energy rewards line-of-sight, Bio bypasses cover. Positioning a creature on its synergy terrain and choosing the right damage form is as important as genome type matchups.
 
 ### Combo Moves
 Two creatures adjacent on the grid can trigger a **fusion attack** that costs both their turns. Combo moves are unlocked by creature affinity (bond level) and type pairing. A fire + ice combo might create "Steam Blast" — area damage that ignores terrain cover.
@@ -254,7 +254,7 @@ DNA changes alter the creature's 3D model: extra spikes, color shifts, glowing m
 ### Body Part System
 Creatures have body slots (Head, Back, Arms, Tail, Legs, etc.) based on their archetype (Bipedal, Quadruped, Serpentine, Avian, Amorphous). DNA splicing unlocks **part blueprints** — wings, horns, claws, shells, fangs, auras, glands — that can be equipped to slots. Parts aren't cosmetic:
 - **Parts unlock moves** — can't learn Aerial Dive without wings
-- **Parts change type affinity** — Crystal Shell adds Rock resistance
+- **Parts change type affinity** — Crystal Shell adds Mineral resistance
 - **Parts interact with the grid** — Wings ignore height cost, Roots create difficult terrain, Glands drop hazard tiles
 - **Parts conflict** — heavy Carapace + Feathered Wings = weight conflict
 - **Part synergy sets** — 3+ same-type parts grant a set bonus (e.g., "Inferno Body")
@@ -291,7 +291,7 @@ No two heavily-modded creatures animate the same way.
 
 ### Sound Mutations
 Each creature has a base vocalization that DNA mods alter:
-- Fire DNA adds rumble/crackle undertone
+- Thermal DNA adds rumble/crackle undertone
 - Crystal parts add chime/resonance
 - Poison DNA adds hissing/bubbling
 - High instability adds distortion/static
@@ -339,15 +339,15 @@ The campaign map is divided into biomes, each with unique creatures, terrain typ
 
 | Zone | Terrain | Weather | Creature Types |
 |------|---------|---------|----------------|
-| Verdant Basin | Forest, grass, water | Rain, sun | Grass, Water, Bug |
-| Ember Peaks | Lava, rock, high ground | Heat haze, ash storms | Fire, Rock, Dragon |
-| Frozen Reach | Ice, snow, cliffs | Blizzard, aurora | Ice, Ghost, Steel |
-| Storm Coast | Water, sand, high wind | Thunderstorms, fog | Electric, Water, Flying |
-| Shadow Depths | Dark caves, crystal, fungus | Permanent dark, bioluminescence | Dark, Poison, Psychic |
+| Verdant Basin | Forest, grass, water | Rain, sun | Organic, Aqua, Toxic |
+| Ember Peaks | Lava, rock, high ground | Heat haze, ash storms | Thermal, Mineral, Ferro |
+| Frozen Reach | Ice, snow, cliffs | Blizzard, aurora | Cryo, Aero, Sonic |
+| Storm Coast | Water, sand, high wind | Thunderstorms, fog | Bioelectric, Aqua, Kinetic |
+| Shadow Depths | Dark caves, crystal, fungus | Permanent dark, bioluminescence | Neural, Toxic, Ark/Blight |
 
 ### Day/Night Cycle
 - Affects creature spawns (nocturnal creatures only appear at night)
-- Shifts type effectiveness (Dark moves +10% at night, Light/Fairy +10% during day)
+- Shifts type effectiveness (Neural moves +10% at night, Ark moves +10% during day)
 - Visual lighting changes on the isometric grid
 
 ### Research Stations
@@ -380,11 +380,11 @@ Recurring enemies that **adapt to your team**. If you rely on fire creatures, yo
 - **Active party:** 4-6 creatures (configurable per difficulty)
 - **Storage:** Unlimited creature storage at research stations
 - **Field abilities:** Each creature has an out-of-combat ability:
-  - Fire creature: clear forest/ice obstacles on campaign map
-  - Water creature: cross water terrain
-  - Electric creature: power up devices, open electric doors
+  - Thermal creature: clear forest/ice obstacles on campaign map
+  - Aqua creature: cross water terrain
+  - Bioelectric creature: power up devices, open electric doors
   - Flying creature: scout ahead (reveal hidden encounters)
-  - Psychic creature: sense rare creatures nearby
+  - Neural creature: sense rare creatures nearby
 
 ---
 
@@ -469,7 +469,7 @@ Wild creatures have behavior on the campaign map — they're not just random enc
 Creature field abilities solve map puzzles to unlock hidden content:
 - Freeze a waterfall = bridge to a hidden nesting site
 - Burn through a thorny wall = shortcut to a DNA vault
-- Electric-shock a dead generator = open a sealed ancient lab
+- Bioelectric-shock a dead generator = open a sealed ancient lab
 - Grow vines across a chasm = reach an isolated habitat
 - Creatures must be in your active party to use their field ability
 
@@ -578,7 +578,7 @@ The Institute (your employer/sponsor) tracks your performance:
 ## Move Customization via DNA
 
 Moves aren't fixed — DNA mods can alter them:
-- **Type infusion** — graft Ice DNA onto a fire creature = Flamethrower becomes "Frostflame" (Fire/Ice dual-type)
+- **Type infusion** — graft Cryo DNA onto a Thermal creature = gains Cryo resistance AND Cryo STAB (1.5x on Cryo moves if body part allows)
 - **Part-based moves** — equip Venom Glands = basic attack gains poison chance. Equip Wings = unlock aerial variants of existing moves.
 - **Instability effects** — creatures at 50+ instability gain random bonus effects on moves (extra crit chance, AoE splash, status proc). Powerful but unpredictable.
 - **Move mastery** — use a move 50+ times and it can upgrade into a stronger version with reduced PP. Player choice to upgrade or keep the original.
@@ -661,7 +661,7 @@ An official Nuzlocke-style difficulty mode:
 
 - [ ] How many creature archetypes (Bipedal, Quadruped, etc.) are needed for MVP vs. full game?
 - [ ] Should instability have a hard cap, or can creatures theoretically reach 100 and become fully uncontrollable?
-- [ ] How does the type chart scale? 6-8 types for MVP — is that enough for interesting DNA splicing?
+- [x] ~~How does the type chart scale? 6-8 types for MVP~~ — **Resolved: 14 genome types in 3 tiers (Standard 8, Extended 4, Apex 2), all MVP scope**
 - [ ] What is the right ratio of wild encounters to trainer battles per zone?
 - [ ] Should research station upgrades be per-station or global? (Currently global — is that too generous?)
 - [ ] How do we handle save file size with full ecosystem state + creature lineage trees?
@@ -679,7 +679,7 @@ Players will find DNA splicing more engaging than traditional evolution because 
 
 - 1 habitat zone (Verdant Basin) with full encounter variety
 - 20-30 creatures across 3-4 types
-- 40-60 moves with type chart (6-8 types)
+- 25+ moves with 14-type genome chart and 3 damage forms
 - Turn-based tactical grid combat (terrain synergy, height advantage)
 - Basic DNA alteration (stat boosts, perk grafts — no visible mutations yet)
 - Body part system (equip parts to slots, parts unlock moves)
@@ -711,7 +711,7 @@ Players will find DNA splicing more engaging than traditional evolution because 
 
 | Tier | Content | Features | Timeline |
 |------|---------|----------|----------|
-| **MVP** | 1 zone, 20-30 creatures, 40-60 moves, 6-8 types | Grid combat, basic DNA mods, capture, Pokedex, 1 rival, 1 trophy | Months 1-6 |
+| **MVP** | 1 zone, 20-30 creatures, 25+ moves, 14 genome types, 3 damage forms | Grid combat, basic DNA mods, capture, Pokedex, 1 rival, 1 trophy | Months 1-6 |
 | **Vertical Slice** | MVP + visible mutations, weather zones | Body part visuals, instability effects, combo moves | Months 6-9 |
 | **Alpha** | 3 zones, 60+ creatures, 12+ types | Day/night, ecosystem, fossil system, creature arena, station L4-5 | Months 9-14 |
 | **Full Vision** | 5 zones, 100+ creatures, all 53 systems | Async PvP, breeding, expedition, permadeath, creature calls, black market | Months 14-20+ |
@@ -721,7 +721,7 @@ Players will find DNA splicing more engaging than traditional evolution because 
 ## Next Steps
 
 - [ ] Finalize creature archetype list and body slot definitions for MVP species
-- [ ] Design type chart (6-8 types) with effectiveness matrix and DNA interaction rules
+- [x] ~~Design type chart (6-8 types)~~ — **Done: 14-type genome chart with 36 SE relationships, 3 damage forms, body part form access**
 - [ ] Create Verdant Basin zone layout with encounter placement and terrain map
 - [ ] Define 20-30 MVP creature stat blocks, move pools, and DNA compatibility
 - [ ] Prototype isometric grid combat in Unity 6 (movement, attack, terrain synergy)

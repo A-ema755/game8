@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-The Day-Night Cycle progresses time forward as the player completes encounters. A session counter increments after each battle; every 4 encounters = one day-night cycle. Dark-type creatures gain +10% effectiveness at night; Psychic and Fairy types gain +10% during day. Visual lighting on the isometric grid shifts — brighter at day, darker and moodier at night. Players can toggle between day/night at research stations for strategy testing.
+The Day-Night Cycle progresses time forward as the player completes encounters. A session counter increments after each battle; every 4 encounters = one day-night cycle. Neural-type creatures gain +10% effectiveness at night; Ark-type creatures gain +10% during day. Visual lighting on the isometric grid shifts — brighter at day, darker and moodier at night. Players can toggle between day/night at research stations for strategy testing.
 
 ## 2. Player Fantasy
 
@@ -43,12 +43,11 @@ public class TimeManager : MonoBehaviour
 
 ### 3.2 Type Effectiveness Shifts
 
-| Type | Day Bonus | Night Bonus |
-|------|-----------|-------------|
-| Dark | None | +10% effective |
-| Psychic | +10% effective | None |
-| Fairy | +10% effective | None |
-| Ghost | None | +10% effective |
+| Genome Type | Day Bonus | Night Bonus |
+|-------------|-----------|-------------|
+| Neural | None | +10% effective |
+| Ark | +10% effective | None |
+| Blight | None | +10% effective |
 
 All other types unaffected by time.
 
@@ -107,8 +106,8 @@ onCycleComplete: timeOfDay = toggle(timeOfDay)
 ### Type Effectiveness with Time
 
 ```
-dayTimeBonus = (type == Psychic OR type == Fairy) ? 1.1 : 1.0
-nightTimeBonus = (type == Dark OR type == Ghost) ? 1.1 : 1.0
+dayTimeBonus = (type == Ark) ? 1.1 : 1.0
+nightTimeBonus = (type == Neural OR type == Blight) ? 1.1 : 1.0
 
 finalMultiplier = baseDamage * dayTimeBonus OR nightTimeBonus
 ```
@@ -126,7 +125,7 @@ currentColor = Lerp(currentColor, targetColor, deltaTime * transitionSpeed)
 |----------|-----------|
 | Player manually toggles day/night then encounters wild creature | Time change applies immediately; wild spawns re-evaluate for this new time |
 | Player is mid-battle when 4th encounter completes | Time doesn't change until battle ends and next encounter starts |
-| Creature has both Psychic and Dark types | Applies whichever time matches; tie = no bonus |
+| Creature has both Ark and Neural types | Applies whichever time matches; tie = no bonus |
 | Creature captured at day, reviewed at night | Pokedex shows stats as if it were day (captured stats don't change with time) |
 | Save file loaded with corrupted time data | Default to Day; encounter counter resets to 0 |
 
@@ -146,8 +145,8 @@ currentColor = Lerp(currentColor, targetColor, deltaTime * transitionSpeed)
 | Parameter | Default | Notes |
 |-----------|---------|-------|
 | `encountersPerCycle` | 4 | Encounters before day/night toggle |
-| `dayTypeBonus` | 1.1 | +10% for Psychic/Fairy |
-| `nightTypeBonus` | 1.1 | +10% for Dark/Ghost |
+| `dayTypeBonus` | 1.1 | +10% for Ark |
+| `nightTypeBonus` | 1.1 | +10% for Neural/Blight |
 | `lightTransitionSpeed` | 2.0 | Smoothness of color fade (units/sec) |
 | `dayLightColor` | (1, 1, 1) | White ambient light |
 | `nightLightColor` | (0.3, 0.3, 0.4) | Dim blue-tinted light |
@@ -155,8 +154,8 @@ currentColor = Lerp(currentColor, targetColor, deltaTime * transitionSpeed)
 ## 8. Acceptance Criteria
 
 - [ ] Time toggles between Day and Night after every 4 completed encounters.
-- [ ] Psychic and Fairy types gain +10% effectiveness during Day.
-- [ ] Dark and Ghost types gain +10% effectiveness during Night.
+- [ ] Ark-type creatures gain +10% effectiveness during Day.
+- [ ] Neural and Blight types gain +10% effectiveness during Night.
 - [ ] Creatures with dayOnlySpawn flag do not appear at night.
 - [ ] Creatures with nightOnlySpawn flag do not appear during day.
 - [ ] Manual day/night toggle at research stations works without cost.

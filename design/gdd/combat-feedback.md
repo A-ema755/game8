@@ -24,8 +24,9 @@ Every hit should feel satisfying. A super-effective strike should feel dramatica
 |--------------|-------|---------|
 | Super effective (2x+) | Red (#FF3333) | "64!" |
 | Neutral (1x) | White (#FFFFFF) | "32" |
-| Not very effective (0.5x) | Blue (#6699FF) | "16" |
-| Immune (0x) | Gray (#888888) | "0" |
+| Not very effective (0.5x–) | Blue (#6699FF) | "16" |
+
+Note: No "Immune" or "0 damage" effectiveness exists — the 14-type chart has no immunities (minimum 0.25x for dual-type resisted).
 
 - Critical hits add a "★" prefix to the number in gold: "★48"
 - Healing numbers display in green (#33FF77) with a "+" prefix: "+25"
@@ -37,8 +38,19 @@ Every hit should feel satisfying. A super-effective strike should feel dramatica
   - Linger 1.4s, then fade out over 0.3s.
 - "Not Very Effective..." — blue text, scale 1.0 → 0.9 over 0.15s (deflate).
   - Linger 1.4s, fade out 0.3s.
-- "No Effect!" — gray text, no animation.
+- No "No Effect!" callout — the 14-type chart has no immunities.
 - Callouts queue vertically if multiple hits land within 0.5s of each other. Second callout offsets Y by +0.6 units.
+
+### Form-Specific Hit VFX
+Each damage form has a distinct visual effect on hit, layered with the genome type's color:
+
+| Form | VFX Description | Particle Style |
+|------|----------------|---------------|
+| **Physical** | Impact burst — dirt/debris particles radiate outward from hit point | Short, sharp, opaque; brown/gray base tinted by genome type color |
+| **Energy** | Beam/bolt flash — bright flash at impact with trailing energy wisps | Bright, emissive; color matches genome type (Thermal=orange, Cryo=blue, etc.) |
+| **Bio** | Spore/infection spread — small organic particles drift outward slowly | Soft, translucent; green/purple base tinted by genome type color |
+
+The form VFX plays simultaneously with the hit flash and damage popup. It is purely cosmetic and does not affect timing.
 
 ### Screen Shake
 Triggered by `CombatFeedbackManager.TriggerShake(intensity, duration)`.
@@ -166,7 +178,7 @@ glitchIntensity = Clamp((instability - 50) / 50f, 0, 1)
 ## 5. Edge Cases
 
 - **Multiple creatures hit simultaneously (AoE):** Each creature gets its own damage popup and hit flash. Screen shake fires once for the heaviest single hit in the AoE, not additive.
-- **0 damage hit (immune):** No screen shake. Gray "0" popup appears. No hit flash. "No Effect!" callout shows.
+- **Heavily resisted hit (0.25x dual-type):** Light screen shake. Blue small-font popup appears. "Not Very Effective..." callout. No "Immune" or "No Effect" state exists in the 14-type chart.
 - **Creature faints mid-capture sequence:** If the creature's HP somehow reaches 0 during the capture animation window, abort capture and play death animation instead. This shouldn't happen under normal rules (capture requires >0 HP) but guard against it.
 - **Screen shake with disabled setting:** All `TriggerShake` calls become no-ops. No camera movement occurs.
 - **Capture at 4x speed:** All capture sequence timings scale by 1/4. Shakes are visually compressed but still occur. Success sparkle duration: 0.075s.
@@ -179,7 +191,7 @@ glitchIntensity = Clamp((instability - 50) / 50f, 0, 1)
 | System | Relationship |
 |--------|-------------|
 | Turn Manager | Fires events that trigger feedback (OnHit, OnDeath, OnCapture, etc.) |
-| Damage & Health System | Provides damage value, type, crit flag for popup coloring/sizing |
+| Damage & Health System | Provides damage value, genome type, damage form, crit flag for popup coloring/sizing and form VFX selection |
 | Capture System | Provides catch roll result and shake count for capture sequence |
 | Type Chart System | Provides effectiveness multiplier for callout selection |
 | Creature Instance | Source for instability value driving glitch effects |
@@ -224,3 +236,7 @@ glitchIntensity = Clamp((instability - 50) / 50f, 0, 1)
 - [ ] Chromatic aberration post-process activates at instability >= 75.
 - [ ] All feedback timing scales correctly at 2x and 4x combat speed.
 - [ ] AoE hits produce individual popups per creature but only one screen shake.
+- [ ] Physical form hits display impact/debris VFX.
+- [ ] Energy form hits display beam/bolt flash VFX tinted by genome type color.
+- [ ] Bio form hits display spore/infection VFX.
+- [ ] No "Immune" or "No Effect" callout ever appears (14-type chart has no immunities).

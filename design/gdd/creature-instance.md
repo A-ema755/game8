@@ -81,6 +81,37 @@ namespace GeneForge.Creatures
         [SerializeField] private int _instability = 0;
         public int Instability => _instability;
 
+        /// <summary>
+        /// Active secondary genome type. Normally from Config.SecondaryType.
+        /// Overridden to Blight when instability >= 80.
+        /// </summary>
+        public CreatureType ActiveSecondaryType =>
+            _instability >= 80 ? CreatureType.Blight : Config.SecondaryType;
+
+        /// <summary>True if creature has two active genome types (including Blight from instability).</summary>
+        public bool IsDualType =>
+            ActiveSecondaryType != CreatureType.None;
+
+        // ── Form Access ──────────────────────────────────────────────────
+        /// <summary>
+        /// Returns the set of damage forms this creature can use,
+        /// derived from currently equipped body parts.
+        /// </summary>
+        public HashSet<DamageForm> AvailableForms
+        {
+            get
+            {
+                var forms = new HashSet<DamageForm>();
+                foreach (var kvp in _equippedPartIds)
+                {
+                    var partConfig = ConfigLoader.GetBodyPart(kvp.Value);
+                    if (partConfig != null && partConfig.formAccess != DamageForm.None)
+                        forms.Add(partConfig.formAccess);
+                }
+                return forms;
+            }
+        }
+
         // ── Personality ──────────────────────────────────────────────────
         [SerializeField] private PersonalityTrait _personality = PersonalityTrait.None;
         public PersonalityTrait Personality => _personality;
@@ -306,7 +337,10 @@ namespace GeneForge.Creatures
 
         // ── DNA Modification ────────────────────────────────────────────
 
-        /// <summary>Apply a DNA modification. Increases instability; updates stats.</summary>
+        /// <summary>
+        /// Apply a DNA modification. Increases instability; updates stats.
+        /// If instability reaches 80+, ActiveSecondaryType becomes Blight.
+        /// </summary>
         public void ApplyDNAMod(string modId, int instabilityIncrease = 5)
         {
             if (_appliedDNAModIds.Contains(modId)) return; // Already applied
@@ -314,6 +348,7 @@ namespace GeneForge.Creatures
             _appliedDNAModIds.Add(modId);
             _instability = Mathf.Min(100, _instability + instabilityIncrease);
             RecalculateStats();
+            // Note: ActiveSecondaryType property automatically returns Blight when instability >= 80
         }
 
         // ── Battle State Management ──────────────────────────────────────
@@ -473,6 +508,10 @@ namespace GeneForge.Creatures
 | Affinity increased beyond 10 | Capped to 10 |
 | Affinity queried for non-existent creature ID | Returns 0 (no affinity) |
 | `MoveTo()` called with invalid grid position | Position set anyway; grid tile lookup may return null (validate in GridSystem) |
+| Instability reaches 80 mid-battle | ActiveSecondaryType immediately becomes Blight; type effectiveness recalculated |
+| Creature already has secondary type and instability reaches 80 | Blight overrides the config secondary type for all defensive calculations |
+| Creature has no body parts equipped | AvailableForms returns empty set; all damaging moves are suspended |
+| Type infusion STAB check | STAB from infused types is checked in TypeChart.GetStab(), not in CreatureInstance |
 
 ## 6. Dependencies
 
@@ -486,6 +525,9 @@ namespace GeneForge.Creatures
 | `TurnManager` | Outbound | Used as actor; TakeDamage/Heal/Faint called |
 | `PersonalityTrait` enum | Inbound | Personality modifiers |
 | `BodySlot` enum | Inbound | Part equipping |
+| `BodyPartConfig` | Inbound | Form access derivation from equipped parts |
+| `DamageForm` enum | Inbound | Available damage forms for move filtering |
+| `TypeChart` | Outbound | Blight secondary type affects type effectiveness lookups |
 
 ## 7. Tuning Knobs
 
@@ -523,5 +565,10 @@ namespace GeneForge.Creatures
 - [ ] `MoveTo()` updates grid position and tile occupancy
 - [ ] ApplyStatus/RemoveStatus correctly manage active status list
 - [ ] Scars list persists across saves
+- [ ] `ActiveSecondaryType` returns Blight when instability >= 80
+- [ ] `ActiveSecondaryType` returns Config.SecondaryType when instability < 80
+- [ ] `IsDualType` returns true when instability >= 80 (even if Config.SecondaryType is None)
+- [ ] `AvailableForms` returns correct set based on equipped body parts
+- [ ] Creature with no equipped parts has empty `AvailableForms`
 - [ ] EditMode test: stat computation for Emberfox at level 50 matches expected values
 - [ ] PlayMode test: damage dealt in combat scales with level-up stat increases

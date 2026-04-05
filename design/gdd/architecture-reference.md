@@ -73,8 +73,8 @@ C:\Users\gueva\game8\
 │   │       │   ├── Aquablast.asset
 │   │       │   └── [move configs]
 │   │       ├── BodyParts/           # BodyPartConfig instances
-│   │       │   ├── FireWings.asset
-│   │       │   ├── IceShell.asset
+│   │       │   ├── GlandsThermal.asset
+│   │       │   ├── CryoShell.asset
 │   │       │   └── [part configs]
 │   │       ├── Encounters/          # EncounterConfig instances
 │   │       │   ├── VB_WildForest.asset
@@ -214,7 +214,7 @@ C:\Users\gueva\game8\
 | **Serialized Fields** | camelCase | `[SerializeField] int maxHp` | No underscore (exposed in Inspector) |
 | **Properties** | PascalCase | `public int MaxHP { get; set; }` | Use properties over public fields |
 | **Events** | PascalCase | `RoundStarted`, `CreatureCaptured`, `DNAModApplied` | Event handlers: `On[Event]` |
-| **Enums** | PascalCase | `CreatureType.Fire`, `MoveCategory.Special`, `NodeState.Available` | Values are PascalCase |
+| **Enums** | PascalCase | `CreatureType.Thermal`, `DamageForm.Energy`, `NodeState.Available` | Values are PascalCase |
 | **Constants** | PascalCase | `MinimumDamage`, `MaxPartySize`, `BaseExpYield` | Readonly static fields use PascalCase |
 | **Files** | PascalCase.cs | `CreatureInstance.cs`, `GridSystem.cs`, `DamageCalculator.cs` | Match class name |
 | **Scenes** | PascalCase.unity | `Combat.unity`, `MainMenu.unity`, `CampaignMap.unity` | Domain-specific naming |
@@ -346,8 +346,8 @@ Where `typeChart` is a static int[16, 16] array:
 
 Example:
 ```csharp
-// Fire vs. Grass
-int effectiveness = TypeChart.GetMultiplier(CreatureType.Fire, CreatureType.Grass);
+// Thermal vs. Organic
+float effectiveness = TypeChart.GetMultiplier(CreatureType.Thermal, CreatureType.Organic);
 // Returns 3 (super effective, 2x multiplier)
 ```
 

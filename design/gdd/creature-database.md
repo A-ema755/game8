@@ -2,11 +2,11 @@
 
 ## 1. Overview
 
-The Creature Database defines the `CreatureConfig` ScriptableObject schema — the immutable blueprint for every species in Gene Forge. Each config captures the species' elemental types, base stats, learnable move pool, body archetype and available slots, signature part, catch rate, XP growth curve, habitat zones, and rarity. The database is loaded at startup by `ConfigLoader` and never modified at runtime. Runtime creature state (HP, level, DNA mods, etc.) lives in `CreatureInstance`, not here. Eight MVP creatures are defined below as reference examples spanning the Verdant Basin starting zone.
+The Creature Database defines the `CreatureConfig` ScriptableObject schema — the immutable blueprint for every species in Gene Forge. Each config captures the species' genome types (from the 14-type system), base stats, learnable move pool, body archetype and available slots, **default body parts** (which determine starting damage form access), signature part, catch rate, XP growth curve, habitat zones, and rarity. The database is loaded at startup by `ConfigLoader` and never modified at runtime. Runtime creature state (HP, level, DNA mods, etc.) lives in `CreatureInstance`, not here. Eight MVP creatures are defined below as reference examples spanning the Verdant Basin starting zone.
 
 ## 2. Player Fantasy
 
-Flipping through the creature database feels like reading a field researcher's journal. Each species has a distinct ecological niche, a visual identity implied by its archetype and type, and mechanical hooks that make it interesting to build around. The player immediately understands why a Grass/Water dual-type slug with a slow growth curve and high DEF is a different strategic choice from a fast, fragile Fire creature with an aggressive signature part.
+Flipping through the creature database feels like reading a field researcher's journal. Each species has a distinct ecological niche, a visual identity implied by its archetype and type, and mechanical hooks that make it interesting to build around. The player immediately understands why an Organic/Toxic dual-type slug with a slow growth curve and high DEF is a different strategic choice from a fast, fragile Thermal creature with an aggressive signature part. **Default body parts tell you at a glance what forms a species can use** — a creature born with Claws and Glands has both Physical and Energy options, while one with only Spore Pods is a Bio specialist.
 
 ## 3. Detailed Rules
 
@@ -36,6 +36,7 @@ namespace GeneForge.Creatures
 
         [Header("Body")]
         [SerializeField] List<BodySlot> availableSlots;  // Determined by archetype
+        [SerializeField] List<string> defaultPartIds;     // Body parts equipped at capture/creation (determines starting form access)
         [SerializeField] string signaturePartId;          // Part config ID; strongest on this species
 
         [Header("Progression")]
@@ -55,6 +56,7 @@ namespace GeneForge.Creatures
         public BaseStats BaseStats           => baseStats;
         public IReadOnlyList<LevelMoveEntry> MovePool => movePool;
         public IReadOnlyList<BodySlot> AvailableSlots => availableSlots;
+        public IReadOnlyList<string> DefaultPartIds => defaultPartIds;
         public string SignaturePartId        => signaturePartId;
         public GrowthCurve GrowthCurve       => growthCurve;
         public int BaseXpYield               => baseXpYield;
@@ -133,67 +135,70 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 
 #### 1. Emberfox
 - **ID:** `emberfox`
-- **Types:** Fire
+- **Types:** Thermal
 - **Rarity:** Common
 - **Archetype:** Bipedal
 - **Base Stats:** HP 45, ATK 60, DEF 30, SPD 65, ACC 100
 - **Growth Curve:** Fast
 - **Catch Rate:** 180
 - **Base XP Yield:** 65
-- **Signature Part:** `flame-tail` — Fire-type tail part; flame-whip counter-attack
+- **Default Parts:** `claws-rending` (Physical), `glands-thermal` (Energy)
+- **Starting Form Access:** Physical, Energy
+- **Signature Part:** `flame-tail` — Thermal tail part; flame-whip counter-attack (Physical)
 - **Habitat:** Verdant Basin (meadow fringe)
-- **Terrain Synergy:** Fire
+- **Terrain Synergy:** Thermal
 - **Move Pool:**
 
 | Level | Move ID |
 |-------|---------|
 | 1 | `scratch` |
 | 1 | `ember` |
-| 4 | `tail-whip` |
 | 8 | `flame-claw` |
 | 12 | `agility` |
 | 18 | `inferno-dash` |
-| 24 | `fire-fang` |
 
 ---
 
 #### 2. Thornslug
 - **ID:** `thorn-slug`
-- **Types:** Grass / Dark (dual-type, MVP-safe — Poison type is post-MVP)
+- **Types:** Organic / Toxic (dual-type)
 - **Rarity:** Common
 - **Archetype:** Serpentine
 - **Base Stats:** HP 70, ATK 30, DEF 65, SPD 20, ACC 95
 - **Growth Curve:** Slow
 - **Catch Rate:** 190
 - **Base XP Yield:** 55
-- **Signature Part:** `toxic-spine` — Poison back part; contacts apply Poison on hit
+- **Default Parts:** `stinger-venom` (Bio), `spore-pods` (Bio)
+- **Starting Form Access:** Bio
+- **Signature Part:** `toxic-spine` — Toxic back part; contacts apply Poison on hit
 - **Habitat:** Verdant Basin (forest floor)
-- **Terrain Synergy:** Grass
+- **Terrain Synergy:** Organic
 - **Move Pool:**
 
 | Level | Move ID |
 |-------|---------|
 | 1 | `vine-lash` |
-| 1 | `acid-spit` |
+| 1 | `toxic-spore` |
 | 5 | `root-bind` |
-| 10 | `poison-spore` |
-| 15 | `coil` |
-| 20 | `toxic-bloom` |
+| 10 | `leech-sting` |
+| 20 | `spore-cloud` |
 
 ---
 
 #### 3. Voltfin
 - **ID:** `voltfin`
-- **Types:** Electric / Water (dual-type)
+- **Types:** Bioelectric / Aqua (dual-type)
 - **Rarity:** Uncommon
 - **Archetype:** Serpentine
 - **Base Stats:** HP 50, ATK 55, DEF 35, SPD 70, ACC 100
 - **Growth Curve:** Medium
 - **Catch Rate:** 120
 - **Base XP Yield:** 80
-- **Signature Part:** `shock-fin` — Electric back part; boosts SPD on kill
+- **Default Parts:** `fangs-serrated` (Physical), `core-bioelectric` (Energy)
+- **Starting Form Access:** Physical, Energy
+- **Signature Part:** `shock-fin` — Bioelectric back part; boosts SPD on kill (Energy)
 - **Habitat:** Verdant Basin (river channels)
-- **Terrain Synergy:** Water
+- **Terrain Synergy:** Aqua
 - **Move Pool:**
 
 | Level | Move ID |
@@ -201,24 +206,24 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | 1 | `water-pulse` |
 | 1 | `spark` |
 | 6 | `aqua-bolt` |
-| 11 | `thunder-fang` |
-| 17 | `eel-rush` |
-| 23 | `discharge` |
+| 17 | `discharge` |
 
 ---
 
 #### 4. Mosshell
 - **ID:** `mosshell`
-- **Types:** Grass / Rock (dual-type)
+- **Types:** Organic / Mineral (dual-type)
 - **Rarity:** Common
 - **Archetype:** Quadruped
 - **Base Stats:** HP 80, ATK 35, DEF 75, SPD 15, ACC 90
 - **Growth Curve:** Slow
 - **Catch Rate:** 170
 - **Base XP Yield:** 60
-- **Signature Part:** `stone-carapace` — Rock torso part; reduces incoming Physical damage by 15%
+- **Default Parts:** `horns-bone` (Physical), `spore-pods` (Bio)
+- **Starting Form Access:** Physical, Bio
+- **Signature Part:** `stone-carapace` — Mineral torso part; reduces incoming Physical damage by 15%
 - **Habitat:** Verdant Basin (rocky outcrops)
-- **Terrain Synergy:** Rock
+- **Terrain Synergy:** Mineral
 - **Move Pool:**
 
 | Level | Move ID |
@@ -229,97 +234,96 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | 9 | `rock-throw` |
 | 14 | `spore-cloud` |
 | 19 | `boulder-slam` |
-| 25 | `living-fortress` |
 
 ---
 
 #### 5. Glacipede
 - **ID:** `glacipede`
-- **Types:** Ice
+- **Types:** Cryo
 - **Rarity:** Uncommon
 - **Archetype:** Serpentine
 - **Base Stats:** HP 55, ATK 50, DEF 45, SPD 50, ACC 100
 - **Growth Curve:** Medium
 - **Catch Rate:** 130
 - **Base XP Yield:** 75
-- **Signature Part:** `frost-fangs` — Ice head part; attacks have 20% chance to inflict Freeze
+- **Default Parts:** `fangs-serrated` (Physical)
+- **Starting Form Access:** Physical
+- **Signature Part:** `frost-fangs` — Cryo head part; attacks have 20% chance to inflict Freeze (Physical)
 - **Habitat:** Verdant Basin (shaded caverns, damp areas)
-- **Terrain Synergy:** Ice
+- **Terrain Synergy:** Cryo
 - **Move Pool:**
 
 | Level | Move ID |
 |-------|---------|
 | 1 | `ice-shard` |
-| 1 | `bite` |
+| 1 | `ferro-bite` |
 | 5 | `frost-breath` |
-| 10 | `coil` |
-| 16 | `blizzard-fang` |
-| 22 | `cryo-crush` |
 
 ---
 
 #### 6. Shadowmite
 - **ID:** `shadowmite`
-- **Types:** Dark
+- **Types:** Neural
 - **Rarity:** Uncommon
 - **Archetype:** Amorphous
 - **Base Stats:** HP 45, ATK 55, DEF 25, SPD 75, ACC 110
 - **Growth Curve:** Fast
 - **Catch Rate:** 110
 - **Base XP Yield:** 85
-- **Signature Part:** `void-aura` — Dark aura part; reduces threat score by 50% while active
+- **Default Parts:** `tendrils-neural` (Bio)
+- **Starting Form Access:** Bio
+- **Signature Part:** `void-aura` — Neural aura part; reduces threat score by 50% while active
 - **Habitat:** Verdant Basin (cave systems, night encounters only — post-MVP)
-- **Terrain Synergy:** Dark
+- **Terrain Synergy:** Neural
 - **Move Pool:**
 
 | Level | Move ID |
 |-------|---------|
 | 1 | `feint-attack` |
-| 1 | `smokescreen` |
-| 4 | `shadow-claw` |
+| 4 | `neural-claw` |
 | 9 | `taunt` |
-| 14 | `night-slash` |
-| 20 | `shadow-rush` |
+| 14 | `mind-beam` |
 
 ---
 
 #### 7. Psysprout
 - **ID:** `psysprout`
-- **Types:** Psychic / Grass (dual-type)
+- **Types:** Neural / Organic (dual-type)
 - **Rarity:** Rare
 - **Archetype:** Bipedal
 - **Base Stats:** HP 50, ATK 40, DEF 40, SPD 55, ACC 105
 - **Growth Curve:** Medium
 - **Catch Rate:** 75
 - **Base XP Yield:** 95
-- **Signature Part:** `psi-bloom` — Psychic head part; Status moves have +1 priority when equipped
+- **Default Parts:** `tendrils-neural` (Bio), `spore-pods` (Bio)
+- **Starting Form Access:** Bio
+- **Signature Part:** `psi-bloom` — Neural head part; Status moves have +1 priority when equipped
 - **Habitat:** Verdant Basin (ancient grove, restricted area)
-- **Terrain Synergy:** Grass
+- **Terrain Synergy:** Organic
 - **Move Pool:**
 
 | Level | Move ID |
 |-------|---------|
-| 1 | `confusion` |
-| 1 | `absorb` |
+| 1 | `mind-beam` |
 | 6 | `spore-cloud` |
-| 12 | `psybeam` |
-| 18 | `calm-mind` |
-| 24 | `psi-bloom-burst` |
+| 12 | `toxic-spore` |
 
 ---
 
 #### 8. Coalbear
 - **ID:** `coalbear`
-- **Types:** Fire / Rock (dual-type)
+- **Types:** Thermal / Mineral (dual-type)
 - **Rarity:** Rare
 - **Archetype:** Quadruped
 - **Base Stats:** HP 75, ATK 70, DEF 55, SPD 30, ACC 95
 - **Growth Curve:** Medium
 - **Catch Rate:** 65
 - **Base XP Yield:** 110
-- **Signature Part:** `magma-claws` — Fire arms part; Physical attacks gain Fire type on top of base type
+- **Default Parts:** `claws-rending` (Physical), `glands-thermal` (Energy)
+- **Starting Form Access:** Physical, Energy
+- **Signature Part:** `magma-claws` — Thermal arms part; Physical attacks gain Thermal type on top of base type
 - **Habitat:** Verdant Basin (volcanic vents, late-zone area)
-- **Terrain Synergy:** Fire
+- **Terrain Synergy:** Thermal
 - **Move Pool:**
 
 | Level | Move ID |
@@ -327,10 +331,7 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | 1 | `scratch` |
 | 1 | `ember` |
 | 5 | `rock-throw` |
-| 10 | `lava-slam` |
-| 15 | `smash` |
-| 21 | `magma-crash` |
-| 28 | `eruption-claw` |
+| 10 | `flame-claw` |
 
 ---
 
@@ -362,10 +363,10 @@ All stat scaling formulas are defined in `creature-instance.md`. The database on
 | Dependency | Direction | Notes |
 |------------|-----------|-------|
 | `ConfigBase` | Inbound | Provides `id` and `displayName` |
-| `Enums.cs` | Inbound | `CreatureType`, `Rarity`, `BodyArchetype`, `BodySlot`, `GrowthCurve` |
+| `Enums.cs` | Inbound | `CreatureType` (14 genome types), `DamageForm`, `Rarity`, `BodyArchetype`, `BodySlot`, `GrowthCurve` |
 | `ConfigLoader` | Inbound | Loads all `CreatureConfig` assets at startup |
 | `MoveConfig` | Outbound | Move pool references move IDs validated by ConfigLoader |
-| `BodyPartConfig` | Outbound | `signaturePartId` references part config |
+| `BodyPartConfig` | Outbound | `signaturePartId` and `defaultPartIds` reference part configs; form access derived from default parts |
 | `CreatureInstance` | Outbound | Runtime state factory takes `CreatureConfig` as blueprint |
 | `Encounter System` | Outbound | Uses `habitatZoneIds`, `catchRate`, `rarity` for encounter generation |
 
@@ -391,6 +392,8 @@ All stat scaling formulas are defined in `creature-instance.md`. The database on
 - [ ] `availableSlots` is non-empty for all 8 creatures
 - [ ] `catchRate` is within 0–255 for all entries
 - [ ] EditMode test: load all `CreatureConfig` assets, assert count >= 8
-- [ ] EditMode test: `Emberfox.primaryType == CreatureType.Fire`
+- [ ] Every creature has at least one entry in `defaultPartIds`
+- [ ] Default parts determine correct starting form access per creature
+- [ ] EditMode test: `Emberfox.primaryType == CreatureType.Thermal`
 - [ ] EditMode test: `Thornslug.IsDualType == true`
 - [ ] EditMode test: `Mosshell` move pool contains `boulder-slam` at level 19

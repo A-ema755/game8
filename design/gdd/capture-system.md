@@ -16,9 +16,9 @@ You are a field researcher who earns creatures through skill, not luck. Whittlin
 |---------|-------------|----------------|-------------|
 | `gene-trap-standard` | Standard Gene Trap | 1.0 | Default trap available from the start |
 | `gene-trap-enhanced` | Enhanced Gene Trap | 1.5 | Crafted or purchased at Researcher rank |
-| `gene-trap-specialist` | Specialist Gene Trap | 2.0 | Matches creature's primary type; requires Field Agent rank |
+| `gene-trap-specialist` | Specialist Gene Trap | 2.0 | Matches creature's primary genome type; requires Field Agent rank |
 
-Specialist Gene Traps carry a `targetType` field. The 2x modifier only applies when the wild creature's primary type matches `targetType`. Otherwise it functions as a Standard Gene Trap (1.0x).
+Specialist Gene Traps carry a `targetType` field (one of the 14 genome types). The 2x modifier only applies when the wild creature's primary genome type matches `targetType`. Otherwise it functions as a Standard Gene Trap (1.0x).
 
 ### 3.2 Catch Attempt Flow
 
@@ -195,7 +195,7 @@ catchRate = 84.3 / 255 = 0.331 → ~33%
 
 - [ ] `CaptureCalculator.CalculateCatchRate()` returns correct values for all documented example inputs (unit tested).
 - [ ] `hpFactor` at full HP is approximately 0.333; at 1 HP is approximately 1.0.
-- [ ] Specialist Gene Trap applies 2.0x only when creature type matches; falls back to 1.0x otherwise.
+- [ ] Specialist Gene Trap applies 2.0x only when creature's primary genome type matches `targetType`; falls back to 1.0x otherwise.
 - [ ] Sleep status applies 2.5x bonus; all other bonuses match the table in Section 3.3.
 - [ ] Only the highest status bonus is applied when multiple statuses are active.
 - [ ] Catch Predictor UI updates in real time when the player cycles trap types.

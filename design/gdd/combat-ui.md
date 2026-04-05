@@ -58,13 +58,14 @@ Layout: 6 buttons in a 2×3 grid.
 
 Each move button shows:
 - Move name
-- Type icon + type name
+- Genome type icon + type name (color-coded per genome type)
+- Damage form icon (Physical=fist, Energy=bolt, Bio=spiral) + form label
 - PP remaining: "8 / 10"
 - Power indicator (dots 1–5 scaled to power range)
-- Category icon (Physical / Special / Status)
 - If move is out of PP: grayed out, labeled "No PP"
+- If creature lacks body part for the move's form: grayed out, labeled "No Access" (form icon shown in red)
 
-Hovering a move button highlights valid target tiles on the grid in the corresponding color.
+Hovering a move button highlights valid target tiles on the grid in the corresponding color. **Form-specific range overlay**: Physical moves show melee range (1–2 tiles, red), Energy moves show LoS cone/range (3–5 tiles, orange, blocked tiles dimmed), Bio moves show mid-range circle (2–3 tiles, green, ignoring cover). This overlay replaces the generic red attack range.
 
 ### Grid Display — Tile Highlighting
 Tile highlight colors (additive overlay on tile material):
@@ -90,7 +91,7 @@ Only one highlight layer is active at a time (move selection overrides movement 
 - "Super Effective!" — red text, scale-up animation (0.8→1.0 in 0.15s), lingers 1.5s.
 - "Not Very Effective..." — blue text, scale-down animation (1.0→0.9), lingers 1.5s.
 - Neutral hits show no callout.
-- Immune hits show "No Effect!" in gray.
+- No "Immune" or "No Effect" callout exists — the 14-type chart has no immunities (minimum 0.25x for dual-type resisted).
 - Callouts queue; if two hits land in rapid succession, the second callout offsets vertically.
 
 ### Catch Predictor
@@ -201,3 +202,7 @@ Where threatScore is provided by the Threat/Aggro System (0–100).
 - [ ] Instability bar shows "!" warning at instability >= 50 and flashes at >= 75.
 - [ ] Switching creatures via the Switch button uses the creature's action and removes its turn from the current round.
 - [ ] Gold terrain synergy highlight appears on tiles matching the active creature's type.
+- [ ] Move buttons display genome type icon and damage form icon correctly.
+- [ ] Moves with inaccessible form (no body part) show "No Access" in red.
+- [ ] Form-specific range overlays display correctly (Physical=melee, Energy=LoS, Bio=mid-range ignoring cover).
+- [ ] No "Immune" or "No Effect" callout ever appears (no immunities in the 14-type chart).

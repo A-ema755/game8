@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-The Body Part System gives creatures modular anatomy defined by their archetype. Each creature archetype (Bipedal, Quadruped, Serpentine, Avian, Amorphous) exposes a different set of named body slots. Players acquire part blueprints through DNA splicing, battle rewards, and DNA Vault discoveries, then equip them to matching slots. Parts are not cosmetic: they unlock moves, shift type affinities, modify stats, interact with grid terrain, and conflict or synergize with each other. Parts gain XP through battle use and level up independently, growing stronger over time. Three or more parts from the same type category trigger a set bonus.
+The Body Part System gives creatures modular anatomy defined by their archetype. Each creature archetype (Bipedal, Quadruped, Serpentine, Avian, Amorphous) exposes a different set of named body slots. Players acquire part blueprints through DNA splicing, battle rewards, and DNA Vault discoveries, then equip them to matching slots. Parts are not cosmetic: they unlock moves, shift type affinities, modify stats, **determine which damage forms the creature can use** (Physical, Energy, Bio), interact with grid terrain, and conflict or synergize with each other. Parts gain XP through battle use and level up independently, growing stronger over time. Three or more parts from the same type category trigger a set bonus.
 
 ## 2. Player Fantasy
 
@@ -38,7 +38,8 @@ public class BodyPartConfig : ScriptableObject
     public StatModifierSet statModifiers;      // Flat bonuses to creature stats
     public float weight;                       // Affects movement cost and flight conflicts
 
-    [Header("Moves and Type")]
+    [Header("Moves, Type, and Form")]
+    public DamageForm formAccess;              // Which damage form this part grants (Physical, Energy, Bio, or None)
     public List<string> movesUnlocked;         // Move IDs unlocked while this part is equipped
     public TypeAffinityChange typeAffinityChange; // Adds resistance, weakness, or immunity
 
@@ -59,31 +60,36 @@ public class BodyPartConfig : ScriptableObject
 public class TypeAffinityChange
 {
     public CreatureType affectedType;
-    public AffinityModifier modifier;          // Resistance (0.5x), Immunity (0x), Weakness (2x)
+    public AffinityModifier modifier;          // Resistance (0.5x) or Weakness (2x) — no immunities in the type chart
 }
 ```
 
 ### 3.3 Part Catalog (MVP Set)
 
-| Part ID | Display Name | Category | Slot | Key Effect |
-|---------|-------------|----------|------|-----------|
-| `wings-feathered` | Feathered Wings | Utility | Wings | Unlocks Aerial Dash; ignores height movement cost |
-| `wings-membrane` | Membrane Wings | Utility | Wings | Unlocks Glide; +Evasion on elevated tiles |
-| `horns-bone` | Bone Horns | Offensive | Head | +ATK; unlocks Horn Charge |
-| `horns-crystal` | Crystal Horns | Offensive | Head | +ATK; unlocks Crystal Pierce; Rock resistance |
-| `claws-rending` | Rending Claws | Offensive | LeftArm/RightArm | +ATK; unlocks Rend; inflicts Bleed |
-| `claws-venom` | Venom Claws | Offensive | LeftArm/RightArm | Basic attack gains 20% poison chance |
-| `shell-carapace` | Carapace Shell | Defensive | Back/Hide | +DEF; Fire weakness |
-| `shell-crystal` | Crystal Shell | Defensive | Back/Hide | +DEF; +DEF; Rock resistance |
-| `fangs-serrated` | Serrated Fangs | Offensive | Head | +ATK; unlocks Fang Strike |
-| `eyes-predator` | Predator Eyes | Utility | Head | +accuracy; cannot be blinded |
-| `eyes-compound` | Compound Eyes | Utility | Head | +Evasion; reveals stealth creatures |
-| `aura-flame` | Flame Aura | Aura | Back | Burns attackers on contact; conflicts with Frost Aura |
-| `aura-frost` | Frost Aura | Aura | Back | Slows adjacent enemies; conflicts with Flame Aura |
-| `glands-venom` | Venom Glands | Utility | BodyUpper/Back | Basic attack gains poison chance; unlocks Toxic Spray |
-| `tail-blade` | Blade Tail | Offensive | Tail | +ATK; unlocks Tail Whip; counter-attack on physical hit |
-| `tail-weight` | Heavy Tail | Defensive | Tail | +DEF; -SPD; unlocks Slam |
-| `limbs-extra` | Extra Limbs | Offensive | Arms | +ATK; conflicts with heavy shells |
+| Part ID | Display Name | Category | Slot | Form Access | Key Effect |
+|---------|-------------|----------|------|-------------|-----------|
+| `wings-feathered` | Feathered Wings | Utility | Wings | None | Unlocks Aerial Dash; ignores height movement cost |
+| `wings-membrane` | Membrane Wings | Utility | Wings | None | Unlocks Glide; +Evasion on elevated tiles |
+| `horns-bone` | Bone Horns | Offensive | Head | Physical | +ATK; unlocks Horn Charge |
+| `horns-crystal` | Crystal Horns | Offensive | Head | Physical | +ATK; unlocks Crystal Pierce; Mineral resistance |
+| `claws-rending` | Rending Claws | Offensive | LeftArm/RightArm | Physical | +ATK; unlocks Rend; inflicts Bleed |
+| `claws-venom` | Venom Claws | Offensive | LeftArm/RightArm | Physical | Basic attack gains 20% poison chance |
+| `shell-carapace` | Carapace Shell | Defensive | Back/Hide | None | +DEF; Thermal weakness |
+| `shell-crystal` | Crystal Shell | Defensive | Back/Hide | None | +DEF; +DEF; Mineral resistance |
+| `fangs-serrated` | Serrated Fangs | Offensive | Head | Physical | +ATK; unlocks Fang Strike |
+| `eyes-predator` | Predator Eyes | Utility | Head | None | +accuracy; cannot be blinded |
+| `eyes-compound` | Compound Eyes | Utility | Head | None | +Evasion; reveals stealth creatures |
+| `aura-flame` | Flame Aura | Aura | Back | None | Burns attackers on contact; conflicts with Frost Aura |
+| `aura-frost` | Frost Aura | Aura | Back | None | Slows adjacent enemies; conflicts with Flame Aura |
+| `glands-venom` | Venom Glands | Utility | BodyUpper/Back | Energy | Basic attack gains poison chance; unlocks Toxic Spray |
+| `glands-thermal` | Thermal Glands | Offensive | BodyUpper/Back | Energy | Unlocks Flame Jet; +ATK |
+| `core-bioelectric` | Bioelectric Core | Offensive | CoreA/Back | Energy | Unlocks Spark Arc; +ATK |
+| `stinger-venom` | Venom Stinger | Offensive | Tail/Appendage | Bio | Unlocks Leech Sting; poison chance |
+| `spore-pods` | Spore Pods | Offensive | Back/CoreB | Bio | Unlocks Toxic Spore; AoE poison |
+| `tendrils-neural` | Neural Tendrils | Offensive | Appendage/Arms | Bio | Unlocks Neural Worm; +ACC |
+| `tail-blade` | Blade Tail | Offensive | Tail | Physical | +ATK; unlocks Tail Whip; counter-attack on physical hit |
+| `tail-weight` | Heavy Tail | Defensive | Tail | Physical | +DEF; -SPD; unlocks Slam |
+| `limbs-extra` | Extra Limbs | Offensive | Arms | Physical | +ATK; conflicts with heavy shells |
 
 ### 3.4 Equipping and Unequipping Parts
 
@@ -116,6 +122,45 @@ Example sets:
 | `crystal-fortress` | shell-crystal, horns-crystal, eyes-compound | +25% DEF; incoming magic damage reflected 5% |
 
 Set bonuses are additive with other bonuses. Only one set can be active at a time (if criteria for two sets are met, the one with more matching parts wins; tie = alphabetical id).
+
+### 3.8 Damage Form Access
+
+Body parts are the gatekeepers of damage forms. A creature can only use moves of a given damage form if it has at least one equipped body part that grants access to that form.
+
+**Form access by body part category:**
+
+| Body Part Type | Grants Form | Examples |
+|---------------|-------------|---------|
+| Jaws / Claws / Horns / Tail weapons | **Physical** | Fangs, Rending Claws, Bone Horns, Blade Tail |
+| Glands / Vents / Core Organ | **Energy** | Venom Glands, Thermal Glands, Bioelectric Core |
+| Spore Pods / Stingers / Tendrils | **Bio** | Spore Pods, Venom Stinger, Neural Tendrils |
+| Wings / Shells / Eyes / Auras | **None** | These parts provide utility, defense, or passives but don't grant form access |
+
+**Derivation rule**: A creature's available damage forms = the union of `formAccess` values from all currently equipped body parts.
+
+```csharp
+/// <summary>
+/// Returns the set of damage forms this creature can currently use,
+/// derived from equipped body parts.
+/// </summary>
+public HashSet<DamageForm> GetAvailableForms(CreatureInstance creature)
+{
+    var forms = new HashSet<DamageForm>();
+    foreach (var part in creature.EquippedParts)
+    {
+        if (part.Config.formAccess != DamageForm.None)
+            forms.Add(part.Config.formAccess);
+    }
+    return forms;
+}
+```
+
+**Key implications:**
+- A creature with only Claws and a Shell can use Physical moves but NOT Energy or Bio moves
+- DNA body part splicing is the primary way to expand form access (e.g., splicing Thermal Glands onto a Physical-only creature gives it Energy form access)
+- Default body parts per species determine starting form access (see creature-database.md)
+- A creature that loses its only Physical-form part (via unequip) has all Physical moves suspended
+- Move learning is filtered by form access: a creature cannot learn a move whose form it currently lacks body part access to (unless overridden by DNA splice)
 
 ### 3.7 Part Leveling
 
@@ -184,14 +229,15 @@ conflictTriggers = isHeavy && anyWingPartEquipped
 
 | System | Dependency Type | Notes |
 |--------|----------------|-------|
-| Creature Instance | Read/Write | Equip slot state, part XP tracking |
-| Creature Database | Read | Archetype slot layout per species |
-| Move Database | Read | Validate that `movesUnlocked` IDs exist |
-| DNA Alteration System | Read | Parts may be unlocked via DNA splicing blueprints |
-| Move Customization System | Write | Part equip/unequip triggers move pool update |
-| Type Chart System | Read | Type affinity changes must reference valid types |
-| Combat System (Damage & Health) | Read | Weight/conflict rules affect grid movement cost |
-| Party Management UI | Read/Write | Part equip/unequip interface |
+| Creature Instance | Read/Write | Equip slot state, part XP tracking, form access derivation |
+| Creature Database | Read | Archetype slot layout per species; default body parts determine starting form access |
+| Move Database | Read | Validate that `movesUnlocked` IDs exist; move form must match part form access |
+| DNA Alteration System | Read | Parts may be unlocked via DNA splicing blueprints; splicing expands form access |
+| Damage & Health System | Read | Damage form enum; form access determines which moves a creature can use in combat |
+| Move Customization System | Write | Part equip/unequip triggers move pool update (including form-gated filtering) |
+| Type Chart System | Read | Type affinity changes must reference valid genome types (14 types) |
+| Combat System (TurnManager) | Read | Weight/conflict rules affect grid movement cost; form access checked before move execution |
+| Party Management UI | Read/Write | Part equip/unequip interface; shows form access per part |
 | Save/Load System | Read/Write | Equipped parts, part levels, and XP persisted |
 
 ## 7. Tuning Knobs
@@ -224,3 +270,10 @@ conflictTriggers = isHeavy && anyWingPartEquipped
 - [ ] Signature species stat bonus is 25% higher than the base mod value (unit tested).
 - [ ] Part equip/unequip data survives a save/load cycle intact.
 - [ ] Move pool correctly reflects suspended moves after part removal.
+- [ ] `BodyPartConfig.formAccess` field exists with values: None, Physical, Energy, Bio.
+- [ ] Creature with only Physical-form parts cannot use Energy or Bio moves.
+- [ ] Creature with Claws (Physical) + Glands (Energy) can use both Physical and Energy moves.
+- [ ] Splicing a Bio-form part (e.g., Spore Pods) onto a Physical-only creature grants Bio form access.
+- [ ] Unequipping the only Energy-form part suspends all Energy moves on that creature.
+- [ ] Move learning screen only shows moves whose form the creature currently has access to.
+- [ ] `GetAvailableForms()` returns correct union of all equipped parts' form access values.

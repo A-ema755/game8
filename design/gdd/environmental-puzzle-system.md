@@ -2,25 +2,25 @@
 
 ## 1. Overview
 
-Environmental Puzzles use creature field abilities to unlock content on the campaign map. Puzzles require specific creature types: Fire clears thorny walls, Water extinguishes barriers, Electric powers devices, Grass grows bridges, Flying scouts ahead, and Psychic senses rare creatures. Each puzzle gates content (nesting sites, DNA vaults, shortcuts, rare habitats) that rewards exploration. Puzzles are not timed or failed — they either cannot be solved with current party or can be.
+Environmental Puzzles use creature field abilities to unlock content on the campaign map. Puzzles require specific genome types: Thermal clears thorny walls, Aqua extinguishes barriers, Bioelectric powers devices, Organic grows bridges, Aero scouts ahead, and Neural senses rare creatures. Each puzzle gates content (nesting sites, DNA vaults, shortcuts, rare habitats) that rewards exploration. Puzzles are not timed or failed — they either cannot be solved with current party or can be.
 
 ## 2. Player Fantasy
 
-Discovering a blocked path and realizing "I need a fire creature to burn through this" creates a meaningful team-building goal. Finding a shortcut with the right party member feels like the world rewards player preparation. Unlocking a vault hidden by an electric puzzle feels earned, not granted. Field abilities make every creature useful outside combat, not just in it.
+Discovering a blocked path and realizing "I need a Thermal creature to burn through this" creates a meaningful team-building goal. Finding a shortcut with the right party member feels like the world rewards player preparation. Unlocking a vault hidden by an electric puzzle feels earned, not granted. Field abilities make every creature useful outside combat, not just in it.
 
 ## 3. Detailed Rules
 
 ### 3.1 Field Ability Categories
 
-| Ability | Creature Type | Effect | Unlocks |
+| Ability | Genome Type | Effect | Unlocks |
 |---------|-------------|--------|---------|
-| Burn/Clear | Fire | Burn through thorny walls, melted barriers | Hidden area |
-| Freeze/Bridge | Ice | Freeze water to create bridge | Crossing point |
-| Power Device | Electric | Activate dead devices, open doors | Laboratory, vault entrance |
-| Grow/Cross | Grass | Grow vines across chasm | Canyon shortcuts |
-| Scout Ahead | Flying | Reveal hidden encounters on map | Secret zones |
-| Sense Rare | Psychic | Sense nearby rare creatures | Rare spawn zones |
-| Dive/Swim | Water | Dive underwater, cross deep water | Underwater cave |
+| Burn/Clear | Thermal | Burn through thorny walls, melted barriers | Hidden area |
+| Freeze/Bridge | Cryo | Freeze water to create bridge | Crossing point |
+| Power Device | Bioelectric | Activate dead devices, open doors | Laboratory, vault entrance |
+| Grow/Cross | Organic | Grow vines across chasm | Canyon shortcuts |
+| Scout Ahead | Aero | Reveal hidden encounters on map | Secret zones |
+| Sense Rare | Neural | Sense nearby rare creatures | Rare spawn zones |
+| Dive/Swim | Aqua | Dive underwater, cross deep water | Underwater cave |
 
 ### 3.2 Puzzle Config
 
@@ -64,11 +64,11 @@ public bool TrySolvePuzzle(EnvironmentalPuzzle puzzle, CreatureInstance creature
 
 ### 3.4 Puzzle Types & Locations
 
-- **Nesting Site Barriers:** Fire puzzle blocks entry to bird nesting site; water puzzle to underwater nest
-- **DNA Vault Entrance:** Electric puzzle powers a sealed lab containing vault
-- **Shortcut Bridges:** Grass puzzle grows vines across chasms; Ice puzzle freezes water
-- **Rare Habitat:** Psychic puzzle senses hidden creature spawning zone
-- **Scout Mission:** Flying creature reveals hidden trainer encounter
+- **Nesting Site Barriers:** Thermal puzzle blocks entry to bird nesting site; Aqua puzzle to underwater nest
+- **DNA Vault Entrance:** Bioelectric puzzle powers a sealed lab containing vault
+- **Shortcut Bridges:** Organic puzzle grows vines across chasms; Cryo puzzle freezes water
+- **Rare Habitat:** Neural puzzle senses hidden creature spawning zone
+- **Scout Mission:** Aero creature reveals hidden trainer encounter
 
 ## 4. Formulas
 
@@ -120,7 +120,7 @@ contentIsVisible = isUnlocked OR playerExploresWhileLocked
 ## 8. Acceptance Criteria
 
 - [ ] Environmental puzzles are placed on campaign map and have clear visual indicators.
-- [ ] Puzzle requirements (Fire, Electric, Psychic, etc.) are displayed when player hovers over.
+- [ ] Puzzle requirements (Thermal, Bioelectric, Neural, etc.) are displayed when player hovers over.
 - [ ] Creature with required type in active party can solve puzzle by interacting.
 - [ ] Solving puzzle unlocks associated content (nesting site, vault, shortcut, rare habitat).
 - [ ] Puzzle solved state persists through save/load.

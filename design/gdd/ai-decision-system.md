@@ -31,7 +31,7 @@ public class CandidateAction
 
 ### 3.2 Scoring Dimensions
 
-Each candidate is scored across six dimensions. The final score is a weighted sum.
+Each candidate is scored across eight dimensions. The final score is a weighted sum.
 
 ```csharp
 public static float ScoreAction(
@@ -46,13 +46,17 @@ public static float ScoreAction(
     float scorePosition    = ScorePosition(action, actor, battleState);
     float scoreTerrain     = ScoreTerrainSynergy(action, actor, battleState);
     float scoreSelf        = ScoreSelfPreservation(action, actor, battleState);
+    float scoreGenomeMatch = ScoreGenomeMatchup(action, actor, battleState);
+    float scoreFormTactic  = ScoreFormTactics(action, actor, battleState);
 
     return (scoreDamage      * personality.weightDamage)
          + (scoreKill        * personality.weightKill)
          + (scoreThreat      * personality.weightThreat)
          + (scorePosition    * personality.weightPosition)
          + (scoreTerrain     * personality.weightTerrain)
-         + (scoreSelf        * personality.weightSelfPreservation);
+         + (scoreSelf        * personality.weightSelfPreservation)
+         + (scoreGenomeMatch * personality.weightGenomeMatch)
+         + (scoreFormTactic  * personality.weightFormTactic);
 }
 ```
 
@@ -118,6 +122,31 @@ Rewards actions that keep the creature safe. Strong in Cautious personalities.
 selfPreservScore = (actor.currentHp / actor.maxHp < LowHpThreshold) ? 1.0 : 0.0
 ```
 
+#### ScoreGenomeMatchup
+Evaluates genome type advantage of the move against the target. Uses the 14-type chart (TypeChart.GetMultiplier). Rewards super-effective matchups, penalizes resisted ones.
+
+```
+genomeMultiplier = TypeChart.GetMultiplier(move.genomeType, target.primaryType)
+                 * (target.IsDualType ? TypeChart.GetMultiplier(move.genomeType, target.ActiveSecondaryType) : 1.0)
+scoreGenomeMatch = (genomeMultiplier - 1.0) / 3.0   // Normalized: -0.25 for 0.25x, 0 for 1.0x, +1.0 for 4.0x
+```
+
+Also adds STAB bonus to the score when the move's genome type matches the actor's type.
+
+#### ScoreFormTactics
+Evaluates the tactical value of the move's damage form given the current grid state:
+- **Physical**: Scores higher when actor is adjacent to target and on high ground. Penalized if walls or cover block the path.
+- **Energy**: Scores higher when actor has clear LoS and height advantage. Penalized if no LoS exists.
+- **Bio**: Scores higher when target is behind cover (Bio ignores cover — exploiting an advantage other forms can't). Not affected by height.
+
+Also evaluates **stat pairing favorability**: does ATK vs SPD (Energy) favor the actor more than ATK vs DEF (Physical)? The form whose stat ratio is highest scores a bonus.
+
+```
+statRatio = actor.offStat / target.defStat   // Per form's pairing
+formStatScore = Clamp((statRatio - 1.0) / 2.0, -0.5, 1.0)   // Normalized: positive when actor has stat advantage
+scoreFormTactic = formPositionScore + formStatScore
+```
+
 ### 3.3 AIPersonalityConfig ScriptableObject
 
 ```csharp
@@ -127,13 +156,15 @@ public class AIPersonalityConfig : ScriptableObject
     public string id;
     public string displayName;
 
-    [Header("Scoring Weights (should sum to ~6 for normalization)")]
+    [Header("Scoring Weights (should sum to ~8 for normalization)")]
     [Range(0f, 3f)] public float weightDamage          = 1.0f;
     [Range(0f, 3f)] public float weightKill             = 1.2f;
     [Range(0f, 3f)] public float weightThreat           = 0.8f;
     [Range(0f, 3f)] public float weightPosition         = 0.7f;
     [Range(0f, 3f)] public float weightTerrain          = 0.5f;
     [Range(0f, 3f)] public float weightSelfPreservation = 0.8f;
+    [Range(0f, 3f)] public float weightGenomeMatch      = 1.0f;
+    [Range(0f, 3f)] public float weightFormTactic       = 0.8f;
 
     [Header("Behavioral Biases")]
     [Range(0f, 1f)] public float aggressionBias    = 0.6f;  // 1.0 = always approach
@@ -201,13 +232,16 @@ score += Random.Range(-randomnessFactor, randomnessFactor)
 ### Damage Estimate (for scoring only)
 
 ```
-estimatedDamage = ((2 * attackerLevel / 5 + 2) * movePower * (ATK / DEF)) / 50 + 2
-estimatedDamage *= typeEffectiveness
+offStat, defStat = GetFormStatPairing(move.form, attacker, defender)
+estimatedDamage = ((2 * attackerLevel / 5 + 2) * movePower * (offStat / defStat)) / 50 + 2
+estimatedDamage *= stabMultiplier         // 1.5x if genome type matches attacker type
+estimatedDamage *= genomeTypeEffectiveness // From 14-type chart (multiplicative for dual-type)
 estimatedDamage *= terrainSynergyBonus
-estimatedDamage *= heightBonus
+estimatedDamage *= formHeightBonus        // Physical/Energy: +10% per height; Bio: 1.0x
 ```
 
-(Mirrors the Damage & Health System formula but without critical hit or random roll variance.)
+Stat pairings per form: Physical (ATK vs DEF), Energy (ATK vs SPD), Bio (ACC vs DEF).
+Mirrors `DamageCalculator.Estimate()` — no critical hit or random roll variance.
 
 ### Normalized Damage Score
 
@@ -219,7 +253,7 @@ scoreDamage = Clamp(estimatedDamage / target.maxHp, 0, 2)
 
 | Scenario | Resolution |
 |----------|-----------|
-| All moves are out of PP | AI selects Struggle (base power 10 physical move, no type, self-damage 25% of dealt) |
+| All moves are out of PP | AI selects Struggle (base power 10 Physical form move, typeless, self-damage 25% of dealt) |
 | No valid targets exist for any move | AI waits (score 0 action selected) |
 | All candidate scores are negative | Wait action (score 0) is always a fallback candidate; selected if it outscores all others |
 | Creature has instability >= 80 (disobedience check) | Handled by Creature Instance before AI runs; if disobedience triggers, AI scoring is skipped for this turn |
@@ -228,14 +262,17 @@ scoreDamage = Clamp(estimatedDamage / target.maxHp, 0, 2)
 | AI attempts to use a move that targets allies on a single-target move | Ally targeting is only valid for buff/heal moves explicitly flagged `canTargetAlly = true` |
 | Wild creature has no `defaultWildPersonality` assigned | Falls back to `balanced` preset |
 | Lookahead evaluation causes stack overflow (nested scoring) | Lookahead is explicitly depth-limited to 1 level; no recursive calls beyond first depth |
+| AI creature lacks body part for a move's form | Move excluded from candidate generation (creature can't use it) |
+| AI evaluates Energy move but no LoS to target | Move excluded from candidate generation (targeting check fails) |
+| AI creature has Blight secondary type (instability 80+) | Type effectiveness calculations use Blight as secondary type for both offense and defense scoring |
 
 ## 6. Dependencies
 
 | System | Dependency Type | Notes |
 |--------|----------------|-------|
-| Move Database | Read | Move power, accuracy, type, targeting pattern, PP |
-| Creature Instance | Read | HP, stats, instability, current PP, known moves |
-| Type Chart System | Read | Type effectiveness for damage estimation |
+| Move Database | Read | Move power, accuracy, genome type, damage form, targeting pattern, PP |
+| Creature Instance | Read | HP, stats, instability, current PP, known moves, available forms, ActiveSecondaryType |
+| Type Chart System | Read | 14-type genome effectiveness for damage estimation and matchup scoring |
 | Damage & Health System | Read | Shared damage formula for score estimation |
 | Threat / Aggro System | Read | Wild AI target selection |
 | Grid / Tile System | Read | Tile positions, movement cost, height, terrain type |
@@ -274,3 +311,8 @@ scoreDamage = Clamp(estimatedDamage / target.maxHp, 0, 2)
 - [ ] Random jitter is within the configured `randomnessFactor` range.
 - [ ] Disobedient creatures (instability >= 80, disobey triggered) skip AI scoring entirely for that turn.
 - [ ] Terrain synergy scoring correctly rewards moving to matching-type tiles and penalizes harmful tiles.
+- [ ] `ScoreGenomeMatchup()` returns positive score for super-effective and negative for resisted moves.
+- [ ] `ScoreFormTactics()` correctly evaluates form stat pairing favorability (ATK vs SPD vs ATK vs DEF vs ACC vs DEF).
+- [ ] AI excludes moves from candidates when creature lacks body part access for that move's form.
+- [ ] AI correctly uses 14-type chart for genome matchup scoring (not old 8-type system).
+- [ ] AI evaluates Blight secondary type when target creature has instability >= 80.

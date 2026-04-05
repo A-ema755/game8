@@ -14,17 +14,22 @@ Your modified creatures look unmistakably yours. A fire creature with water DNA 
 
 Each creature type has a base color:
 
-| Type | Base Color | Hex |
-|------|-----------|-----|
-| Fire | Orange | #FF8C00 |
-| Water | Blue | #4169E1 |
-| Grass | Green | #32CD32 |
-| Electric | Yellow | #FFD700 |
-| Ice | Cyan | #00FFFF |
-| Rock | Brown | #8B4513 |
-| Dark | Purple-Grey | #2F4F4F |
-| Psychic | Magenta | #FF1493 |
-| Ghost | Translucent | #B0C4DE |
+| Genome Type | Base Color | Hex |
+|-------------|-----------|-----|
+| Thermal | Orange | #FF8C00 |
+| Aqua | Blue | #4169E1 |
+| Organic | Green | #32CD32 |
+| Bioelectric | Yellow | #FFD700 |
+| Cryo | Cyan | #00FFFF |
+| Mineral | Brown | #8B4513 |
+| Toxic | Sickly Green | #7FFF00 |
+| Neural | Magenta | #FF1493 |
+| Ferro | Gunmetal | #6E7B8B |
+| Kinetic | Burnt Orange | #CC5500 |
+| Aero | Sky Blue | #87CEEB |
+| Sonic | Violet | #9400D3 |
+| Ark | Gold | #FFD700 |
+| Blight | Corrupted Red | #8B0000 |
 
 Color is applied as a tint to the creature model's base material.
 

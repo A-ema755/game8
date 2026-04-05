@@ -311,10 +311,15 @@ Flanking modifiers are applied in the Damage & Health System:
 
 ### 3.9 Line-of-Sight
 
+Line-of-sight is used by the damage form system to determine targeting validity:
+- **Energy form**: Requires unbroken LoS. Moves are blocked if `HasLineOfSight()` returns false. Cover tiles reduce Energy damage by 50%.
+- **Physical form**: Does not use LoS (melee range 1–2). Walls and cover block targeting entirely at the targeting phase.
+- **Bio form**: Ignores LoS entirely. Spores/parasites/venom bypass physical barriers. `HasLineOfSight()` is not checked for Bio targeting.
+
 ```csharp
 /// <summary>
 /// Bresenham line-of-sight check. Returns true if no blocking tile interrupts
-/// the line from origin to target.
+/// the line from origin to target. Used primarily by Energy-form moves.
 /// </summary>
 public static bool HasLineOfSight(GridSystem grid, Vector2Int from, Vector2Int to)
 {
@@ -345,7 +350,8 @@ public static bool HasLineOfSight(GridSystem grid, Vector2Int from, Vector2Int t
 | Chebyshev Distance | `max(|Δx|, |Δz|)` |
 | A* step cost (climbing) | `1.5` |
 | A* step cost (flat/descending) | `1.0` |
-| Height advantage (damage bonus) | `+0.1x per height level above target` (applied in DamageSystem) |
+| Height advantage (Physical/Energy) | `+0.1x per height level above target` (cap 2.0x; applied in DamageCalculator) |
+| Height advantage (Bio) | `1.0x` (no height bonus — Bio ignores elevation) |
 | Fall damage | `fallDamageBase × (heightDelta − 2)` for Δheight ≥ 3 |
 | Flank (side) damage multiplier | `1.1` |
 | Flank (rear) damage multiplier | `1.25` |

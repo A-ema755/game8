@@ -2,11 +2,11 @@
 
 ## 1. Overview
 
-The Combo Move System allows two adjacent creatures with Affinity 3+ to execute fusion attacks that cost both their turns. Combo moves are unlocked based on type pairings (Fire+Water=Steam Blast, Ice+Fire=Frost Flame, etc.) and are discovered as players battle with different creature type combinations. A ComboMoveConfig defines 10-15 combos with power, accuracy, effects, and any animation/VFX requirements.
+The Combo Move System allows two adjacent creatures with Affinity 3+ to execute fusion attacks that cost both their turns. Combo moves are unlocked based on genome type pairings (Thermal+Aqua=Steam Blast, Cryo+Thermal=Frost Flame, etc.) and are discovered as players battle with different creature type combinations. A ComboMoveConfig defines 10-15 combos with power, accuracy, effects, and any animation/VFX requirements.
 
 ## 2. Player Fantasy
 
-Discovering that your fire creature and water creature together can unleash "Steam Blast" feels like unlocking a secret technique. The combo is powerful enough to justify the cost of both turns, making high-affinity pairs strategically valuable. Executing a planned combo in a tight fight feels like teamwork paying off.
+Discovering that your Thermal creature and Aqua creature together can unleash "Steam Blast" feels like unlocking a secret technique. The combo is powerful enough to justify the cost of both turns, making high-affinity pairs strategically valuable. Executing a planned combo in a tight fight feels like teamwork paying off.
 
 ## 3. Detailed Rules
 
@@ -25,16 +25,16 @@ Both creatures' turns are consumed; the combo executes as a single action.
 
 | Combo ID | Type 1 | Type 2 | Name | Power | Effect | Notes |
 |----------|--------|--------|------|-------|--------|-------|
-| `steam-blast` | Fire | Water | Steam Blast | 90 | Burn + Confusion 30% | Area damage, 2-tile radius |
-| `frost-flame` | Ice | Fire | Frost Flame | 85 | Burn + Freeze 25% | Hits 2-3 tiles in line |
-| `electric-tsunami` | Electric | Water | Electric Tsunami | 100 | Paralyze 40% | Full grid damage |
-| `nature-rage` | Grass | Rock | Nature's Wrath | 80 | Trap opponent 1 turn | Terrain creates obstacles |
-| `poison-cloud` | Poison | Grass | Toxic Bloom | 70 | Poison + Spore sleep 30% | Area denial |
-| `dragon-force` | Dragon | Flying | Aerial Cataclysm | 120 | Knockback + Vulnerable | High power, leaves enemy elevated |
-| `ground-quake` | Rock | Ground | Continental Shift | 95 | Damage + tile alteration | Changes all tiles in area |
-| `shadow-strike` | Dark | Ghost | Void Echo | 90 | Reduce target DEF -2 | Ranged + debuff |
-| `light-judgment` | Psychic | Fairy | Divine Blessing | 85 | Heal allies 20% HP | Healing combo, support focus |
-| `crystal-resonance` | Crystal | Electric | Shatter Pulse | 80 | Stun + damage | Both creatures must be Psychic-type compatible |
+| `steam-blast` | Thermal | Aqua | Steam Blast | 90 | Burn + Confusion 30% | Area damage, 2-tile radius |
+| `frost-flame` | Cryo | Thermal | Frost Flame | 85 | Burn + Freeze 25% | Hits 2-3 tiles in line |
+| `electric-tsunami` | Bioelectric | Aqua | Electric Tsunami | 100 | Paralyze 40% | Full grid damage |
+| `nature-rage` | Organic | Mineral | Nature's Wrath | 80 | Trap opponent 1 turn | Terrain creates obstacles |
+| `poison-cloud` | Toxic | Organic | Toxic Bloom | 70 | Poison + Spore sleep 30% | Area denial |
+| `aero-strike` | Aero | Kinetic | Aerial Cataclysm | 120 | Knockback + Vulnerable | High power, leaves enemy elevated |
+| `ground-quake` | Mineral | Kinetic | Continental Shift | 95 | Damage + tile alteration | Changes all tiles in area |
+| `shadow-strike` | Neural | Blight | Void Echo | 90 | Reduce target DEF -2 | Ranged + debuff |
+| `light-judgment` | Ark | Neural | Divine Blessing | 85 | Heal allies 20% HP | Healing combo, support focus |
+| `crystal-resonance` | Sonic | Bioelectric | Shatter Pulse | 80 | Stun + damage | Both creatures must be Neural-type compatible |
 
 ### 3.3 ComboMoveConfig
 

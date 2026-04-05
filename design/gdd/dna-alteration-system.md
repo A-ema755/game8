@@ -39,9 +39,17 @@ Passive abilities transplanted from a donor species. Each creature can hold up t
 Perk examples: `FireResistance`, `RegenOnWaterTile`, `FirstStrikeOnLowHP`, `TauntOnEntry`.
 
 #### Type Infusions
-Adds a secondary type resistance or affinity to the target creature. The creature does not gain the type as an offensive type — it gains resistance to that type's incoming damage (0.5x effectiveness). Up to 2 type infusions can be active at once. A third replaces the oldest.
+Infuses the target creature with a genome type's DNA, granting two benefits:
+1. **Defensive resistance**: the creature takes 0.5× damage from the infused type's incoming attacks.
+2. **STAB (Same Type Attack Bonus)**: the creature deals 1.5× damage on moves matching the infused type — but only if it has body part access to the move's damage form.
+
+This makes type infusion significantly more valuable than a simple resistance buff. A Mineral creature infused with Thermal DNA gains Thermal resistance (0.5× incoming) AND Thermal STAB (1.5× on Thermal moves it can use). The body part requirement prevents STAB from being free — the player must invest in the right parts to unlock the offensive benefit.
+
+Up to 2 type infusions can be active at once. A third replaces the oldest.
 
 Type infusion also slightly alters the creature's visual tint (handled by Color & Pattern System).
+
+**Note**: Instability is gained ONLY through DNA engineering at research stations. Enemy moves in combat never apply instability or mutagenic effects.
 
 ### 3.3 Instability Mechanics
 
@@ -74,8 +82,15 @@ Instability thresholds and their effects:
 |-----------|--------|
 | 0–49 | Normal behavior |
 | 50–79 | Moves gain random bonus effects (see Move Customization System) |
-| 80–99 | Creature may disobey (skip turn, use random move) OR trigger a Breakthrough |
-| 100 | Capped at 100; Breakthrough chance maximized; disobedience is frequent |
+| 80–99 | **Blight genome type gained as secondary type** (with all defensive implications — weak to Ark and Organic). Creature may disobey (skip turn, use random move) OR trigger a Breakthrough |
+| 100 | Capped at 100; Breakthrough chance maximized; disobedience is frequent; Blight secondary type active |
+
+**Blight Secondary Type (Instability 80+):** When a creature's instability reaches 80 or higher, it gains `Blight` as a secondary genome type. This is applied automatically and cannot be removed except by reducing instability below 80 (post-MVP: instability management tools at Station Level 4). While Blight is active as a secondary type:
+- The creature is weak to Ark (2.0×) and Organic (2.0×) attacks
+- The creature resists Thermal, Bioelectric, Toxic, and Kinetic attacks (0.5×)
+- The creature gains STAB on Blight-type moves (if it knows any)
+- Type effectiveness is calculated multiplicatively with the creature's primary type
+- This replaces any existing secondary genome type for defensive calculations
 
 **Disobedience roll** (checked at the start of each of the creature's turns when instability >= 80):
 ```
@@ -201,7 +216,11 @@ totalInstability = Min(totalInstability, 100)
 | Type infusion slot 3 replaces oldest infusion | Player warned which infusion will be replaced before confirming |
 | Legendary mod fails at very high instability | Success floor is 5%; a failure is always possible |
 | Applying a mod to a creature with `isBoss == true` (wild trophy) | Not applicable; mods only apply to party creatures |
-| DNA Material used for a type infusion that the creature already has natively | Rejected with message: creature already has this type resistance natively |
+| DNA Material used for a type infusion that the creature already has natively | Rejected with message: creature already has this genome type natively |
+| Creature at instability 79 receives a mod pushing it to 80+ | Blight secondary type activates immediately; player warned before confirming |
+| Creature with existing secondary type reaches instability 80+ | Blight replaces the existing secondary type for defensive calculations |
+| Instability drops below 80 (post-MVP via management tools) | Blight secondary type is removed; previous secondary type restored if applicable |
+| Type infusion grants STAB but creature has no moves of that type | STAB is "latent" — no effect until a matching move is learned or a body part granting appropriate form access is equipped |
 | Two mods from same species applied | Allowed; no restriction on same-source stacking unless explicitly noted in the `conflictsWith` field of the mod |
 | Breakthrough fires and kills an enemy creature | Valid outcome; XP and drops are awarded normally |
 
@@ -209,13 +228,15 @@ totalInstability = Min(totalInstability, 100)
 
 | System | Dependency Type | Notes |
 |--------|----------------|-------|
-| Creature Instance | Read/Write | Instability, appliedMods, stats, perk list |
+| Creature Instance | Read/Write | Instability, appliedMods, stats, perk list, secondary genome type (Blight at 80+) |
 | Creature Database | Read | `CreatureConfig.baseCatchRate`, species info |
+| Type Chart System | Read | Blight type effectiveness lookups; type infusion resistance validation (14 genome types) |
+| Damage & Health System | Read | STAB calculation includes infused types; Blight secondary type affects type effectiveness multiplier |
 | Station Upgrade System | Read | Station level gates mod access |
 | Move Customization System | Write | Instability >= 50 triggers move bonus effects |
-| Body Part System | Read | Some mods require a part slot to function |
+| Body Part System | Read | Form access determines whether infused-type STAB can be used offensively |
 | Pokedex System | Write | DNA discovery updates lineage data |
-| Combat UI | Read | Instability-driven disobedience handled in Turn Manager |
+| Combat UI | Read | Instability-driven disobedience handled in Turn Manager; Blight icon shown when active |
 | Turn Manager | Read/Write | Checks instability at turn start for disobedience |
 | Battle Scar System | Write | Failed splices generate scars |
 | Save/Load System | Read/Write | Full mod history and instability persisted in save |
@@ -249,6 +270,13 @@ totalInstability = Min(totalInstability, 100)
 - [ ] Perk list enforces the `MaxPerks` limit; player cannot graft beyond it without removal.
 - [ ] Third type infusion prompts the player about replacement before proceeding.
 - [ ] Creatures with instability >= 50 have move bonus effects active (verified in Move Customization System).
+- [ ] Creature at instability 80+ gains Blight as secondary genome type.
+- [ ] Blight secondary type makes creature weak to Ark (2.0×) and Organic (2.0×).
+- [ ] Blight secondary type grants resistance to Thermal, Bioelectric, Toxic, Kinetic (0.5×).
+- [ ] Type infusion grants STAB (1.5×) on moves matching the infused type.
+- [ ] Type infusion grants defensive resistance (0.5×) to the infused type.
+- [ ] STAB from type infusion only applies if creature has body part access to the move's damage form.
+- [ ] Instability is never applied by enemy moves in combat — only at research stations.
 - [ ] DNA Lineage Tree shows all applied mods with correct rarity colors and scar markers.
 - [ ] All mod data persists correctly through a save/load cycle.
 - [ ] Applying a mod to a stat already at max cap silently clamps; no crash.

@@ -145,9 +145,10 @@ Total Rank Score thresholds are defined in the Institute Rank System.
 ### 3.8 UI Layout
 
 The Pokedex UI has three tabs:
-1. **Main Index** — grid of all species, filterable by type, tier, zone, and name. Silhouettes shown as grey cards.
-2. **Species Detail** — single-species view with all unlocked information; tier progress bar.
+1. **Main Index** — grid of all species, filterable by genome type (14 types), tier, zone, and name. Silhouettes shown as grey cards. Type filter supports all 14 genome types including Ark and Blight.
+2. **Species Detail** — single-species view with all unlocked information; tier progress bar. Shows genome type badge(s), damage form access (derived from default body parts), and type effectiveness chart (unlocked at Tier 1).
 3. **Paleo Archive** — identical layout to Main Index but scoped to fossil species.
+4. **Apex Registry** — special section for Ark and Blight creatures. Ark entries show a gold border; Blight entries show a corrupted/glitched border. These entries are highlighted as rare discoveries. Unlocked via the standard tier system but visually distinct.
 
 A "Research Progress" bar at the top of the screen shows total Tier 3 completions vs. total species count.
 
@@ -225,4 +226,8 @@ Where each count is the number of species at exactly that tier or above (cumulat
 - [ ] Pokedex UI correctly filters by type, tier, zone, and name without errors.
 - [ ] All `PokedexState` data persists correctly through a save/load cycle.
 - [ ] Adding a new species to the database in a patch does not corrupt existing save data.
-- [ ] Enemy type badge in Combat UI shows correct type after Tier 1 unlock for that species.
+- [ ] Enemy type badge in Combat UI shows correct genome type after Tier 1 unlock for that species.
+- [ ] Pokedex type filter supports all 14 genome types.
+- [ ] Apex Registry section displays Ark entries with gold border and Blight entries with corrupted border.
+- [ ] Species detail view shows damage form access derived from default body parts.
+- [ ] Type effectiveness chart on species detail shows 14-type interactions (no "Immune" entries).

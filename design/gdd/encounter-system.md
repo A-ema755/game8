@@ -6,7 +6,7 @@ The Encounter System defines and initializes all combat scenarios in Gene Forge.
 
 ## 2. Player Fantasy
 
-Every encounter feels intentional. Walking into a Nest encounter with waves crashing against your flank is a different tension than facing a lone Trophy creature on a wide open plateau. The terrain layout printed into each config means the designer controls the tactical story: a narrow chokepoint that rewards area moves, an elevated promontory that the enemy already controls, a water tile in the center that helps your Water creature if you can reach it. The encounter is the level design.
+Every encounter feels intentional. Walking into a Nest encounter with waves crashing against your flank is a different tension than facing a lone Trophy creature on a wide open plateau. The terrain layout printed into each config means the designer controls the tactical story: a narrow chokepoint that rewards area moves, an elevated promontory that the enemy already controls, a water tile in the center that helps your Aqua creature if you can reach it. The encounter is the level design.
 
 ## 3. Detailed Rules
 
@@ -146,12 +146,34 @@ The constructed encounter is functionally identical to an authored `EncounterCon
 | `vb-wild-002` | Wild | Riverside Ambush | 7×5 | Voltfin (L4), Mosshell (L3) | Water tile center |
 | `vb-wild-003` | Wild | Elevated Den | 8×6 | 3x Thornslug (L5) | Height 2 enemy start |
 | `vb-wild-004` | Wild | Grassland Herd | 7×5 | 3x Psysprout (L6) | Open terrain |
-| `vb-wild-005` | Wild | Bog Stalker | 6×6 | Shadowmite (L7) | Dark tile hazards |
+| `vb-wild-005` | Wild | Bog Stalker | 6×6 | Shadowmite (L7) | Toxic tile hazards |
 | `vb-trainer-001` | Trainer | Rival: First Meeting | 8×6 | Rival team L5–6 | Story dialogue |
 | `vb-nest-001` | Nest | Thornslug Nest | 8×7 | 3 waves, Thornslugs | Egg reward |
 | `vb-horde-001` | Horde | Psysprout Swarm | 9×6 | 10x Psysprout (L4–5) | Bulk XP |
 | `vb-trophy-001` | Trophy | Ancient Coalbear | 10×8 | Coalbear (L15) | Unique DNA recipe |
 | `vb-trainer-002` | Trainer | Rival: Rematch | 8×6 | Rival team L9–11 | Post-nest story beat |
+
+### 3.9 Apex Type Encounter Design
+
+**Ark Encounters** (Genetic Stability):
+- Ark creatures appear in sealed areas: DNA vaults, ancient temples, preserved zones
+- Encounter type: Trophy (single powerful Ark creature, unique encounter design)
+- Environmental condition: player must unlock the vault through campaign progression
+- Grid design: pristine, high-ground terrain; Ark creature starts elevated with Crystal tiles
+- Flavor: encountering an Ark creature feels like finding a living fossil — rare, reverent, dangerous
+
+**Blight Encounters** (Genetic Instability):
+- Blight creatures appear in contamination zones and forbidden labs
+- Can also manifest when a player's creature reaches instability 80+ (gaining Blight secondary type)
+- Encounter type: Wild (contamination zone random encounters) or Trophy (Blight boss in forbidden lab)
+- Grid design: Toxic terrain, hazardous tiles, low visibility; Blight creatures start spread out
+- Special condition: Blight encounters may include instability-increasing environmental effects (post-MVP)
+- Flavor: Blight encounters feel chaotic and unpredictable — terrain is hostile, creatures are mutated
+
+**Type Distribution Notes (14 genome types):**
+- Standard types (Thermal, Aqua, Organic, Bioelectric, Cryo, Mineral, Toxic, Neural) appear in zone-appropriate habitats
+- Extended types (Ferro, Kinetic, Aero, Sonic) appear in specialized areas (scrapyards, fighting pits, cliffs, echo caves)
+- Apex types (Ark, Blight) are rare — at most 1–2 encounter nodes per zone, gated by progression
 
 ## 4. Formulas
 
