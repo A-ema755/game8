@@ -8,7 +8,7 @@
 |---------|---------|------|
 | **Input System** | Modern input (grid selection, move selection, capture) | Yes |
 | **URP** | Rendering pipeline (isometric 3D) | Yes |
-| **TextMeshPro** | Text rendering | Yes |
+| **TextMeshPro** | Text rendering (bundled in UGUI 2.0 — no separate package needed) | Yes |
 | **ProBuilder** | Tile mesh prototyping | Yes |
 | **Cinemachine** | Isometric camera rig | Yes |
 | **Test Framework** | NUnit testing | Yes |
