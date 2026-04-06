@@ -1456,3 +1456,437 @@ production/session-logs/session-log.md
 4113f50 Caveman skill + creature redesign
 ---
 
+## Session End: 20260406_181605
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+---
+
+## Session End: 20260406_181618
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_181728
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_181826
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_181845
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_181918
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182019
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182036
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182131
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182201
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182218
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182250
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182547
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_182951
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_183010
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_183028
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_183305
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_183447
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_185457
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_190049
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191102
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191213
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191342
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191418
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191443
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191526
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191552
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_191612
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_194822
+### Commits
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+.claude/statusline.sh
+Assets/Scripts/Core/ConfigLoader.cs
+Assets/Scripts/Core/ConfigStubs.cs
+Assets/Scripts/Core/GeneForge.Core.asmdef
+Assets/Scripts/Core/GeneForge.Core.asmdef.meta
+Assets/Tests/EditMode/ConfigLoaderTests.cs
+Assets/Tests/PlayMode/ConfigLoaderPlayModeTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+

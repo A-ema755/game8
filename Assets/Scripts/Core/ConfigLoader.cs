@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GeneForge.Creatures;
 using UnityEngine;
 
 namespace GeneForge.Core

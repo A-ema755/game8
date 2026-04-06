@@ -38,7 +38,17 @@
       "Bash(tasklist)",
       "Bash(curl -s http://127.0.0.1:7890/api/ping)",
       "mcp__unity__unity_editor_ping",
-      "mcp__unity__unity_list_instances"
+      "mcp__unity__unity_list_instances",
+      "Bash(cmd /c \"dir /a C:\\\\Users\\\\gueva\\\\game8\\\\.mcp.json\")",
+      "Bash(cmd /c \"type C:\\\\Users\\\\gueva\\\\game8\\\\.mcp.json\")",
+      "Bash(cmd:*)",
+      "Bash(bash ~/.claude/statusline-command.sh)",
+      "Bash(mv \"C:/Users/gueva/game8/Assets/Scripts/Core/GeneForge.Core.asmdef\" \"C:/Users/gueva/game8/Assets/Scripts/GeneForge.Core.asmdef\")",
+      "Bash(mv \"C:/Users/gueva/game8/Assets/Scripts/Core/GeneForge.Core.asmdef.meta\" \"C:/Users/gueva/game8/Assets/Scripts/GeneForge.Core.asmdef.meta\")",
+      "mcp__unity__unity_execute_menu_item",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(git -C \"C:/Users/gueva/game8\" log --oneline --all -- \"Assets/Resources/Data/GameSettings.asset\")"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d55a8c28daa82e4c9f806a36f26dfd0, type: 3}
+  m_Name: Ferrovex
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Creatures.CreatureConfig
+  id: ferrovex
+  displayName: Ferrovex
+  primaryType: 9
+  secondaryType: 6
+  rarity: 1
+  bodyArchetype: 1
+  baseStats:
+    hp: 65
+    atk: 40
+    def: 80
+    spd: 20
+    acc: 90
+  movePool:
+  - level: 1
+    moveId: iron-bash
+  - level: 1
+    moveId: harden
+  - level: 6
+    moveId: rock-throw
+  - level: 12
+    moveId: metal-press
+  - level: 18
+    moveId: siege-slam
+  availableSlots: 0000000001000000040000000500000006000000
+  defaultPartIds:
+  - plating-ferro
+  - horns-bone
+  signaturePartId: ore-carapace
+  growthCurve: 2
+  baseXpYield: 90
+  catchRate: 115
+  habitatZoneIds:
+  - verdant-basin
+  terrainSynergyType: 6

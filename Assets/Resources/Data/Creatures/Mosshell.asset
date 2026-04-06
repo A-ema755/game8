@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d55a8c28daa82e4c9f806a36f26dfd0, type: 3}
+  m_Name: Mosshell
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Creatures.CreatureConfig
+  id: mosshell
+  displayName: Mosshell
+  primaryType: 3
+  secondaryType: 6
+  rarity: 0
+  bodyArchetype: 1
+  baseStats:
+    hp: 80
+    atk: 35
+    def: 75
+    spd: 15
+    acc: 90
+  movePool:
+  - level: 1
+    moveId: tackle
+  - level: 1
+    moveId: vine-lash
+  - level: 4
+    moveId: harden
+  - level: 9
+    moveId: rock-throw
+  - level: 14
+    moveId: spore-cloud
+  - level: 19
+    moveId: boulder-slam
+  availableSlots: 0000000001000000040000000500000006000000
+  defaultPartIds:
+  - horns-bone
+  - spore-pods
+  signaturePartId: stone-carapace
+  growthCurve: 2
+  baseXpYield: 60
+  catchRate: 170
+  habitatZoneIds:
+  - verdant-basin
+  terrainSynergyType: 6

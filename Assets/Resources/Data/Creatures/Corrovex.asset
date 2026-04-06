@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d55a8c28daa82e4c9f806a36f26dfd0, type: 3}
+  m_Name: Corrovex
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Creatures.CreatureConfig
+  id: corrovex
+  displayName: Corrovex
+  primaryType: 9
+  secondaryType: 7
+  rarity: 1
+  bodyArchetype: 2
+  baseStats:
+    hp: 55
+    atk: 65
+    def: 45
+    spd: 55
+    acc: 100
+  movePool:
+  - level: 1
+    moveId: ferro-bite
+  - level: 1
+    moveId: toxic-spore
+  - level: 7
+    moveId: acid-spray
+  - level: 13
+    moveId: corrode
+  - level: 19
+    moveId: rust-lash
+  availableSlots: 00000000070000000800000004000000
+  defaultPartIds:
+  - fangs-serrated
+  - glands-toxic
+  signaturePartId: acid-scales
+  growthCurve: 1
+  baseXpYield: 85
+  catchRate: 120
+  habitatZoneIds:
+  - verdant-basin
+  terrainSynergyType: 7
