@@ -974,3 +974,8 @@ design/gdd/systems-index.md
 production/session-logs/session-log.md
 ---
 
+## Session End: 20260406_164605
+### Commits
+4113f50 Caveman skill + creature redesign
+---
+
