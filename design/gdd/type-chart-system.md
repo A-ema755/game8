@@ -13,37 +13,22 @@ All 14 types are MVP scope. The chart contains 36 super-effective relationships,
 
 ## 2. Player Fantasy
 
-Type matchups are intuitive and grounded in biology and physics. Thermal burns Organic tissue, Aqua quenches Thermal reactions, Mineral grounds Bioelectric charge — the logic is rooted in real-world intuition. The 14-type system creates a rich web of relationships without requiring a second matrix to memorize (Pillar 3 — Discovery Through Play: one type chart, learnable through combat). When a super-effective hit lands, the UI calls it out boldly. When a resisted attack does chip damage instead of nothing, the player still feels the interaction was meaningful — there are no immunities to learn, just advantages and disadvantages. Mastering the type chart rewards consistently better damage output and smarter team building.
+Type matchups are intuitive and grounded in biology and physics. Thermal burns Organic tissue, Aqua quenches Thermal reactions, Mineral grounds Bioelectric charge — the logic is rooted in real-world intuition. The 14-type system creates a rich web of relationships without requiring a second matrix to memorize (Pillar 3 — Discovery Through Play: one type chart, learnable through combat). When a super-effective hit lands, the UI calls it out boldly. When a resisted attack does chip damage instead of nothing, the player still feels the interaction was meaningful — there are no immunities to learn, just advantages and disadvantages. Mastering the type chart rewards consistently better damage output and smarter team building. Discovery pacing: effectiveness callouts ("Super effective!" / "Not very effective...") appear in combat from the first battle. The full type chart is not shown upfront — players learn matchups through repeated combat encounters, with the Pokedex System (see `pokedex-system.md`) progressively revealing type weaknesses as research tiers advance. This aligns with Pillar 3's "earned through observation" principle.
 
 ## 3. Detailed Rules
 
 ### 3.1 CreatureType Enum
 
-Types are mapped to integer indices for O(1) array lookup:
+Uses `CreatureType` from `GeneForge.Core` (canonical definition in `data-configuration-pipeline.md`, file: `Assets/Scripts/Core/Enums.cs`). Integer values (0–14) serve as matrix indices for O(1) array lookup:
 
-```csharp
-namespace GeneForge.Combat
-{
-    public enum CreatureType
-    {
-        None        = 0,
-        Thermal     = 1,
-        Aqua        = 2,
-        Organic     = 3,
-        Bioelectric = 4,
-        Cryo        = 5,
-        Mineral     = 6,
-        Toxic       = 7,
-        Neural      = 8,
-        Ferro       = 9,
-        Kinetic     = 10,
-        Aero        = 11,
-        Sonic       = 12,
-        Ark         = 13,
-        Blight      = 14
-    }
-}
-```
+| Index | Type | Tier |
+|-------|------|------|
+| 0 | None | — |
+| 1–8 | Thermal, Aqua, Organic, Bioelectric, Cryo, Mineral, Toxic, Neural | Standard |
+| 9–12 | Ferro, Kinetic, Aero, Sonic | Extended |
+| 13–14 | Ark, Blight | Apex |
+
+TypeChart must not define its own copy of this enum. The `using GeneForge.Core;` import provides access.
 
 ### 3.2 Effectiveness Values
 
@@ -85,7 +70,7 @@ Cross-links (15 relationships) bridge the triangles. The 2 apex types (Ark, Blig
 | 11 | Aero | Sonic | Wind scatters and disperses sound |
 | 12 | Sonic | Cryo | Resonance shatters brittle ice |
 
-#### Cross-Links (15 relationships)
+#### Cross-Links (16 relationships)
 
 | # | Attacker | Defender | Intuition |
 |---|----------|----------|-----------|
@@ -104,8 +89,9 @@ Cross-links (15 relationships) bridge the triangles. The 2 apex types (Ark, Blig
 | 25 | Bioelectric | Aero | Lightning strikes airborne targets |
 | 26 | Aero | Thermal | Wind snuffs flames |
 | 27 | Organic | Mineral | Roots break through stone |
+| 36 | Sonic | Neural | Sonic disruption overloads neural pathways |
 
-#### Apex Relationships (9 relationships)
+#### Apex Relationships (8 relationships)
 
 | # | Attacker | Defender | Intuition |
 |---|----------|----------|-----------|
@@ -117,7 +103,6 @@ Cross-links (15 relationships) bridge the triangles. The 2 apex types (Ark, Blig
 | 33 | Blight | Neural | Genetic chaos overwhelms structured minds |
 | 34 | Thermal | Ark | Heat = entropy, breaks molecular order |
 | 35 | Organic | Blight | Life absorbs and metabolizes chaos |
-| 36 | Sonic | Neural | Sonic disruption overloads neural pathways |
 
 ### 3.5 Resistance Map (Defender Takes 0.5x)
 
@@ -180,6 +165,19 @@ Rows = Attacking type. Columns = Defending type. None row/column is always 1.0.
 | Ark | 3 | 2 | 6 | +1 | Stability apex — tanky purifier |
 | Blight | 3 | 2 | 5 | +1 | Instability apex — chaotic aggressor |
 
+**Negative-net type compensation**: Types with net -1 (Toxic, Neural, Ferro, Kinetic) must not be dominated options. Each compensates through non-type-chart advantages defined in `creature-database.md`:
+
+| Type | Net | Compensation Mechanism |
+|------|-----|----------------------|
+| Toxic | -1 | Highest status-infliction rate; Poison/Burn access on most moves; surgical 2-hit coverage (Organic + Ferro) |
+| Neural | -1 | Accuracy-ignoring moves; confusion/sleep access; surgical coverage (Toxic + Kinetic) |
+| Ferro | -1 | 6 resistances (most in chart) offset low SE count; highest average DEF stat budget; wall/tank role |
+| Kinetic | -1 | Highest average ATK stat budget; Physical damage form bypasses SPD; breaks Mineral + Ferro (common walls) |
+
+These compensations must be verified during creature stat budget allocation. If a negative-net type lacks its stated compensation in the creature roster, it becomes a dead type — escalate to `/balance-check`.
+
+**Damage variance note**: The theoretical max-to-min type multiplier ratio is 24:1 (6.0x dual-SE+STAB vs 0.25x dual-resist). Combined with height bonus (+40% max), terrain synergy, and flanking (+25%), total variance can exceed 50:1. This is mitigated by: (1) dual-type coverage in team building — no common dual-type is 4x weak to more than 1–2 attacking types, (2) the grid rewarding repositioning to avoid bad matchups (Pillar 2), and (3) no immunities meaning even bad matchups deal chip damage. If playtesting reveals type-select dominance over grid play, consider a final multiplier clamp (e.g., 0.5x–4.0x) as a safety valve.
+
 ### 3.8 Apex Type Design Notes
 
 **Ark (Genetic Stability)**
@@ -191,14 +189,18 @@ Rows = Attacking type. Columns = Defending type. None row/column is always 1.0.
 
 **Blight (Genetic Instability)**
 - Uncontrolled mutation, genetic entropy, DNA in freefall
-- Creatures can gain Blight as a secondary type when instability reaches 80+
+- Creatures can gain Blight as a secondary type when instability reaches 80+ (see `creature-instance.md` Section 3)
 - Aggressor identity: targets precision types (Bioelectric, Neural), fewer resistances
 - Standard counter: Organic (life absorbs and metabolizes chaos)
 - Scales with new types by gaining more offensive targets (gets scarier but more fragile)
 
+**Availability constraints**: Ark creatures are gated by encounter rarity — see `encounter-system.md` for spawn rates. Blight is earned through player choice (high instability via DNA Alteration System, threshold 80+). Both apex types are intentionally strong (+1 net) because access is limited. If either becomes trivially available, their type advantage must be rebalanced.
+
 ### 3.9 TypeChart Implementation
 
 ```csharp
+using GeneForge.Core; // CreatureType enum + ConfigLoader both live in GeneForge.Core
+
 namespace GeneForge.Combat
 {
     /// <summary>
@@ -342,6 +344,8 @@ namespace GeneForge.Combat
             Set(CreatureType.Toxic,       CreatureType.Blight, 0.5f);
             Set(CreatureType.Kinetic,     CreatureType.Blight, 0.5f);
 
+            ValidateMatrix();
+            CacheSettings();
             _initialized = true;
         }
 
@@ -401,15 +405,67 @@ namespace GeneForge.Combat
             bool hasStab = moveType == creaturePrimaryType
                         || (creatureSecondaryType != CreatureType.None
                             && moveType == creatureSecondaryType);
-            return hasStab ? StabMultiplier : 1.0f;
+            return hasStab ? _stabMultiplier : 1.0f;
         }
 
-        // ── Constants ──────────────────────────────────────────────────
-        public const float StabMultiplier = 1.5f;
-        public const float SuperEffectiveMultiplier = 2.0f;
-        public const float ResistedMultiplier = 0.5f;
+        // ── Cached multipliers — loaded from GameSettings during Initialize() ──
+        // Fallback defaults used when GameSettings is unavailable (EditMode tests)
+        private static float _stabMultiplier = 1.5f;
+        private static float _superEffectiveMultiplier = 2.0f;
+        private static float _resistedMultiplier = 0.5f;
+
+        public static float StabMultiplier => _stabMultiplier;
+        public static float SuperEffectiveMultiplier => _superEffectiveMultiplier;
+        public static float ResistedMultiplier => _resistedMultiplier;
+
+        /// <summary>
+        /// Validates matrix integrity after population. Logs warnings for:
+        /// - Unexpected number of SE entries (expected: 36)
+        /// - Any 0.0 entries (no immunities allowed)
+        /// - Missing self-resistances
+        /// </summary>
+        private static void ValidateMatrix()
+        {
+            int seCount = 0, zeroCount = 0, invalidCount = 0;
+            for (int a = 1; a < TypeCount; a++)
+            {
+                for (int d = 1; d < TypeCount; d++)
+                {
+                    float v = _matrix[a, d];
+                    if (v == 2.0f) seCount++;
+                    if (v == 0.0f) zeroCount++;
+                    if (v != 0.5f && v != 1.0f && v != 2.0f)
+                        invalidCount++; // Only 0.5, 1.0, 2.0 are valid (Section 3.2)
+                }
+                if (_matrix[a, a] != 0.5f)
+                    Debug.LogWarning($"[TypeChart] Type {(CreatureType)a} does not resist itself.");
+            }
+            if (seCount != 36)
+                Debug.LogWarning($"[TypeChart] Expected 36 SE entries, found {seCount}.");
+            if (zeroCount > 0)
+                Debug.LogError($"[TypeChart] Found {zeroCount} immunity (0.0) entries — no immunities allowed.");
+            if (invalidCount > 0)
+                Debug.LogError($"[TypeChart] Found {invalidCount} entries not in {{0.5, 1.0, 2.0}} — only three values allowed.");
+        }
+
+        /// <summary>
+        /// Called at end of Initialize() to load tunable values from GameSettings.
+        /// Source of truth for STAB is GameSettings.asset (see data-configuration-pipeline.md).
+        /// </summary>
+        private static void CacheSettings()
+        {
+            if (ConfigLoader.Settings == null) return; // Keep fallback defaults
+            _stabMultiplier = ConfigLoader.Settings.StabMultiplier;
+            // SuperEffective and Resisted are baked into the matrix at init time;
+            // these cached values are reference constants for UI and balance tools.
+        }
     }
 
+    /// <summary>
+    /// UI display label for type effectiveness results.
+    /// Defined here (not in Core/Enums.cs) because it is exclusively consumed by
+    /// TypeChart.GetLabel() and Combat UI — it has no cross-system meaning.
+    /// </summary>
     public enum EffectivenessLabel
     {
         Resisted         = 0,
@@ -446,9 +502,9 @@ Example: Thermal creature uses Thermal move against Organic target:
 - Combined = 1.5 × 2.0 = **3.0**
 
 Example: Thermal creature uses Thermal move against Organic/Aero dual-type:
-- STAB = 1.5
-- TypeEffectiveness = 2.0 × 0.5 = 1.0 (Organic weak, Aero neutral — wait, Thermal vs Aero is 1.0)
-- Combined = 1.5 × 1.0 = **1.5** (STAB only)
+- STAB = 1.5 (Thermal creature + Thermal move)
+- TypeEffectiveness = 2.0 (Thermal SE vs Organic) × 1.0 (Thermal neutral vs Aero) = 2.0
+- Combined = 1.5 × 2.0 = **3.0** (STAB + SE)
 
 ## 4. Formulas
 
@@ -480,8 +536,8 @@ Example: Thermal creature uses Thermal move against Organic/Aero dual-type:
 
 | Dependency | Direction | Notes |
 |------------|-----------|-------|
-| `CreatureType` enum | Inbound | Integer values used as matrix indices; defined in this system |
-| `ConfigLoader` | Sibling | Both initialized in Boot before game starts |
+| `CreatureType` enum | Inbound | Integer values used as matrix indices; defined in data-configuration-pipeline.md (`GeneForge.Core`) |
+| `ConfigLoader` / `GameSettings` | Inbound | STAB multiplier read from `GameSettings.asset` via `ConfigLoader.Settings`; both initialized in Boot before TypeChart |
 | Damage & Health System | Outbound | Sole consumer of `GetMultiplier` and `GetStab` |
 | Combat UI / Feedback | Outbound | Uses `GetLabel` for effectiveness callout display |
 | DNA Alteration System | Outbound | Type infusion grants STAB for infused type via secondary type slot |
@@ -492,9 +548,9 @@ Example: Thermal creature uses Thermal move against Organic/Aero dual-type:
 
 | Parameter | Location | Default | Notes |
 |-----------|----------|---------|-------|
-| `StabMultiplier` | `TypeChart` const | `1.5f` | Standard STAB bonus; applies to primary and secondary types |
-| `SuperEffectiveMultiplier` | `TypeChart` const | `2.0f` | Reference value; actual matrix entries set directly |
-| `ResistedMultiplier` | `TypeChart` const | `0.5f` | Reference value |
+| `StabMultiplier` | `GameSettings.asset` → cached in TypeChart | `1.5f` | Standard STAB bonus; source of truth is GameSettings (data-configuration-pipeline.md) |
+| `SuperEffectiveMultiplier` | TypeChart reference constant | `2.0f` | Baked into matrix at init; reference value for UI/balance tools |
+| `ResistedMultiplier` | TypeChart reference constant | `0.5f` | Baked into matrix at init; reference value for UI/balance tools |
 | `TypeCount` | `TypeChart` const | `15` | Must be updated when adding new types (current: 0=None + 14 types) |
 | Matrix values | `TypeChart.Initialize()` | See Section 3.6 | Any matchup can be rebalanced by changing a single `Set()` call |
 
@@ -515,6 +571,7 @@ Example: Thermal creature uses Thermal move against Organic/Aero dual-type:
 - [ ] `GetStab(Thermal, Aqua, Organic)` returns `1.0f`
 - [ ] `GetStab(Thermal, Aqua, Thermal)` returns `1.5f` (secondary type STAB)
 - [ ] `GetStab(None, Thermal, None)` returns `1.0f`
+- [ ] `GetMultiplier(None, Thermal, None)` returns `1.0f` (None attack type is always neutral)
 - [ ] `GetMultiplier` before `Initialize()` returns `1.0f` and logs error
 - [ ] `GetLabel(2.0f)` returns `SuperEffective`
 - [ ] `GetLabel(0.5f)` returns `Resisted`
@@ -525,3 +582,5 @@ Example: Thermal creature uses Thermal move against Organic/Aero dual-type:
 - [ ] EditMode tests verify all resistance entries from Section 3.5
 - [ ] No allocation per call (static array, no list/dictionary)
 - [ ] All 14 types match the balance summary in Section 3.7 (SE count, weakness count, resistance count)
+- [ ] `ValidateMatrix()` logs no warnings or errors during `Initialize()`
+- [ ] `StabMultiplier` reads from `GameSettings.asset` when available, falls back to 1.5f when null

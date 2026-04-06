@@ -4,7 +4,8 @@
       "Skill(design-system)",
       "Skill(design-review)",
       "Bash(xargs grep:*)",
-      "Skill(gdd-audit)"
+      "Skill(gdd-audit)",
+      "Skill(balance-check)"
     ]
   },
   "enableAllProjectMcpServers": true,

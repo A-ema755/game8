@@ -2,7 +2,9 @@
 
 ## 1. Overview
 
-The Grid / Tile System defines the isometric 3D combat arena as a rectangular grid of `TileData` objects, each occupying a discrete (x, z) cell at one of five height levels (0–4). The system handles tile initialization, occupancy tracking, 8-directional movement with height-aware A* pathfinding, Chebyshev distance calculation, line-of-sight queries, and flanking detection based on creature facing direction. All combat positioning logic is routed through this system; no other system stores spatial state.
+The Grid / Tile System defines the isometric 3D combat arena as a rectangular grid of `TileData` objects, each occupying a discrete (x, z) cell at one of five height levels (0–4). Each tile has a `TerrainType` that interacts with the Terrain System for type synergy and hazard effects. The system handles tile initialization, occupancy tracking, 8-directional movement with height-aware A* pathfinding, Chebyshev distance calculation, line-of-sight queries, and flanking detection based on creature facing direction. All combat positioning logic is routed through this system; no other system stores spatial state.
+
+**Pillar Alignment**: Primarily serves **Tactical Grid Mastery** — the grid is the foundation of all positional tactics, height advantage, flanking, and terrain exploitation. Secondarily supports **Genetic Architect** via body-part grid interactions (Wings ignore height cost, Roots create difficult terrain, Glands drop hazard tiles).
 
 ## 2. Player Fantasy
 
@@ -126,10 +128,10 @@ namespace GeneForge.Grid
 | Same height | 1.0 | Yes |
 | Climb +1 level | 1.5 | Yes |
 | Climb +2 or more levels | — | No (impassable) |
-| Descend any levels | 1.0 | Yes (free) |
-| Descend 3+ levels | 1.0 (landing) | Yes, but triggers fall check |
+| Descend 1–2 levels | 1.0 | Yes (no damage) |
+| Descend 3+ levels | 1.0 | Yes, but triggers fall damage |
 
-Fall damage: descending 3+ levels in a single step deals `fallDamageBase * (heightDelta - 2)` damage to the mover. This applies to knockback abilities that push creatures off ledges.
+Fall damage: descending 3+ levels in a single step deals `FallDamageBase × (heightDelta − FallDamageMinDelta + 1)` damage to the mover. `FallDamageBase` and `FallDamageMinDelta` are sourced from the `GameSettings` ScriptableObject (see Tuning Knobs). This applies to knockback abilities that push creatures off ledges.
 
 ### 3.5 A* Pathfinding
 
@@ -197,6 +199,7 @@ namespace GeneForge.Grid
             return null; // no path
         }
 
+        // See §3.6 for ChebyshevDistance definition
         static float Heuristic(TileData a, TileData b)
             => ChebyshevDistance(a.GridPosition, b.GridPosition);
 
@@ -348,13 +351,13 @@ public static bool HasLineOfSight(GridSystem grid, Vector2Int from, Vector2Int t
 | Formula | Expression |
 |---------|-----------|
 | Chebyshev Distance | `max(|Δx|, |Δz|)` |
-| A* step cost (climbing) | `1.5` |
-| A* step cost (flat/descending) | `1.0` |
-| Height advantage (Physical/Energy) | `+0.1x per height level above target` (cap 2.0x; applied in DamageCalculator) |
-| Height advantage (Bio) | `1.0x` (no height bonus — Bio ignores elevation) |
-| Fall damage | `fallDamageBase × (heightDelta − 2)` for Δheight ≥ 3 |
-| Flank (side) damage multiplier | `1.1` |
-| Flank (rear) damage multiplier | `1.25` |
+| A* step cost (climbing) | `ClimbStepCost` (default `1.5`) |
+| A* step cost (flat/descending) | `FlatStepCost` (default `1.0`) |
+| Height advantage (Physical/Energy) | `heightAdvantage = 1.0 + (HeightAdvantagePerLevel × heightDelta)`, capped at `HeightAdvantageCap`. With MaxHeight=4, effective max is 1.4×. Applied in DamageCalculator, not GridSystem. |
+| Height advantage (Bio) | `1.0×` (no height bonus — Bio ignores elevation) |
+| Fall damage | `FallDamageBase × (heightDelta − FallDamageMinDelta + 1)` for heightDelta ≥ `FallDamageMinDelta` |
+| Flank (side) damage multiplier | `FlankSideMultiplier` (default `1.1`) |
+| Flank (rear) damage multiplier | `FlankRearMultiplier` (default `1.25`) |
 
 ## 5. Edge Cases
 
@@ -363,7 +366,7 @@ public static bool HasLineOfSight(GridSystem grid, Vector2Int from, Vector2Int t
 | Path requested to occupied tile | Returns null unless occupant is the mover |
 | Creature pushed off grid edge by knockback | Creature is placed on nearest valid tile; no fall damage |
 | Height delta = exactly 2 | Impassable — wall of height 2 cannot be climbed in one step |
-| Diagonal movement through a corner (two diagonally adjacent impassable tiles) | Corner-cutting not allowed; path must go around |
+| Diagonal movement through a corner (two diagonally adjacent impassable tiles) | Corner-cutting not allowed; path must go around. Implementation note: A* neighbour loop must verify both cardinal tiles adjacent to the diagonal are passable before allowing diagonal movement. |
 | Two creatures request move to same tile in same phase | Turn manager resolves by initiative order; second mover reroutes |
 | Tile destroyed mid-combat (terrain alteration) | Occupant moves to nearest valid tile; IsPassable set to false |
 | Grid size 0 or negative | GridSystem constructor throws `ArgumentException` |
@@ -374,11 +377,13 @@ public static bool HasLineOfSight(GridSystem grid, Vector2Int from, Vector2Int t
 | Dependency | Direction | Notes |
 |------------|-----------|-------|
 | `Enums.cs` (TerrainType) | Inbound | TerrainType used in TileData |
+| Terrain System (`terrain-system.md`) | Inbound | Defines TerrainType enum and terrain synergy rules |
+| Encounter System (`encounter-system.md`) | Inbound | Provides grid dimensions per encounter config |
 | `CreatureInstance` | Inbound | Occupant reference on TileData |
-| Damage & Health System | Outbound | Consumes height advantage and flanking multipliers |
-| Threat / Aggro System | Outbound | Uses ChebyshevDistance for proximity scoring |
-| Turn Manager | Outbound | Queries reachable tiles per creature action |
-| Combat UI | Outbound | Reads grid for tile rendering and highlighting |
+| Damage & Health System (`damage-health-system.md`) | Outbound | Consumes height advantage and flanking multipliers |
+| Threat / Aggro System (`threat-aggro-system.md`) | Outbound | Uses ChebyshevDistance for proximity scoring |
+| Turn Manager (`turn-manager.md`) | Outbound | Queries reachable tiles per creature action |
+| Combat UI (`combat-ui.md`) | Outbound | Reads grid for tile rendering and highlighting |
 
 ## 7. Tuning Knobs
 
@@ -393,7 +398,16 @@ public static bool HasLineOfSight(GridSystem grid, Vector2Int from, Vector2Int t
 | `FlankSideMultiplier` | `GameSettings` SO | `1.1f` | Side attack bonus |
 | `FlankRearMultiplier` | `GameSettings` SO | `1.25f` | Rear attack bonus |
 | `MinGridWidth` | `GridSystem` const | `6` | Minimum combat grid width |
+| `MaxGridWidth` | `GridSystem` const | `16` | Maximum combat grid width <!-- TODO: Tune in balance pass --> |
 | `MinGridDepth` | `GridSystem` const | `6` | Minimum combat grid depth |
+| `MaxGridDepth` | `GridSystem` const | `12` | Maximum combat grid depth <!-- TODO: Tune in balance pass --> |
+| `ClimbStepCost` | `GridSystem` const | `1.5f` | Movement cost for climbing +1 height level |
+| `FlatStepCost` | `GridSystem` const | `1.0f` | Movement cost for flat or descending movement |
+| `HeightAdvantagePerLevel` | `GameSettings` SO | `0.1f` | Damage multiplier bonus per height level above target (applied in DamageCalculator) <!-- TODO: Tune in balance pass --> |
+| `HeightAdvantageCap` | `GameSettings` SO | `2.0f` | Maximum height advantage multiplier (applied in DamageCalculator) <!-- TODO: Tune in balance pass --> |
+| `CoverDamageReduction` | `GameSettings` SO | `0.5f` | Energy damage reduction when target is behind cover (see also Damage & Health System GDD) <!-- TODO: Tune in balance pass --> |
+| `FlankFrontDotThreshold` | `GridSystem` const | `0.5f` | Dot-product threshold for front arc boundary (≥ this = Front) <!-- TODO: Tune in balance pass --> |
+| `FlankRearDotThreshold` | `GridSystem` const | `-0.5f` | Dot-product threshold for rear arc boundary (≤ this = Rear) <!-- TODO: Tune in balance pass --> |
 
 ## 8. Acceptance Criteria
 
@@ -410,4 +424,6 @@ public static bool HasLineOfSight(GridSystem grid, Vector2Int from, Vector2Int t
 - [ ] Line-of-sight blocked by `BlocksLineOfSight` tile returns false
 - [ ] Line-of-sight with clear path returns true
 - [ ] Fall damage triggers when knockback causes height delta ≥ 3
+- [ ] A* does not allow diagonal movement through two diagonally adjacent impassable tiles (corner-cutting prevention)
+- [ ] GridSystem rejects dimensions outside MinGridWidth–MaxGridWidth / MinGridDepth–MaxGridDepth range
 - [ ] EditMode tests pass for all pathfinding and distance functions

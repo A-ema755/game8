@@ -4,6 +4,8 @@
 
 The Save / Load System provides JSON persistence for all durable game state in Gene Forge using Unity's `JsonUtility`. Four distinct save documents exist: `RunState` (the active campaign run — party, Pokedex progress, campaign position, ecosystem state), `CreatureSaveData` (full per-creature snapshot including DNA modifications, body parts, instability, scars, and affinity), `MetaState` (cross-run progression — Institute rank, station upgrade level, Arena progress), and `Settings` (player preferences). Saves write to `Application.persistentDataPath` on every state-machine exit from Combat, ResearchStation, and CampaignMap; they also write on explicit quit. Loading occurs once during Boot before the MainMenu transition.
 
+**Pillar Alignment**: Primarily serves **Living World** — ecosystem state, rival adaptation, and conservation scoring must persist across sessions for the world to feel reactive. Secondarily supports **Genetic Architect** (DNA modifications, body parts, instability, and scars are the player's authored creations and must never be lost) and **Discovery Through Play** (Pokedex tier progress and discovered recipes represent earned knowledge).
+
 ## 2. Player Fantasy
 
 The player never fears losing progress. After every battle, every DNA tweak, every map movement, the game is saved. Returning after days away drops them right back where they left off — same creatures, same scars, same DNA modifications, same position on the map. The save system is invisible when it works and catastrophic when it doesn't, so it must be rock-solid and fast.
@@ -22,6 +24,8 @@ All files are stored under `Application.persistentDataPath/GeneForge/`:
 | `run.json.bak` | Previous `RunState` | Before every `run.json` write (single backup) |
 
 ### 3.2 Data Structures
+
+**Enum serialization note**: `JsonUtility` serializes all enums as their underlying `int` value. Some fields below declare the enum type directly (e.g., `PersonalityTrait`) for code readability; others use `int` with a cast comment (e.g., `SlotPartPair.slot`) where the enum name would not be informative. Both approaches produce identical JSON. Implementers should use typed enums in code and trust `JsonUtility`'s int serialization.
 
 ```csharp
 namespace GeneForge.SaveLoad
@@ -78,6 +82,10 @@ namespace GeneForge.SaveLoad
         // Permanent scars
         public List<ScarSaveData> scars;
 
+        // Capture origin metadata
+        public long capturedAtUnixMs;      // UTC timestamp of capture <!-- TODO: Evaluate in balance pass -->
+        public string capturedInZone;      // Zone ID where creature was captured <!-- TODO: Evaluate in balance pass -->
+
         // Cumulative battle stats for Pokedex / permadeath log
         public int battlesParticipated;
         public int totalDamageDealt;
@@ -133,6 +141,18 @@ namespace GeneForge.SaveLoad
         public string currentNodeId;           // Campaign map node ID
         public List<string> clearedNodeIds;    // Completed encounter nodes
         public List<string> unlockedZoneIds;   // Accessible habitat zones
+        public List<RivalTrainerSaveData> rivalStates; // Rival adaptation persists across sessions
+    }
+
+    /// <summary>Tracks rival trainer adaptation state for Living World persistence.</summary>
+    [Serializable]
+    public class RivalTrainerSaveData
+    {
+        public string rivalId;
+        public int encounterCount;
+        public List<string> knownPlayerSpeciesIds;  // Species the rival has seen the player use
+        public List<string> knownPlayerMoveIds;     // Moves the rival has observed
+        public List<string> counterTeamSpeciesIds;  // Rival's adapted team composition
     }
 
     // ── Ecosystem Save Data ───────────────────────────────────────────────
@@ -141,7 +161,8 @@ namespace GeneForge.SaveLoad
     public class EcosystemSaveData
     {
         public List<SpeciesPopulationData> populations;
-        public int conservationScore;   // 0-100
+        public int conservationScore;           // 0-100
+        public List<ZoneEcosystemData> zoneStates;  // Per-zone migration and weather
     }
 
     [Serializable]
@@ -152,15 +173,26 @@ namespace GeneForge.SaveLoad
         public int currentPopulation;   // Relative abundance (100 = full)
     }
 
+    /// <summary>Per-zone ecosystem state for migration cycles and weather.</summary>
+    [Serializable]
+    public class ZoneEcosystemData
+    {
+        public string zoneId;
+        public int migrationPhase;      // Current phase in migration cycle
+        public int weatherState;        // WeatherType cast to int
+        public float predatorPreyBalance; // -1.0 (predator-heavy) to 1.0 (prey-heavy)
+    }
+
     // ── Meta State ────────────────────────────────────────────────────────
 
     [Serializable]
     public class MetaState
     {
         public string saveVersion = "1.0";
-        public int instituteRank;          // 0-4 (maps to rank enum)
-        public int stationUpgradeLevel;    // 1-5
+        public int instituteRank;              // 0-4 (maps to rank enum)
+        public int stationUpgradeLevel;        // 1-5
         public int arenaHighFloor;
+        public int blackMarketTransactionCount; // Tracks ethical choices for Institute rank consequences
         public List<string> unlockedRecipeIds;
         public List<string> achievementIds;
     }
@@ -182,6 +214,8 @@ namespace GeneForge.SaveLoad
 }
 ```
 
+**Field range ownership note**: Several serialized fields have value ranges documented in comments (e.g., `instability` 0–100, `conservationScore` 0–100, `instituteRank` 0–4, `stationUpgradeLevel` 1–5, `predatorPreyBalance` –1.0 to 1.0). These ranges are owned and defined by their respective system GDDs (DNA Alteration System, Living Ecosystem, Institute Rank System, Station Upgrade System). The Save/Load System validates and clamps these values on load but does not define them.
+
 ### 3.3 SaveLoadManager
 
 ```csharp
@@ -191,6 +225,12 @@ namespace GeneForge.SaveLoad
     /// Handles all read/write operations for Gene Forge save files.
     /// Registered as IStateHandler to auto-save on state exits.
     /// </summary>
+    /// <remarks>
+    /// Singleton pattern: SaveLoadManager requires singleton access because it must
+    /// persist across scene loads (DontDestroyOnLoad) and auto-save on state exits.
+    /// ADR-003 should be updated to include SaveLoadManager in the approved singleton list.
+    /// <!-- TODO: Update ADR-003 in technical-preferences.md to approve SaveLoadManager singleton -->
+    /// </remarks>
     public class SaveLoadManager : MonoBehaviour, IStateHandler
     {
         public static SaveLoadManager Instance { get; private set; }
@@ -234,6 +274,12 @@ namespace GeneForge.SaveLoad
             GameStateManager.Instance?.Deregister(this);
         }
 
+        void OnApplicationQuit()
+        {
+            SaveRun();
+            SaveMeta();
+        }
+
         // ── IStateHandler ────────────────────────────────────────────────
 
         public void OnExit(GameState state)
@@ -275,13 +321,23 @@ namespace GeneForge.SaveLoad
 
         // ── Load ─────────────────────────────────────────────────────────
 
-        /// <summary>Load all save files. Creates defaults if not found.</summary>
+        /// <summary>Load all save files. Creates defaults if not found. Applies version migration.</summary>
         public void LoadAll()
         {
             CurrentRun      = LoadJson<RunState>(RunFile)       ?? new RunState { runId = Guid.NewGuid().ToString() };
+            CurrentRun      = MigrateRunState(CurrentRun);
             CurrentMeta     = LoadJson<MetaState>(MetaFile)     ?? new MetaState();
             CurrentSettings = LoadJson<Settings>(SettingsFile)  ?? new Settings();
+
+            // Validate party size on load
+            if (CurrentRun.party != null && CurrentRun.party.Count > MaxPartySize)
+            {
+                Debug.LogWarning($"[SaveLoad] Party exceeds max size ({CurrentRun.party.Count} > {MaxPartySize}). Truncating.");
+                CurrentRun.party = CurrentRun.party.GetRange(0, MaxPartySize);
+            }
         }
+
+        private const int MaxPartySize = 6; // Mirrors GameSettings.MaxPartySize
 
         /// <summary>
         /// Attempt to restore from backup if run.json is corrupted.
@@ -313,8 +369,8 @@ namespace GeneForge.SaveLoad
                 party = new List<CreatureSaveData>(),
                 storage = new List<CreatureSaveData>(),
                 pokedex = new PokedexSaveData { entries = new List<PokedexEntrySaveData>() },
-                campaign = new CampaignSaveData { clearedNodeIds = new List<string>(), unlockedZoneIds = new List<string>() },
-                ecosystem = new EcosystemSaveData { populations = new List<SpeciesPopulationData>() },
+                campaign = new CampaignSaveData { clearedNodeIds = new List<string>(), unlockedZoneIds = new List<string>(), rivalStates = new List<RivalTrainerSaveData>() },
+                ecosystem = new EcosystemSaveData { populations = new List<SpeciesPopulationData>(), zoneStates = new List<ZoneEcosystemData>() },
                 researchPoints = 0
             };
         }
@@ -397,19 +453,30 @@ No mathematical formulas. All operations are serialization/deserialization and f
 | Pokedex entry for unknown species | Entry skipped; species may have been removed between versions |
 | Settings file missing | Default `Settings` created and saved immediately |
 | `currentNodeId` not found in campaign data | Placed at campaign start node |
+| Platform storage quota exceeded | Log error, notify player via UI that save failed; previous backup remains intact |
+| Concurrent save requests (e.g., auto-save and quit-save) | Writes are queued; only most recent state is persisted per file |
+| Party exceeds max size in save file | Truncated to `MaxPartySize` on load with warning logged |
 
 ## 6. Dependencies
 
 | Dependency | Direction | Notes |
 |------------|-----------|-------|
-| `GameStateManager` | Inbound | Registers as handler for auto-save on exit |
-| `CreatureInstance` | Outbound | Serializes to/from `CreatureSaveData` |
-| `ConfigLoader` | Outbound | Validates speciesId, moveIds, partIds on load |
+| Game State Manager (`game-state-manager.md`) | Inbound | Registers as `IStateHandler` for auto-save on state exit |
+| Creature Instance (`creature-instance.md`) | Outbound | Serializes to/from `CreatureSaveData` |
+| Data Configuration Pipeline (`data-configuration-pipeline.md`) | Outbound | `ConfigLoader` validates speciesId, moveIds, partIds on load |
 | `UnityEngine.JsonUtility` | External | Serialization engine |
 | `System.IO` | External | File read/write |
-| Pokedex System | Inbound | Reads/writes `PokedexSaveData` |
-| Campaign Map | Inbound | Reads/writes `CampaignSaveData` |
-| DNA Alteration System | Inbound | Reads/writes `DnaModSaveData` per creature |
+| Pokedex System (`pokedex-system.md`) | Inbound | Reads/writes `PokedexSaveData` |
+| Campaign Map (`campaign-map.md`) | Inbound | Reads/writes `CampaignSaveData` |
+| DNA Alteration System (`dna-alteration-system.md`) | Inbound | Reads/writes `DnaModSaveData` per creature |
+| Body Part System (`body-part-system.md`) | Inbound | Reads/writes `SlotPartPair` per creature |
+| Battle Scar System (`battle-scar-system.md`) | Inbound | Reads/writes `ScarSaveData` per creature |
+| Living Ecosystem (`living-ecosystem.md`) | Inbound | Reads/writes `EcosystemSaveData` and `ZoneEcosystemData` |
+| Party System (`party-system.md`) | Inbound | Party size validation on load |
+| Settings System (`settings-system.md`) | Inbound | Reads/writes `Settings` object |
+| Institute Rank System (`institute-rank-system.md`) | Inbound | Reads/writes `instituteRank` and `blackMarketTransactionCount` in `MetaState` |
+| Creature Arena (`creature-arena.md`) | Inbound | Reads/writes `arenaHighFloor` in `MetaState` |
+| Rival Trainer System (`rival-trainer-system.md`) | Inbound | Reads/writes `RivalTrainerSaveData` in `CampaignSaveData` |
 
 ## 7. Tuning Knobs
 
@@ -420,7 +487,10 @@ No mathematical formulas. All operations are serialization/deserialization and f
 | Backup file count | `SaveLoadManager` | 1 (`.bak`) | Could extend to rolling N backups |
 | `prettyPrint` in `WriteJson` | `SaveLoadManager` | `false` | Set true for debug builds |
 | `AutoSaveOnExit` states | `SaveLoadManager` `HashSet` | Combat, ResearchStation, CampaignMap | Add/remove trigger states here |
-| Max party size | `GameSettings` SO | `6` | Validated on load |
+| Max party size | `GameSettings` SO | `6` | Validated on load; mirrors `MaxPartySize` const |
+| Max save file size | Design budget | `1 MB` | Target budget for `run.json`; monitor during production <!-- TODO: Tune in balance pass --> |
+| Settings defaults | `Settings` class | See §3.2 | Volume, speed, framerate defaults — see also Settings System GDD (`settings-system.md`) |
+| `ValidCombatSpeeds` | `Settings` / `GameSettings` SO | `1, 2, 4` | Allowed combat speed multipliers; validated on load — see also Settings System GDD (`settings-system.md`) |
 
 ## 8. Acceptance Criteria
 
@@ -436,3 +506,8 @@ No mathematical formulas. All operations are serialization/deserialization and f
 - [ ] EditMode test: write RunState, read it back, assert all fields equal
 - [ ] EditMode test: corrupt JSON returns null from `LoadJson` with error log
 - [ ] `settings.json` written immediately on first launch with defaults
+- [ ] `OnApplicationQuit` saves both `run.json` and `meta.json`
+- [ ] Version migration correctly transforms a v0.9 format save to v1.0 on load
+- [ ] Party of 8 creatures in save file is truncated to 6 on load with warning
+- [ ] `EcosystemSaveData` round-trips zone states, migration phase, and conservation score
+- [ ] `RivalTrainerSaveData` round-trips rival adaptation state through JSON

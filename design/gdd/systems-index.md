@@ -10,9 +10,9 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 |---|--------|-----|--------|-------------|
 | 1 | Data Configuration Pipeline* | Yes | **Approved** | ScriptableObjects, enums, ConfigLoader |
 | 2 | Grid / Tile System* | Yes | Draft | Isometric 3D grid, height, A*, flanking, line-of-sight (LoS owned here, not Terrain System) |
-| 3 | Game State Manager* | Yes | Draft | Scene state machine, transitions |
+| 3 | Game State Manager* | Yes | **Approved** | Scene state machine, transitions |
 | 4 | Save/Load System* | Yes | Draft | JSON persistence for all state |
-| 5 | Type Chart System* | Yes | Draft | 14 genome types (3 tiers), 36 SE relationships, STAB, no immunities |
+| 5 | Type Chart System* | Yes | **Approved** | 14 genome types (3 tiers), 36 SE relationships, STAB, no immunities |
 
 ## Core Layer (Depends on Foundation)
 
