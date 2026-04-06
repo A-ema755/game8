@@ -974,6 +974,483 @@ design/gdd/systems-index.md
 production/session-logs/session-log.md
 ---
 
+## Session End: 20260406_165536
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+---
+
+## Session End: 20260406_165541
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_165803
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_165930
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_170039
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_170700
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_171117
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_171235
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+design/gdd/data-configuration-pipeline.md
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_171321
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+design/gdd/data-configuration-pipeline.md
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_171913
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_172017
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_172040
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_172332
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_172530
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173007
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173219
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173330
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173526
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173613
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173732
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173822
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_173913
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_174641
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_174657
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_174705
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_174708
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_174815
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_174954
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_174958
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_175116
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_175648
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_175814
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_175842
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_180131
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_180155
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_180632
+### Commits
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameStateManager.cs
+Assets/Tests/EditMode/GeneForge.Tests.EditMode.asmdef
+Packages/manifest.json
+Packages/packages-lock.json
+ProjectSettings/URPProjectSettings.asset
+design/gdd/data-configuration-pipeline.md
+game8.slnx
+production/session-logs/session-log.md
 ## Session End: 20260406_164605
 ### Commits
 4113f50 Caveman skill + creature redesign

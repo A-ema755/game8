@@ -37,6 +37,8 @@ namespace GeneForge.Core
         private readonly List<IStateHandler> _handlers = new();
 
         // ── Events ──────────────────────────────────────────────────────
+        // WARNING: Static event survives scene loads. Subscribers MUST deregister
+        // in OnDisable/OnDestroy to prevent stale reference leaks.
         public static event Action<GameState, GameState> StateChanged; // (from, to)
 
         // ── State → Scene name mapping ───────────────────────────────────

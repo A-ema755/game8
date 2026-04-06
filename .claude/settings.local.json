@@ -27,7 +27,18 @@
       "WebFetch(domain:www.toolify.ai)",
       "WebFetch(domain:models.infron.ai)",
       "Bash(find /c/Users/gueva/game8 -type f \\\\\\( -name \"*.cs\" -o -name \"*.md\" \\\\\\) -exec grep -l \"TypeChart\\\\|type.*chart\" {} \\\\;)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "mcp__unity__unity_execute_code",
+      "mcp__unity__unity_get_compilation_errors",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('mcpServers',{}\\), indent=2\\)\\)\")",
+      "Read(//c/Users/gueva/.claude/**)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(f' - {k}'\\) for k in d.get\\('mcpServers',{}\\)]\")",
+      "Bash(node:*)",
+      "Bash(claude mcp:*)",
+      "Bash(tasklist)",
+      "Bash(curl -s http://127.0.0.1:7890/api/ping)",
+      "mcp__unity__unity_editor_ping",
+      "mcp__unity__unity_list_instances"
     ]
   },
   "enableAllProjectMcpServers": true,
