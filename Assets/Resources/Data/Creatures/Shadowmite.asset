@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d55a8c28daa82e4c9f806a36f26dfd0, type: 3}
+  m_Name: Shadowmite
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Creatures.CreatureConfig
+  id: shadowmite
+  displayName: Shadowmite
+  primaryType: 8
+  secondaryType: 0
+  rarity: 1
+  bodyArchetype: 4
+  baseStats:
+    hp: 45
+    atk: 55
+    def: 25
+    spd: 75
+    acc: 110
+  movePool:
+  - level: 1
+    moveId: feint-attack
+  - level: 4
+    moveId: neural-claw
+  - level: 9
+    moveId: taunt
+  - level: 14
+    moveId: mind-beam
+  availableSlots: 0b0000000c0000000d0000000e000000
+  defaultPartIds:
+  - fangs-serrated
+  - tendrils-neural
+  signaturePartId: void-aura
+  growthCurve: 0
+  baseXpYield: 85
+  catchRate: 110
+  habitatZoneIds:
+  - verdant-basin
+  terrainSynergyType: 8

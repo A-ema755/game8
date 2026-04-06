@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d55a8c28daa82e4c9f806a36f26dfd0, type: 3}
+  m_Name: Emberfox
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Creatures.CreatureConfig
+  id: emberfox
+  displayName: Emberfox
+  primaryType: 1
+  secondaryType: 0
+  rarity: 0
+  bodyArchetype: 0
+  baseStats:
+    hp: 45
+    atk: 60
+    def: 30
+    spd: 65
+    acc: 100
+  movePool:
+  - level: 1
+    moveId: scratch
+  - level: 1
+    moveId: ember
+  - level: 8
+    moveId: flame-claw
+  - level: 12
+    moveId: agility
+  - level: 18
+    moveId: inferno-dash
+  availableSlots: 000000000100000002000000030000000400000005000000
+  defaultPartIds:
+  - claws-rending
+  - glands-thermal
+  signaturePartId: flame-tail
+  growthCurve: 0
+  baseXpYield: 65
+  catchRate: 180
+  habitatZoneIds:
+  - verdant-basin
+  terrainSynergyType: 1

@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d55a8c28daa82e4c9f806a36f26dfd0, type: 3}
+  m_Name: ThornSlug
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Creatures.CreatureConfig
+  id: thorn-slug
+  displayName: Thornslug
+  primaryType: 3
+  secondaryType: 7
+  rarity: 0
+  bodyArchetype: 2
+  baseStats:
+    hp: 70
+    atk: 30
+    def: 65
+    spd: 20
+    acc: 95
+  movePool:
+  - level: 1
+    moveId: vine-lash
+  - level: 1
+    moveId: toxic-spore
+  - level: 5
+    moveId: root-bind
+  - level: 10
+    moveId: leech-sting
+  - level: 20
+    moveId: spore-cloud
+  availableSlots: 00000000070000000800000004000000
+  defaultPartIds:
+  - stinger-venom
+  - spore-pods
+  signaturePartId: toxic-spine
+  growthCurve: 2
+  baseXpYield: 55
+  catchRate: 190
+  habitatZoneIds:
+  - verdant-basin
+  terrainSynergyType: 3

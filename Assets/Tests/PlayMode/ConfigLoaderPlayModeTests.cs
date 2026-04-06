@@ -3,6 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using GeneForge.Core;
+using GeneForge.Creatures;
 
 namespace GeneForge.Tests
 {

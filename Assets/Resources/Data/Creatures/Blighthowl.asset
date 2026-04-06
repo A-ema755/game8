@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d55a8c28daa82e4c9f806a36f26dfd0, type: 3}
+  m_Name: Blighthowl
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Creatures.CreatureConfig
+  id: blighthowl
+  displayName: Blighthowl
+  primaryType: 14
+  secondaryType: 3
+  rarity: 3
+  bodyArchetype: 1
+  baseStats:
+    hp: 55
+    atk: 70
+    def: 30
+    spd: 65
+    acc: 95
+  movePool:
+  - level: 1
+    moveId: vine-lash
+  - level: 1
+    moveId: blight-claw
+  - level: 6
+    moveId: corrupt
+  - level: 12
+    moveId: entropic-howl
+  - level: 20
+    moveId: genetic-collapse
+  availableSlots: 0000000001000000040000000500000006000000
+  defaultPartIds:
+  - claws-rending
+  - glands-blight
+  signaturePartId: corruption-maw
+  growthCurve: 0
+  baseXpYield: 130
+  catchRate: 20
+  habitatZoneIds:
+  - verdant-basin
+  terrainSynergyType: 14

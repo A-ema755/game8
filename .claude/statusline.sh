@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claude Code Game Studios — Status Line
+# Claude Code Game Studios — Status Line (no jq dependency)
 # Receives JSON on stdin, outputs a single-line status.
 #
 # Format: Model (CtxSize) | Ctx: X% | In: X.XK Out: X.XK | $X.XX | HH:MM:SS | 5h: X% 7d: X% | +X/-X
@@ -7,21 +7,45 @@
 input=$(cat)
 
 # ---------------------------------------------------------------------------
-# 1. Parse JSON
+# 1. Parse JSON values via grep/sed (no jq needed)
 # ---------------------------------------------------------------------------
-model_name=$(echo "$input" | jq -r '.model.display_name // "Unknown"')
-model_id=$(echo "$input" | jq -r '.model.id // ""')
-ctx_size=$(echo "$input" | jq -r '.context_window.context_window_size // 0')
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-total_in=$(echo "$input" | jq -r '.context_window.total_input_tokens // 0')
-total_out=$(echo "$input" | jq -r '.context_window.total_output_tokens // 0')
-cur_in=$(echo "$input" | jq -r '.context_window.current_usage.input_tokens // 0')
-cur_cache_write=$(echo "$input" | jq -r '.context_window.current_usage.cache_creation_input_tokens // 0')
-cur_cache_read=$(echo "$input" | jq -r '.context_window.current_usage.cache_read_input_tokens // 0')
-session_id=$(echo "$input" | jq -r '.session_id // ""')
-cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
-five_h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-seven_d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
+grab() {
+  echo "$input" | grep -o "\"$1\"[[:space:]]*:[[:space:]]*[^,}\"]*" | head -1 | sed 's/.*:[[:space:]]*//' | tr -d ' '
+}
+grab_str() {
+  echo "$input" | grep -o "\"$1\"[[:space:]]*:[[:space:]]*\"[^\"]*\"" | head -1 | sed 's/.*:[[:space:]]*"//' | tr -d '"'
+}
+
+model_name=$(grab_str 'display_name')
+model_id=$(grab_str 'id')
+ctx_size=$(grab 'context_window_size')
+used_pct=$(grab 'used_percentage')
+total_in=$(grab 'total_input_tokens')
+total_out=$(grab 'total_output_tokens')
+cur_in=$(grab 'input_tokens')
+cur_cache_write=$(grab 'cache_creation_input_tokens')
+cur_cache_read=$(grab 'cache_read_input_tokens')
+session_id=$(grab_str 'session_id')
+cwd=$(grab_str 'current_dir')
+five_h=""
+seven_d=""
+
+# Rate limits need context-aware parsing since used_percentage appears multiple times
+rate_block=$(echo "$input" | grep -o '"rate_limits"[^}]*}[^}]*}' | head -1)
+if [ -n "$rate_block" ]; then
+  fh_block=$(echo "$rate_block" | grep -o '"five_hour"[^}]*}' | head -1)
+  sd_block=$(echo "$rate_block" | grep -o '"seven_day"[^}]*}' | head -1)
+  five_h=$(echo "$fh_block" | grep -o '"used_percentage"[[:space:]]*:[[:space:]]*[0-9.]*' | grep -o '[0-9.]*$')
+  seven_d=$(echo "$sd_block" | grep -o '"used_percentage"[[:space:]]*:[[:space:]]*[0-9.]*' | grep -o '[0-9.]*$')
+fi
+
+# Defaults
+[ -z "$model_name" ] && model_name="Unknown"
+[ -z "$ctx_size" ] && ctx_size=0
+[ -z "$total_in" ] && total_in=0
+[ -z "$total_out" ] && total_out=0
+[ -z "$cur_cache_write" ] && cur_cache_write=0
+[ -z "$cur_cache_read" ] && cur_cache_read=0
 
 # Normalize Windows paths
 cwd=$(echo "$cwd" | sed 's|\\|/|g')
@@ -30,7 +54,6 @@ cwd=$(echo "$cwd" | sed 's|\\|/|g')
 # ---------------------------------------------------------------------------
 # 2. Model name + context window size label
 # ---------------------------------------------------------------------------
-# Format context window size as human-readable (200000 -> 200K, 1000000 -> 1M)
 if [ "$ctx_size" -ge 1000000 ] 2>/dev/null; then
   ctx_size_label="$(echo "$ctx_size" | awk '{printf "%gM", $1/1000000}') context"
 elif [ "$ctx_size" -ge 1000 ] 2>/dev/null; then
@@ -51,7 +74,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# 4. Token counts (cumulative input/output, formatted as K with one decimal)
+# 4. Token counts
 # ---------------------------------------------------------------------------
 format_k() {
   local val="$1"
@@ -68,11 +91,6 @@ tokens_segment="In: ${in_label} Out: ${out_label}"
 
 # ---------------------------------------------------------------------------
 # 5. Estimated session cost
-#    Pricing (per 1M tokens, approximate as of early 2026):
-#      claude-opus-4*       input $15  output $75  cache_write $18.75  cache_read $1.50
-#      claude-sonnet-4*     input $3   output $15  cache_write $3.75   cache_read $0.30
-#      claude-haiku-3-5*    input $0.80 output $4  cache_write $1.00   cache_read $0.08
-#      default fallback     input $3   output $15
 # ---------------------------------------------------------------------------
 get_pricing() {
   local id="$1"
@@ -96,7 +114,6 @@ cost_segment="\$${cost}"
 
 # ---------------------------------------------------------------------------
 # 6. Session elapsed time
-#    Store session start epoch in a temp file keyed by session_id.
 # ---------------------------------------------------------------------------
 timer_dir="/tmp/claude-statusline"
 mkdir -p "$timer_dir" 2>/dev/null
@@ -119,7 +136,7 @@ if [ -n "$session_id" ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 7. Rate limit segments (5h and 7d), only shown when data is present
+# 7. Rate limit segments
 # ---------------------------------------------------------------------------
 rate_segment=""
 if [ -n "$five_h" ] || [ -n "$seven_d" ]; then
@@ -130,7 +147,7 @@ if [ -n "$five_h" ] || [ -n "$seven_d" ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 8. Git diff stats (+additions/-deletions) against HEAD, skip optional locks
+# 8. Git diff stats
 # ---------------------------------------------------------------------------
 git_segment="+0/-0"
 if [ -d "$cwd/.git" ] || git -C "$cwd" rev-parse --git-dir &>/dev/null 2>&1; then
@@ -145,7 +162,7 @@ if [ -d "$cwd/.git" ] || git -C "$cwd" rev-parse --git-dir &>/dev/null 2>&1; the
 fi
 
 # ---------------------------------------------------------------------------
-# 9. Assemble final output
+# 9. Assemble
 # ---------------------------------------------------------------------------
 output="${model_segment} | ${ctx_segment} | ${tokens_segment} | ${cost_segment} | ${elapsed_segment}"
 [ -n "$rate_segment" ] && output="${output} | ${rate_segment}"

@@ -1,11 +1,5 @@
 namespace GeneForge.Core
 {
-    // STUB: Replaced when creature-database.md is implemented
-    public class CreatureConfig : ConfigBase { }
-
-    // STUB: Replaced when move-database.md is implemented
-    public class MoveConfig : ConfigBase { }
-
     // STUB: Replaced when body-part-system.md is implemented
     public class BodyPartConfig : ConfigBase { }
 
