@@ -48,7 +48,16 @@
       "mcp__unity__unity_execute_menu_item",
       "Bash(python3:*)",
       "Bash(python:*)",
-      "Bash(git -C \"C:/Users/gueva/game8\" log --oneline --all -- \"Assets/Resources/Data/GameSettings.asset\")"
+      "Bash(git -C \"C:/Users/gueva/game8\" log --oneline --all -- \"Assets/Resources/Data/GameSettings.asset\")",
+      "Bash(where rtk:*)",
+      "Bash(where cargo:*)",
+      "Bash(where winget:*)",
+      "Bash(where curl:*)",
+      "Bash(curl -sL https://api.github.com/repos/rtk-ai/rtk/releases/latest)",
+      "Bash(curl -sL -o /tmp/rtk.zip \"https://github.com/rtk-ai/rtk/releases/download/v0.35.0/rtk-x86_64-pc-windows-msvc.zip\")",
+      "Read(//tmp/**)",
+      "Bash(mkdir -p __TRACKED_VAR__/.local/bin)",
+      "Bash(unzip -o rtk.zip -d rtk_extract)"
     ]
   },
   "enableAllProjectMcpServers": true,

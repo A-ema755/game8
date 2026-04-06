@@ -1890,3 +1890,50 @@ game8.slnx
 production/session-logs/session-log.md
 ---
 
+## Session End: 20260406_195150
+### Commits
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+---
+
+## Session End: 20260406_195352
+### Commits
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_195610
+### Commits
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+production/session-logs/session-log.md
+---
+
+## Session End: 20260406_200410
+### Commits
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
