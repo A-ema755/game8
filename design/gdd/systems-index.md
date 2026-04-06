@@ -18,8 +18,8 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 
 | # | System | MVP | Status | Description |
 |---|--------|-----|--------|-------------|
-| 6 | Creature Database* | Yes | Draft | Species configs: types, base stats, move pools, catch rates |
-| 7 | Move Database* | Yes | Draft | Move configs: genome type, damage form, power, accuracy, PP, effects, targeting |
+| 6 | Creature Database* | Yes | **In Review** | Species configs: types, base stats, move pools, catch rates |
+| 7 | Move Database* | Yes | **In Review** | Move configs: genome type, damage form, power, accuracy, PP, effects, targeting |
 | 8 | Turn Manager* | Yes | Draft | Phase-based combat sequencing, events |
 | 9 | Damage & Health System* | Yes | Draft | Combat math with 3 damage forms (Physical/Energy/Bio), type multipliers, terrain synergy, height bonus |
 | 10 | Creature Instance* | Yes | Draft | Runtime creature state: HP, level, XP, moves, DNA mods |

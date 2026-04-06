@@ -8,8 +8,26 @@
       "Skill(balance-check)",
       "Skill(code-review)",
       "Bash(gh pr:*)",
-      "Bash(where gh:*)"
-      "Skill(code-review)"
+      "Bash(where gh:*)",
+      "Bash(gh repo:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm list:*)",
+      "Bash(npm config:*)",
+      "Bash(powershell:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebSearch",
+      "Bash(winget install:*)",
+      "Bash(gh:*)",
+      "Bash(npx skills:*)",
+      "Bash(mkdir -p C:/Users/gueva/game8/.claude/commands)",
+      "Bash(cp C:/Users/gueva/game8/.agents/skills/caveman/SKILL.md C:/Users/gueva/game8/.claude/commands/caveman.md)",
+      "WebFetch(domain:paxhistoria.co)",
+      "WebFetch(domain:www.ycombinator.com)",
+      "WebFetch(domain:wiki.paxhistoria.co)",
+      "WebFetch(domain:www.toolify.ai)",
+      "WebFetch(domain:models.infron.ai)",
+      "Bash(find /c/Users/gueva/game8 -type f \\\\\\( -name \"*.cs\" -o -name \"*.md\" \\\\\\) -exec grep -l \"TypeChart\\\\|type.*chart\" {} \\\\;)",
+      "Bash(find:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

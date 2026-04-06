@@ -35,16 +35,24 @@ namespace GeneForge.Core
         Bio = 3
     }
 
-    /// <summary>Body slot positions where parts can be equipped.</summary>
+    /// <summary>Body slot positions where parts can be equipped. Each archetype exposes a subset.</summary>
     public enum BodySlot
     {
         Head = 0,
         Back = 1,
-        Arms = 2,
-        Tail = 3,
-        Legs = 4,
-        Torso = 5,
-        Aura = 6
+        LeftArm = 2,
+        RightArm = 3,
+        Tail = 4,
+        Legs = 5,
+        Hide = 6,
+        BodyUpper = 7,
+        BodyLower = 8,
+        Wings = 9,
+        Talons = 10,
+        CoreA = 11,
+        CoreB = 12,
+        CoreC = 13,
+        Appendage = 14
     }
 
     /// <summary>Category grouping for body parts (used for synergy set detection).</summary>
@@ -52,9 +60,8 @@ namespace GeneForge.Core
     {
         Offensive = 0,
         Defensive = 1,
-        Mobility = 2,
-        Utility = 3,
-        Cosmetic = 4
+        Utility = 2,
+        Aura = 3
     }
 
     /// <summary>Drop and encounter rarity for creatures and parts.</summary>

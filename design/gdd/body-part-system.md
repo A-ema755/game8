@@ -90,6 +90,14 @@ public class TypeAffinityChange
 | `tail-blade` | Blade Tail | Offensive | Tail | Physical | +ATK; unlocks Tail Whip; counter-attack on physical hit |
 | `tail-weight` | Heavy Tail | Defensive | Tail | Physical | +DEF; -SPD; unlocks Slam |
 | `limbs-extra` | Extra Limbs | Offensive | Arms | Physical | +ATK; conflicts with heavy shells |
+| `plating-ferro` | Ferro Plating | Defensive | Hide/Back | Physical | +DEF; reduces incoming Physical damage by 10% |
+| `fists-impact` | Impact Fists | Offensive | LeftArm/RightArm | Physical | +ATK; unlocks Power Strike |
+| `wings-aero` | Aero Wings | Offensive | Wings | Physical | +SPD; wind-blade wings enable slashing aerial attacks |
+| `emitter-resonance` | Resonance Emitter | Offensive | BodyUpper/Back | Energy | +ACC; emits focused sound waves for Energy-form attacks |
+| `crystal-lattice` | Crystal Lattice | Offensive | CoreA/CoreB | Energy | +DEF; crystalline energy matrix channels Ark power |
+| `glands-toxic` | Toxic Glands | Offensive | BodyUpper/Back | Bio | +ATK; secretes corrosive compounds for Bio-form delivery |
+| `glands-blight` | Blight Glands | Offensive | BodyUpper/Back | Bio | +ATK; secretes corrupting compounds that destabilize genome |
+| `core-neural` | Neural Core | Offensive | CoreA/Back | Energy | +ACC; psychic energy core enables Energy-form neural attacks |
 
 ### 3.4 Equipping and Unequipping Parts
 

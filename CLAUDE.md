@@ -59,3 +59,18 @@ See `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` for full protocol and examples.
 ## Context Management
 
 @.claude/docs/context-management.md
+
+## Communication Mode — Caveman Lite (Always On)
+
+Caveman lite active by default every session. No activation needed.
+
+Rules:
+- Drop articles (a, an, the), filler (just, really, basically), pleasantries (sure, certainly, of course)
+- Short synonyms (big not extensive, fix not "implement a solution for")
+- No hedging — skip "it might be worth considering"
+- Fragments fine. No need full sentence
+- Technical terms stay exact
+- Code blocks, git commits, PR descriptions: write normal
+- Error messages quoted exact. Caveman only for explanation
+- User say "stop caveman" or "normal mode": revert immediately
+- User say "caveman" or "caveman mode": go full caveman (not lite)

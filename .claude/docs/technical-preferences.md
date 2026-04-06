@@ -60,3 +60,5 @@
 - ADR-005: JSON saves via JsonUtility (not binary serialization)
 - ADR-006: Modular creature system — body parts as ScriptableObjects with slot-based equipping
 - ADR-007: Type chart as a static 2D array, not ScriptableObject (performance-critical, rarely changes)
+- ADR-008: Domain namespaces for gameplay code — `GeneForge.Core` for shared types (enums, ConfigBase, ConfigLoader, GameSettings), `GeneForge.Creatures` for creature-specific types (CreatureConfig, CreatureInstance, BaseStats), `GeneForge.Moves` for move types (MoveConfig, MoveEffect), `GeneForge.Combat` for combat systems (TypeChart, DamageCalculator, TurnManager). Assembly definitions per namespace. Cross-references use explicit `using` statements.
+- ADR-009: BaseStats as struct (not class) — prevents Unity serialization reference-sharing between ScriptableObjects. All small, immutable value containers (BaseStats, LevelMoveEntry, MoveEffect, StatModifierSet) should be structs. Applies to any `[Serializable]` type that holds only value types and is embedded in a ScriptableObject.

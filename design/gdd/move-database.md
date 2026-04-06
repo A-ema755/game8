@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-The Move Database defines the `MoveConfig` ScriptableObject schema — the immutable blueprint for every move in Gene Forge. Each config captures the move's **genome type** (one of 14 types for type effectiveness), **damage form** (Physical, Energy, or Bio — determining stat pairing, range, and terrain interaction), power, accuracy, PP, targeting pattern, priority, and a list of on-hit or on-use effects. The database is loaded at startup by `ConfigLoader`. Twenty-five MVP moves are defined below, spanning the 14 genome types and all three damage forms, forming the starting pool for the creature roster defined in `creature-database.md`.
+The Move Database defines the `MoveConfig` ScriptableObject schema — the immutable blueprint for every move in Gene Forge. Each config captures the move's **genome type** (one of 14 types for type effectiveness), **damage form** (Physical, Energy, or Bio — determining stat pairing, range, and terrain interaction), power, accuracy, PP, targeting pattern, priority, and a list of on-hit or on-use effects. The database is loaded at startup by `ConfigLoader`. Forty-five MVP moves are defined below, spanning the 14 genome types and all three damage forms, forming the starting pool for the creature roster defined in `creature-database.md`.
 
 ## 2. Player Fantasy
 
@@ -141,7 +141,7 @@ bool HitCheck(MoveConfig move, CreatureInstance attacker, CreatureInstance defen
 }
 ```
 
-### 3.7 MVP Move List (25 Moves)
+### 3.7 MVP Move List (45 Moves)
 
 ---
 
@@ -395,6 +395,206 @@ bool HitCheck(MoveConfig move, CreatureInstance attacker, CreatureInstance defen
 
 ---
 
+#### 26. Iron Bash
+- **ID:** `iron-bash`
+- **Genome Type:** Ferro | **Form:** Physical
+- **Power:** 50 | **Accuracy:** 100 | **PP:** 25 | **Priority:** 0
+- **Target:** Single | **Range:** 1
+- **Effects:** `Flinch(20% chance)`
+- **Notes:** Reliable Ferro melee. Metallic headbutt with flinch chance. Ferrovex's bread-and-butter.
+
+---
+
+#### 27. Metal Press
+- **ID:** `metal-press`
+- **Genome Type:** Ferro | **Form:** Physical
+- **Power:** 80 | **Accuracy:** 85 | **PP:** 10 | **Priority:** 0
+- **Target:** Single | **Range:** 1
+- **Effects:** `StatStage(DEF, -1, 50% chance)`
+- **Notes:** Heavy Ferro slam that can crack armor. Lower accuracy compensated by DEF shred.
+
+---
+
+#### 28. Siege Slam
+- **ID:** `siege-slam`
+- **Genome Type:** Ferro | **Form:** Physical
+- **Power:** 100 | **Accuracy:** 80 | **PP:** 5 | **Priority:** -1
+- **Target:** Single | **Range:** 1
+- **Effects:** `Recoil(20%)`, `ForcedMove(1 tile away, target)`
+- **Notes:** Ferrovex's heaviest hit. Low priority, low accuracy, high recoil — but devastating when it lands.
+
+---
+
+#### 29. Wind Slash
+- **ID:** `wind-slash`
+- **Genome Type:** Aero | **Form:** Physical
+- **Power:** 55 | **Accuracy:** 95 | **PP:** 25 | **Priority:** 0
+- **Target:** Single | **Range:** 2
+- **Effects:** None
+- **Notes:** Blade of compressed air. Reliable early Aero physical with slight range extension.
+
+---
+
+#### 30. Sonic Pulse
+- **ID:** `sonic-pulse`
+- **Genome Type:** Sonic | **Form:** Energy
+- **Power:** 50 | **Accuracy:** 100 | **PP:** 20 | **Priority:** 0
+- **Target:** Single | **Range:** 3
+- **Effects:** `ApplyStatus(Confusion, 10% chance)`
+- **Notes:** Focused sound wave. Standard early Sonic ranged attack with minor confusion.
+
+---
+
+#### 31. Gust
+- **ID:** `gust`
+- **Genome Type:** Aero | **Form:** Energy
+- **Power:** 40 | **Accuracy:** 100 | **PP:** 25 | **Priority:** 0
+- **Target:** Single | **Range:** 4
+- **Effects:** `ForcedMove(1 tile away, target)`
+- **Notes:** Weak but repositions. Long-range Aero Energy blast that pushes target back 1 tile.
+
+---
+
+#### 32. Screech
+- **ID:** `screech`
+- **Genome Type:** Sonic | **Form:** None (Status)
+- **Power:** 0 | **Accuracy:** 85 | **PP:** 20 | **Priority:** 0
+- **Target:** Single | **Range:** 3
+- **Effects:** `StatStage(DEF, -2, 100%)`
+- **Notes:** Piercing sonic shriek that sharply lowers target's DEF. Sets up physical attackers.
+
+---
+
+#### 33. Cyclone Strike
+- **ID:** `cyclone-strike`
+- **Genome Type:** Aero | **Form:** Physical
+- **Power:** 85 | **Accuracy:** 90 | **PP:** 10 | **Priority:** 0
+- **Target:** Adjacent | **Range:** 1
+- **Effects:** None
+- **Notes:** Spinning wind attack hitting all adjacent enemies. Galewhip's finisher — high power AoE melee.
+
+---
+
+#### 34. Power Strike
+- **ID:** `power-strike`
+- **Genome Type:** Kinetic | **Form:** Physical
+- **Power:** 60 | **Accuracy:** 100 | **PP:** 20 | **Priority:** 0
+- **Target:** Single | **Range:** 1
+- **Effects:** None
+- **Notes:** Concentrated force blow. Reliable mid-tier Kinetic physical. Quarrok's workhorse move.
+
+---
+
+#### 35. Seismic Smash
+- **ID:** `seismic-smash`
+- **Genome Type:** Kinetic | **Form:** Physical
+- **Power:** 90 | **Accuracy:** 85 | **PP:** 10 | **Priority:** 0
+- **Target:** Adjacent | **Range:** 1
+- **Effects:** `ForcedMove(1 tile away, all targets)`
+- **Notes:** Ground-shaking AoE that knocks all adjacent enemies back 1 tile. Devastating on elevated terrain.
+
+---
+
+#### 36. Acid Spray
+- **ID:** `acid-spray`
+- **Genome Type:** Toxic | **Form:** Bio
+- **Power:** 55 | **Accuracy:** 95 | **PP:** 20 | **Priority:** 0
+- **Target:** Single | **Range:** 2
+- **Effects:** `StatStage(DEF, -1, 100%)`
+- **Notes:** Corrosive Bio projectile that always lowers DEF. Guaranteed armor shred sets up follow-up attacks.
+
+---
+
+#### 37. Corrode
+- **ID:** `corrode`
+- **Genome Type:** Toxic | **Form:** Bio
+- **Power:** 70 | **Accuracy:** 90 | **PP:** 15 | **Priority:** 0
+- **Target:** Single | **Range:** 2
+- **Effects:** `ApplyStatus(Poison, 50% chance)`, `StatStage(DEF, -1, 50% chance)`
+- **Notes:** Advanced Toxic Bio attack. Chance to poison AND shred DEF. Corrovex's mid-game pressure tool.
+
+---
+
+#### 38. Rust Lash
+- **ID:** `rust-lash`
+- **Genome Type:** Ferro | **Form:** Physical
+- **Power:** 75 | **Accuracy:** 95 | **PP:** 15 | **Priority:** 0
+- **Target:** Single | **Range:** 1
+- **Effects:** `StatStage(DEF, -1, 50% chance)`
+- **Notes:** Oxidizing metallic strike. Ferro physical with DEF shred chance. Corrovex's hybrid identity move.
+
+---
+
+#### 39. Purify
+- **ID:** `purify`
+- **Genome Type:** Ark | **Form:** None (Status)
+- **Power:** 0 | **Accuracy:** 0 | **PP:** 15 | **Priority:** 0
+- **Target:** Self | **Range:** 0
+- **Effects:** Removes all status conditions from user
+- **Notes:** Always hits self. Ark's signature cleanse. Cures Burn, Freeze, Paralysis, Poison, Sleep, Confusion.
+
+---
+
+#### 40. Stasis Field
+- **ID:** `stasis-field`
+- **Genome Type:** Ark | **Form:** Energy
+- **Power:** 60 | **Accuracy:** 100 | **PP:** 15 | **Priority:** 0
+- **Target:** Single | **Range:** 3
+- **Effects:** `ApplyStatus(Paralysis, 30% chance)`
+- **Notes:** Crystalline energy beam that can lock targets in stasis. Ark's main offensive tool.
+
+---
+
+#### 41. Genetic Lock
+- **ID:** `genetic-lock`
+- **Genome Type:** Ark | **Form:** None (Status)
+- **Power:** 0 | **Accuracy:** 90 | **PP:** 10 | **Priority:** 0
+- **Target:** Single | **Range:** 3
+- **Effects:** `StatStage(ATK, -2, 100%)`
+- **Notes:** Stabilizes target's genome, sharply reducing attack power. Ark's signature debuff — thematically locks down genetic instability.
+
+---
+
+#### 42. Blight Claw
+- **ID:** `blight-claw`
+- **Genome Type:** Blight | **Form:** Physical
+- **Power:** 60 | **Accuracy:** 100 | **PP:** 20 | **Priority:** 0
+- **Target:** Single | **Range:** 1
+- **Effects:** `ApplyStatus(Poison, 30% chance)`
+- **Notes:** Corrupted physical strike. Reliable Blight melee with poison chance. Blighthowl's early Physical option.
+
+---
+
+#### 43. Corrupt
+- **ID:** `corrupt`
+- **Genome Type:** Blight | **Form:** Bio
+- **Power:** 55 | **Accuracy:** 90 | **PP:** 15 | **Priority:** 0
+- **Target:** Single | **Range:** 2
+- **Effects:** `ApplyStatus(Confusion, 50% chance)`
+- **Notes:** Blight Bio attack that destabilizes the target's mind. High confusion rate makes it a control tool.
+
+---
+
+#### 44. Entropic Howl
+- **ID:** `entropic-howl`
+- **Genome Type:** Blight | **Form:** Bio
+- **Power:** 70 | **Accuracy:** 95 | **PP:** 15 | **Priority:** 0
+- **Target:** AoE | **Range:** 2
+- **Effects:** `StatStage(ATK, -1, 100%, all enemies in range)`
+- **Notes:** Wave of entropic corruption that weakens all nearby enemies. Blighthowl's AoE debuff — delivered via Bio form (biological corruption emission).
+
+---
+
+#### 45. Genetic Collapse
+- **ID:** `genetic-collapse`
+- **Genome Type:** Blight | **Form:** Bio
+- **Power:** 90 | **Accuracy:** 85 | **PP:** 5 | **Priority:** 0
+- **Target:** Single | **Range:** 2
+- **Effects:** `HighCrit`, `ApplyStatus(Poison, 30% chance)`
+- **Notes:** Blight's ultimate attack. Triggers cascading genetic failure in the target. Low PP, high risk/reward with boosted crit rate.
+
+---
+
 ## 4. Formulas
 
 | Formula | Expression |
@@ -459,7 +659,7 @@ bool HitCheck(MoveConfig move, CreatureInstance attacker, CreatureInstance defen
 
 ## 8. Acceptance Criteria
 
-- [ ] All 25 MVP moves load from `Resources/Data/Moves/` without errors
+- [ ] All 45 MVP moves load from `Resources/Data/Moves/` without errors
 - [ ] No two moves share the same `id`
 - [ ] Every damaging move has both a valid `GenomeType` and a valid `Form` (not None)
 - [ ] Every status move has `Form = None` and `Power = 0`
@@ -474,6 +674,6 @@ bool HitCheck(MoveConfig move, CreatureInstance attacker, CreatureInstance defen
 - [ ] `toxic-spore` has `genomeType = Toxic` and `form = Bio`
 - [ ] `leech-sting` has `genomeType = Toxic` and `form = Bio` with `Drain(50%)`
 - [ ] Creature without Physical body part has Physical moves greyed out
-- [ ] EditMode test: load all `MoveConfig` assets, assert count >= 25
+- [ ] EditMode test: load all `MoveConfig` assets, assert count >= 45
 - [ ] EditMode test: `boulder-slam.Power == 100 && boulder-slam.Form == DamageForm.Physical`
 - [ ] EditMode test: `spore-cloud.TargetType == TargetType.AoE && spore-cloud.Form == DamageForm.Bio`

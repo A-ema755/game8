@@ -101,11 +101,11 @@ namespace GeneForge.Creatures
 
 | Archetype | Available BodySlots |
 | --- | --- |
-| Bipedal | Head, Back, Arms, Tail, Legs, Torso, Aura |
-| Quadruped | Head, Back, Tail, Legs, Torso, Aura |
-| Serpentine | Head, Back, Tail, Aura |
-| Avian | Head, Back, Arms, Tail, Legs, Aura |
-| Amorphous | Torso, Aura (multiple allowed) |
+| Bipedal | Head, Back, LeftArm, RightArm, Tail, Legs |
+| Quadruped | Head, Back, Tail, Legs, Hide |
+| Serpentine | Head, BodyUpper, BodyLower, Tail |
+| Avian | Head, Wings, Tail, Talons |
+| Amorphous | CoreA, CoreB, CoreC, Appendage |
 
 ### 3.3 Stat Scaling
 
@@ -114,10 +114,24 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | Stat | Low | Average | High |
 | --- | --- | --- | --- |
 | HP | 35 | 55 | 80 |
-| ATK | 20 | 40 | 65 |
-| DEF | 15 | 35 | 60 |
-| SPD | 15 | 40 | 70 |
+| ATK | 20 | 45 | 70 |
+| DEF | 15 | 40 | 80 |
+| SPD | 15 | 45 | 80 |
 | ACC | 90 | 100 | 110 |
+
+### 3.3.1 Base Stat Total (BST) Targets
+
+BST = HP + ATK + DEF + SPD + ACC. Target ranges per rarity tier:
+
+| Rarity | BST Range | Notes |
+| --- | --- | --- |
+| Common | 270–310 | Widely available; solid but not exceptional |
+| Uncommon | 290–320 | Slightly stronger or more specialized |
+| Rare | 300–340 | Noticeable stat advantage or extreme specialization |
+| Epic | 310–350 | Powerful; hard to find |
+| Legendary | 330–380 | Peak stats; unique encounters only |
+
+Ranges overlap intentionally — rarity reflects availability, not raw power. A well-built Common can compete with an Uncommon.
 
 ### 3.4 Catch Rate Scale
 
@@ -213,6 +227,7 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | 1 | `water-pulse` |
 | 1 | `spark` |
 | 6 | `aqua-bolt` |
+| 12 | `feint-attack` |
 | 17 | `discharge` |
 
 
@@ -270,7 +285,9 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | --- | --- |
 | 1 | `ice-shard` |
 | 1 | `ferro-bite` |
+| 1 | `tackle` |
 | 5 | `frost-breath` |
+| 10 | `harden` |
 
 
 
@@ -286,8 +303,8 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 * **Growth Curve:** Fast
 * **Catch Rate:** 110
 * **Base XP Yield:** 85
-* **Default Parts:** `tendrils-neural` (Bio)
-* **Starting Form Access:** Bio
+* **Default Parts:** `fangs-serrated` (Physical), `tendrils-neural` (Bio)
+* **Starting Form Access:** Physical, Bio
 * **Signature Part:** `void-aura` — Neural aura part; reduces threat score by 50% while active
 * **Habitat:** Verdant Basin (cave systems, night encounters only — post-MVP)
 * **Terrain Synergy:** Neural
@@ -310,12 +327,12 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 * **Types:** Neural / Organic (dual-type)
 * **Rarity:** Rare
 * **Archetype:** Bipedal
-* **Base Stats:** HP 50, ATK 40, DEF 40, SPD 55, ACC 105
+* **Base Stats:** HP 55, ATK 45, DEF 40, SPD 55, ACC 105
 * **Growth Curve:** Medium
 * **Catch Rate:** 75
 * **Base XP Yield:** 95
-* **Default Parts:** `tendrils-neural` (Bio), `spore-pods` (Bio)
-* **Starting Form Access:** Bio
+* **Default Parts:** `tendrils-neural` (Bio), `core-neural` (Energy)
+* **Starting Form Access:** Bio, Energy
 * **Signature Part:** `psi-bloom` — Neural head part; Status moves have +1 priority when equipped
 * **Habitat:** Verdant Basin (ancient grove, restricted area)
 * **Terrain Synergy:** Organic
@@ -325,7 +342,9 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | --- | --- |
 | 1 | `mind-beam` |
 | 6 | `spore-cloud` |
+| 9 | `leech-sting` |
 | 12 | `toxic-spore` |
+| 15 | `root-bind` |
 
 
 
@@ -354,6 +373,7 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 | 1 | `ember` |
 | 5 | `rock-throw` |
 | 10 | `flame-claw` |
+| 16 | `boulder-slam` |
 
 
 
@@ -394,12 +414,12 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 * **Types:** Aero / Sonic (dual-type)
 * **Rarity:** Common
 * **Archetype:** Serpentine
-* **Base Stats:** HP 45, ATK 55, DEF 25, SPD 80, ACC 105
+* **Base Stats:** HP 45, ATK 55, DEF 25, SPD 80, ACC 100
 * **Growth Curve:** Fast
 * **Catch Rate:** 160
 * **Base XP Yield:** 70
-* **Default Parts:** `wings-aero` (Physical), `resonance-emitter` (Bio)
-* **Starting Form Access:** Physical, Bio
+* **Default Parts:** `wings-aero` (Physical), `emitter-resonance` (Energy)
+* **Starting Form Access:** Physical, Energy
 * **Signature Part:** `gale-tail` — Aero tail; user always moves first on the turn it is equipped and active
 * **Habitat:** Verdant Basin (open meadows, cliff updrafts)
 * **Terrain Synergy:** Aero
@@ -423,7 +443,7 @@ Base stats are Lv1 values. Actual stats at a given level are computed in `Creatu
 * **Types:** Kinetic / Mineral (dual-type)
 * **Rarity:** Common
 * **Archetype:** Bipedal
-* **Base Stats:** HP 60, ATK 75, DEF 50, SPD 35, ACC 95
+* **Base Stats:** HP 60, ATK 70, DEF 50, SPD 35, ACC 90
 * **Growth Curve:** Medium
 * **Catch Rate:** 155
 * **Base XP Yield:** 75
@@ -541,7 +561,7 @@ All stat scaling formulas are defined in `creature-instance.md`. The database on
 | --- | --- |
 | Catch rate range | 0–255 (higher = easier) |
 | Base XP yield range | 50–200 for MVP creatures |
-| Stat ranges (Lv1) | HP: 35–80, ATK: 20–70, DEF: 15–75, SPD: 15–75, ACC: 90–110 |
+| Stat ranges (Lv1) | HP: 35–80, ATK: 20–70, DEF: 15–80, SPD: 15–80, ACC: 90–110 |
 
 ## 5. Edge Cases
 
@@ -595,4 +615,6 @@ All stat scaling formulas are defined in `creature-instance.md`. The database on
 - [ ] EditMode test: `Emberfox.primaryType == CreatureType.Thermal`
 - [ ] EditMode test: `Thornslug.IsDualType == true`
 - [ ] EditMode test: `Mosshell` move pool contains `boulder-slam` at level 19
-- [ ] EditMode test: all 14 CreatureType enum values (excluding None) are represented by at least one creature primary type in the roster
+- [ ] EditMode test: at least 9 of 14 CreatureType enum values are represented as a primary type in the roster (Aqua, Toxic, Mineral, Kinetic, Sonic deferred to roster expansion)
+- [ ] Every creature's level-1 moves use only damage forms granted by its default body parts
+- [ ] Signature part BodyPartConfig assets exist for all 14 creatures (blocked until body-part-system catalog expansion)
