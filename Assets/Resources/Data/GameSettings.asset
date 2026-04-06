@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c200ec030e01b84ab49f9f6f7287c5a, type: 3}
+  m_Name: GameSettings
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Core.GameSettings
+  baseCaptureRate: 0.3
+  hpWeightMultiplier: 1.5
+  statusCaptureBonus: 0.15
+  maxCaptureAttempts: 3
+  maxLevel: 50
+  trainerXpMultiplier: 1.5
+  xpShareRatio: 0.5
+  minDamage: 1
+  stabMultiplier: 1.5
+  critMultiplier: 1.5
+  critBaseChance: 0.0625
+  heightBonusPerLevel: 0.1
+  flankingBonus: 0.25
+  instabilityMax: 100
+  instabilityVolatileMin: 25
+  instabilityUnstableMin: 50
+  instabilityCriticalMin: 75
+  instabilityBreakdownMin: 100
+  instabilityDecayPerRest: 5
+  disobeyBaseChance: 0.1
+  breakthroughChance: 0.05
+  conservationBonusThreshold: 80
+  migrationCycleHours: 2
