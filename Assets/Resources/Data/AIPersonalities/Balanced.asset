@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b87fb5cf61fe04c47a502e5f13882dd5, type: 3}
+  m_Name: Balanced
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Core.AIPersonalityConfig
+  id: balanced
+  displayName: Balanced
+  weightDamage: 1
+  weightKill: 1
+  weightThreat: 1
+  weightPosition: 1
+  weightTerrain: 1
+  weightSelfPreservation: 1
+  weightGenomeMatch: 1
+  weightFormTactic: 1
+  aggressionBias: 0.5
+  focusFireBias: 0.5
+  abilityPreference: 0.5
+  randomnessFactor: 0.1
+  lowHpThreshold: 0.3
+  retreatHpThreshold: 0.15

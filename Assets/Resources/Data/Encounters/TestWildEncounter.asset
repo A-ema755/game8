@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7890359fe8204dd5840dc2885b74877d, type: 3}
+  m_Name: TestWildEncounter
+  m_EditorClassIdentifier: GeneForge.Core::GeneForge.Core.EncounterConfig
+  id: test-wild-encounter
+  displayName: Test Wild Encounter
+  encounterType: 0
+  gridDimensions: {x: 8, y: 6}
+  heightMapFlat: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  tileLayoutFlat: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  playerStartTiles:
+  - {x: 1, y: 1}
+  - {x: 1, y: 3}
+  enemies:
+  - speciesId: emberfox
+    level: 5
+    personalityConfigId: balanced
+    overrideMoves: []
+    spawnTile: {x: 6, y: 1}
+    isBoss: 0
+  - speciesId: emberfox
+    level: 8
+    personalityConfigId: balanced
+    overrideMoves: []
+    spawnTile: {x: 6, y: 3}
+    isBoss: 0
+  captureAllowed: 1
+  retreatAllowed: 1
+  rpBase: 10
+  totalWaves: 1
+  waves: []
+  preEncounterDialogueId: 
+  postEncounterDialogueId: 

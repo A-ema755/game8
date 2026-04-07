@@ -33,5 +33,17 @@ MonoBehaviour:
   instabilityDecayPerRest: 5
   disobeyBaseChance: 0.1
   breakthroughChance: 0.05
+  fallDamageBase: 10
+  fallDamageMinDelta: 3
+  growthMultiplierFast: 1.2
+  growthMultiplierMedium: 1
+  growthMultiplierSlow: 0.8
+  growthMultiplierErratic: 1.1
+  personalityBoostMultiplier: 1.1
+  personalityPenaltyMultiplier: 0.95
+  dnaStatBonusPerMod: 2
+  blightInstabilityThreshold: 80
+  xpBaseMultiplier: 10
   conservationBonusThreshold: 80
   migrationCycleHours: 2
+  maxPartySize: 6
