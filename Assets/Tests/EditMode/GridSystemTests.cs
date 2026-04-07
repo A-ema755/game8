@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using GeneForge.Core;
+using GeneForge.Creatures;
 using GeneForge.Grid;
 
 namespace GeneForge.Tests
@@ -11,6 +13,39 @@ namespace GeneForge.Tests
     public class GridSystemTests
     {
         private GridSystem _grid;
+        private CreatureConfig _blockerConfig;
+
+        private static void SetField(object obj, string fieldName, object value)
+        {
+            var type = obj.GetType();
+            FieldInfo field = null;
+            while (type != null && field == null)
+            {
+                field = type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+                type = type.BaseType;
+            }
+            field?.SetValue(obj, value);
+        }
+
+        /// <summary>Creates a minimal CreatureInstance for use as a tile occupant in tests.</summary>
+        private CreatureInstance CreateBlocker()
+        {
+            if (_blockerConfig == null)
+            {
+                _blockerConfig = ScriptableObject.CreateInstance<CreatureConfig>();
+                SetField(_blockerConfig, "id", "blocker");
+                SetField(_blockerConfig, "displayName", "Blocker");
+                SetField(_blockerConfig, "primaryType", CreatureType.None);
+                SetField(_blockerConfig, "secondaryType", CreatureType.None);
+                SetField(_blockerConfig, "baseStats", new BaseStats(10, 10, 10, 10, 100));
+                SetField(_blockerConfig, "growthCurve", GrowthCurve.Medium);
+                SetField(_blockerConfig, "movePool", new List<LevelMoveEntry>());
+                SetField(_blockerConfig, "availableSlots", new List<BodySlot>());
+                SetField(_blockerConfig, "defaultPartIds", new List<string>());
+                SetField(_blockerConfig, "habitatZoneIds", new List<string>());
+            }
+            return CreatureInstance.Create(_blockerConfig, 1);
+        }
 
         /// <summary>
         /// Creates a flat grid with all tiles at height 0, Neutral terrain, passable.
@@ -28,6 +63,16 @@ namespace GeneForge.Tests
         public void SetUp()
         {
             _grid = CreateFlatGrid(8, 8);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (_blockerConfig != null)
+            {
+                ScriptableObject.DestroyImmediate(_blockerConfig);
+                _blockerConfig = null;
+            }
         }
 
         // ================================================================
@@ -132,7 +177,7 @@ namespace GeneForge.Tests
             Assert.IsFalse(tile.IsOccupied);
             Assert.IsNull(tile.Occupant);
 
-            tile.Occupant = "test_creature"; // placeholder
+            tile.Occupant = CreateBlocker();
             Assert.IsTrue(tile.IsOccupied);
 
             tile.Occupant = null;
@@ -228,7 +273,7 @@ namespace GeneForge.Tests
         {
             // Arrange
             var grid = CreateFlatGrid(8, 8);
-            grid.GetTile(3, 3).Occupant = "blocker";
+            grid.GetTile(3, 3).Occupant = CreateBlocker();
 
             // Act — path from (0,3) to (6,3) must go around (3,3)
             var path = grid.FindPath(new Vector2Int(0, 3), new Vector2Int(6, 3));
@@ -366,7 +411,7 @@ namespace GeneForge.Tests
         {
             // Arrange
             var grid = CreateFlatGrid(8, 8);
-            grid.GetTile(4, 5).Occupant = "blocker";
+            grid.GetTile(4, 5).Occupant = CreateBlocker();
 
             // Act
             var reachable = grid.GetReachableTiles(new Vector2Int(4, 4), 1);
