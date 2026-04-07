@@ -92,7 +92,7 @@ namespace GeneForge.Combat
                 errors.Add($"TileLayoutFlat length {config.TileLayoutFlat.Count} != expected {expectedSize} (width * depth).");
 
             // Player start tiles in bounds
-            for (int i = 0; i < config.PlayerStartTiles.Length; i++)
+            for (int i = 0; i < config.PlayerStartTiles.Count; i++)
             {
                 var tile = config.PlayerStartTiles[i];
                 if (tile.x < 0 || tile.x >= width || tile.y < 0 || tile.y >= depth)
