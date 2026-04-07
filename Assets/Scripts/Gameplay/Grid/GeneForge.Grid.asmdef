@@ -1,6 +1,6 @@
 {
-    "name": "GeneForge.Combat",
-    "rootNamespace": "GeneForge.Combat",
+    "name": "GeneForge.Grid",
+    "rootNamespace": "GeneForge.Grid",
     "references": [
         "GUID:a2365be9fbad0954a9bb29716da7ec7e"
     ],

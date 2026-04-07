@@ -38,6 +38,10 @@ namespace GeneForge.Core
         [SerializeField] float disobeyBaseChance = 0.1f;
         [SerializeField] float breakthroughChance = 0.05f;
 
+        [Header("Grid")]
+        [SerializeField] int fallDamageBase = 10;
+        [SerializeField] int fallDamageMinDelta = 3;
+
         [Header("Ecosystem")]
         [SerializeField] int conservationBonusThreshold = 80;
         [SerializeField] float migrationCycleHours = 2f;
@@ -63,6 +67,8 @@ namespace GeneForge.Core
         public float InstabilityDecayPerRest => instabilityDecayPerRest;
         public float DisobeyBaseChance => disobeyBaseChance;
         public float BreakthroughChance => breakthroughChance;
+        public int FallDamageBase => fallDamageBase;
+        public int FallDamageMinDelta => fallDamageMinDelta;
         public int ConservationBonusThreshold => conservationBonusThreshold;
         public float MigrationCycleHours => migrationCycleHours;
     }
