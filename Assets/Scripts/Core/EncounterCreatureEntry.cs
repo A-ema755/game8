@@ -6,6 +6,7 @@ namespace GeneForge.Core
     /// <summary>
     /// One enemy entry inside an EncounterConfig.
     /// Class (not struct) because it contains reference types (string, List).
+    /// Serializable for Unity Inspector embedding in EncounterConfig.
     /// Implements GDD: design/gdd/encounter-system.md §3.2.
     /// </summary>
     [System.Serializable]

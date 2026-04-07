@@ -113,6 +113,11 @@ namespace GeneForge.Combat
                     continue;
                 }
 
+                if (entry.Level <= 0)
+                    errors.Add($"Enemy[{i}] has invalid level {entry.Level} (must be > 0).");
+
+                // Note: _creatureLookup may trigger asset loads if not cached.
+                // ConfigLoader caches on init, so this is safe for MVP.
                 if (_creatureLookup(entry.SpeciesId) == null)
                     errors.Add($"Enemy[{i}] speciesId '{entry.SpeciesId}' not found in creature database.");
 
@@ -209,7 +214,7 @@ namespace GeneForge.Combat
         /// Creatures beyond available start tiles use grid center as fallback.
         /// </summary>
         private List<CreatureInstance> PlacePlayerCreatures(
-            PartyState party, Vector2Int[] startTiles, GridSystem grid)
+            PartyState party, IReadOnlyList<Vector2Int> startTiles, GridSystem grid)
         {
             var placed = new List<CreatureInstance>();
             int tileIndex = 0;
@@ -219,7 +224,7 @@ namespace GeneForge.Combat
                 if (creature.IsFainted) continue;
 
                 Vector2Int targetTile;
-                if (tileIndex < startTiles.Length)
+                if (tileIndex < startTiles.Count)
                     targetTile = GetValidTile(startTiles[tileIndex], grid);
                 else
                     targetTile = GetGridCenter(grid);

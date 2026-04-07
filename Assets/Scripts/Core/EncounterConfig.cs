@@ -48,7 +48,7 @@ namespace GeneForge.Core
         public IReadOnlyList<TerrainType> TileLayoutFlat => tileLayoutFlat;
 
         /// <summary>Tiles where player creatures spawn, in party-slot order.</summary>
-        public Vector2Int[] PlayerStartTiles => playerStartTiles;
+        public IReadOnlyList<Vector2Int> PlayerStartTiles => playerStartTiles;
 
         /// <summary>Enemy creature entries with species, level, and spawn tile.</summary>
         public IReadOnlyList<EncounterCreatureEntry> Enemies => enemies;

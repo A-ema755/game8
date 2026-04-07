@@ -16,7 +16,10 @@ namespace GeneForge.Combat
         /// <summary>Source encounter config.</summary>
         public EncounterConfig Config { get; }
 
-        /// <summary>Fully-initialized combat grid with tiles and occupants.</summary>
+        /// <summary>
+        /// Fully-initialized combat grid with tiles and occupants.
+        /// Intentionally mutable post-init — TurnManager moves occupants during combat.
+        /// </summary>
         public GridSystem Grid { get; }
 
         /// <summary>Player creatures placed on the grid (non-fainted only).</summary>
