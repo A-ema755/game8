@@ -42,6 +42,17 @@ namespace GeneForge.Core
         [SerializeField] int fallDamageBase = 10;
         [SerializeField] int fallDamageMinDelta = 3;
 
+        [Header("Creature Stats")]
+        [SerializeField] float growthMultiplierFast = 1.2f;
+        [SerializeField] float growthMultiplierMedium = 1.0f;
+        [SerializeField] float growthMultiplierSlow = 0.8f;
+        [SerializeField] float growthMultiplierErratic = 1.1f;
+        [SerializeField] float personalityBoostMultiplier = 1.1f;
+        [SerializeField] float personalityPenaltyMultiplier = 0.95f;
+        [SerializeField] int dnaStatBonusPerMod = 2;
+        [SerializeField] int blightInstabilityThreshold = 80;
+        [SerializeField] int xpBaseMultiplier = 10;
+
         [Header("Ecosystem")]
         [SerializeField] int conservationBonusThreshold = 80;
         [SerializeField] float migrationCycleHours = 2f;
@@ -71,5 +82,14 @@ namespace GeneForge.Core
         public int FallDamageMinDelta => fallDamageMinDelta;
         public int ConservationBonusThreshold => conservationBonusThreshold;
         public float MigrationCycleHours => migrationCycleHours;
+        public float GrowthMultiplierFast => growthMultiplierFast;
+        public float GrowthMultiplierMedium => growthMultiplierMedium;
+        public float GrowthMultiplierSlow => growthMultiplierSlow;
+        public float GrowthMultiplierErratic => growthMultiplierErratic;
+        public float PersonalityBoostMultiplier => personalityBoostMultiplier;
+        public float PersonalityPenaltyMultiplier => personalityPenaltyMultiplier;
+        public int DnaStatBonusPerMod => dnaStatBonusPerMod;
+        public int BlightInstabilityThreshold => blightInstabilityThreshold;
+        public int XpBaseMultiplier => xpBaseMultiplier;
     }
 }
