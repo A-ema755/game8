@@ -296,12 +296,12 @@ namespace GeneForge.Tests
         public void test_CreatureInstance_AwardXP_LearnsNewMoveAtLevelThreshold()
         {
             var creature = CreatureInstance.Create(_testConfig, 4);
-            Assert.IsFalse(creature.LearnedMoveIds.Contains("move-c"));
+            Assert.IsFalse(Enumerable.Contains(creature.LearnedMoveIds,"move-c"));
 
             creature.AwardXP(250);
 
             Assert.GreaterOrEqual(creature.Level, 5);
-            Assert.IsTrue(creature.LearnedMoveIds.Contains("move-c"));
+            Assert.IsTrue(Enumerable.Contains(creature.LearnedMoveIds,"move-c"));
         }
 
         [Test]
@@ -313,7 +313,7 @@ namespace GeneForge.Tests
             creature.LearnMove("move-e");
 
             Assert.AreEqual(4, creature.LearnedMoveIds.Count);
-            Assert.IsTrue(creature.LearnedMoveIds.Contains("move-e"));
+            Assert.IsTrue(Enumerable.Contains(creature.LearnedMoveIds,"move-e"));
         }
 
         [Test]
@@ -538,7 +538,7 @@ namespace GeneForge.Tests
             creature.RemoveStatusEffect(StatusEffect.Burn);
 
             Assert.AreEqual(1, creature.ActiveStatusEffects.Count);
-            Assert.IsFalse(creature.ActiveStatusEffects.Contains(StatusEffect.Burn));
+            Assert.IsFalse(Enumerable.Contains(creature.ActiveStatusEffects,StatusEffect.Burn));
         }
 
         [Test]

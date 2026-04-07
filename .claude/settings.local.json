@@ -57,7 +57,17 @@
       "Bash(curl -sL -o /tmp/rtk.zip \"https://github.com/rtk-ai/rtk/releases/download/v0.35.0/rtk-x86_64-pc-windows-msvc.zip\")",
       "Read(//tmp/**)",
       "Bash(mkdir -p __TRACKED_VAR__/.local/bin)",
-      "Bash(unzip -o rtk.zip -d rtk_extract)"
+      "Bash(unzip -o rtk.zip -d rtk_extract)",
+      "Bash(rtk git:*)",
+      "Bash(xargs wc:*)",
+      "Skill(team-combat)",
+      "mcp__unity__unity_console_log",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(xargs cat:*)",
+      "Bash(git pull:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

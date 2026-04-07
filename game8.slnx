@@ -1,8 +1,9 @@
 ﻿<Solution>
+  <Project Path="GeneForge.Grid.csproj" />
   <Project Path="GeneForge.Tests.EditMode.csproj" />
   <Project Path="GeneForge.Tests.PlayMode.csproj" />
+  <Project Path="GeneForge.Combat.csproj" />
   <Project Path="GeneForge.Core.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
-  <Project Path="GeneForge.Combat.csproj" />
 </Solution>
