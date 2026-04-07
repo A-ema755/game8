@@ -23,6 +23,7 @@ namespace GeneForge.Tests
         private CreatureConfig _speciesA;
         private CreatureConfig _speciesB;
         private readonly List<ScriptableObject> _createdAssets = new();
+        private readonly Dictionary<string, CreatureConfig> _creatureRegistry = new();
 
         // ── Reflection Helpers ────────────────────────────────────────────
 
@@ -37,13 +38,6 @@ namespace GeneForge.Tests
             }
             Assert.IsNotNull(field, $"Field '{fieldName}' not found on {obj.GetType().Name}");
             field.SetValue(obj, value);
-        }
-
-        private static void SetStaticField(System.Type type, string fieldName, object value)
-        {
-            var field = type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Static);
-            Assert.IsNotNull(field, $"Static field '{fieldName}' not found on {type.Name}");
-            field.SetValue(null, value);
         }
 
         // ── Factory Helpers ───────────────────────────────────────────────
@@ -133,26 +127,22 @@ namespace GeneForge.Tests
         [SetUp]
         public void SetUp()
         {
-            _manager = new EncounterManager();
             _speciesA = CreateCreatureConfig("species-a");
             _speciesB = CreateCreatureConfig("species-b");
 
-            // Register test species in ConfigLoader's static dictionary
-            var creaturesField = typeof(ConfigLoader).GetField("_creatures", BindingFlags.NonPublic | BindingFlags.Static);
-            var dict = (Dictionary<string, CreatureConfig>)creaturesField.GetValue(null);
-            dict["species-a"] = _speciesA;
-            dict["species-b"] = _speciesB;
+            _creatureRegistry.Clear();
+            _creatureRegistry["species-a"] = _speciesA;
+            _creatureRegistry["species-b"] = _speciesB;
+
+            _manager = new EncounterManager(id =>
+                _creatureRegistry.TryGetValue(id, out var c) ? c : null);
         }
 
         [TearDown]
         public void TearDown()
         {
-            // Clear ConfigLoader registries
-            var creaturesField = typeof(ConfigLoader).GetField("_creatures", BindingFlags.NonPublic | BindingFlags.Static);
-            var dict = (Dictionary<string, CreatureConfig>)creaturesField.GetValue(null);
-            dict.Clear();
+            _creatureRegistry.Clear();
 
-            // Destroy all ScriptableObject instances
             foreach (var asset in _createdAssets)
                 ScriptableObject.DestroyImmediate(asset);
             _createdAssets.Clear();
