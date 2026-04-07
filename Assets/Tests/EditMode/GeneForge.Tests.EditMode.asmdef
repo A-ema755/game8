@@ -4,6 +4,7 @@
     "references": [
         "GeneForge.Core",
         "GeneForge.Combat",
+        "GeneForge.Grid",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
