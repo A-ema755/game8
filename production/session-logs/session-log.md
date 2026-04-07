@@ -2971,3 +2971,195 @@ game8.slnx
 production/session-logs/session-log.md
 ---
 
+## Session End: 20260407_204004
+### Commits
+2152e02 Merge pull request #16 from A-ema755/feature/combat-stub-implementations
+3ad6c97 feat(combat): implement CaptureSystem, StatusEffectProcessor, MoveEffectApplier
+255a15b refactor(combat): apply code review fixes to AI Decision System
+aa5641a Merge pull request #15 from A-ema755/feature/Combat-UI
+ed2dccc feat(ui): add Combat UI system (#26) — HUD, controllers, tile highlights, tests
+a8c76fb fix(ui): replace List.GetRange with LINQ Skip for IReadOnlyList compatibility
+c532a60 fix(combat): fix PlayerStartTiles.Length → .Count after IReadOnlyList change
+8d4095c fix(combat): apply code review fixes to Encounter System
+d159aba Merge pull request #14 from A-ema755/feature/AI-Decision-System
+3a9a874 refactor(combat): apply code review fixes to Encounter System
+5a8bb52 feat(combat): add AI Decision System — scoring-based enemy behavior
+c2b9513 Merge pull request #13 from A-ema755/feature/Encounter-System
+9d2445b feat(combat): add Encounter System — config, manager, and battle context
+7876d52 Merge pull request #12 from A-ema755/chore/pending-changes
+23280dd chore: update local settings, fix test Contains calls, sync solution and session log
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+---
+
+## Session End: 20260407_204549
+### Commits
+3ad6c97 feat(combat): implement CaptureSystem, StatusEffectProcessor, MoveEffectApplier
+255a15b refactor(combat): apply code review fixes to AI Decision System
+aa5641a Merge pull request #15 from A-ema755/feature/Combat-UI
+ed2dccc feat(ui): add Combat UI system (#26) — HUD, controllers, tile highlights, tests
+a8c76fb fix(ui): replace List.GetRange with LINQ Skip for IReadOnlyList compatibility
+c532a60 fix(combat): fix PlayerStartTiles.Length → .Count after IReadOnlyList change
+8d4095c fix(combat): apply code review fixes to Encounter System
+d159aba Merge pull request #14 from A-ema755/feature/AI-Decision-System
+3a9a874 refactor(combat): apply code review fixes to Encounter System
+5a8bb52 feat(combat): add AI Decision System — scoring-based enemy behavior
+c2b9513 Merge pull request #13 from A-ema755/feature/Encounter-System
+9d2445b feat(combat): add Encounter System — config, manager, and battle context
+7876d52 Merge pull request #12 from A-ema755/chore/pending-changes
+23280dd chore: update local settings, fix test Contains calls, sync solution and session log
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_204845
+### Commits
+976930e feat(data): add test ScriptableObjects for combat — Balanced AI, TestWildEncounter, GameSettings backfill
+2152e02 Merge pull request #16 from A-ema755/feature/combat-stub-implementations
+3ad6c97 feat(combat): implement CaptureSystem, StatusEffectProcessor, MoveEffectApplier
+255a15b refactor(combat): apply code review fixes to AI Decision System
+aa5641a Merge pull request #15 from A-ema755/feature/Combat-UI
+ed2dccc feat(ui): add Combat UI system (#26) — HUD, controllers, tile highlights, tests
+a8c76fb fix(ui): replace List.GetRange with LINQ Skip for IReadOnlyList compatibility
+c532a60 fix(combat): fix PlayerStartTiles.Length → .Count after IReadOnlyList change
+8d4095c fix(combat): apply code review fixes to Encounter System
+d159aba Merge pull request #14 from A-ema755/feature/AI-Decision-System
+3a9a874 refactor(combat): apply code review fixes to Encounter System
+5a8bb52 feat(combat): add AI Decision System — scoring-based enemy behavior
+c2b9513 Merge pull request #13 from A-ema755/feature/Encounter-System
+9d2445b feat(combat): add Encounter System — config, manager, and battle context
+7876d52 Merge pull request #12 from A-ema755/chore/pending-changes
+23280dd chore: update local settings, fix test Contains calls, sync solution and session log
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_204941
+### Commits
+976930e feat(data): add test ScriptableObjects for combat — Balanced AI, TestWildEncounter, GameSettings backfill
+2152e02 Merge pull request #16 from A-ema755/feature/combat-stub-implementations
+3ad6c97 feat(combat): implement CaptureSystem, StatusEffectProcessor, MoveEffectApplier
+255a15b refactor(combat): apply code review fixes to AI Decision System
+aa5641a Merge pull request #15 from A-ema755/feature/Combat-UI
+ed2dccc feat(ui): add Combat UI system (#26) — HUD, controllers, tile highlights, tests
+a8c76fb fix(ui): replace List.GetRange with LINQ Skip for IReadOnlyList compatibility
+c532a60 fix(combat): fix PlayerStartTiles.Length → .Count after IReadOnlyList change
+8d4095c fix(combat): apply code review fixes to Encounter System
+d159aba Merge pull request #14 from A-ema755/feature/AI-Decision-System
+3a9a874 refactor(combat): apply code review fixes to Encounter System
+5a8bb52 feat(combat): add AI Decision System — scoring-based enemy behavior
+c2b9513 Merge pull request #13 from A-ema755/feature/Encounter-System
+9d2445b feat(combat): add Encounter System — config, manager, and battle context
+7876d52 Merge pull request #12 from A-ema755/chore/pending-changes
+23280dd chore: update local settings, fix test Contains calls, sync solution and session log
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_205017
+### Commits
+976930e feat(data): add test ScriptableObjects for combat — Balanced AI, TestWildEncounter, GameSettings backfill
+2152e02 Merge pull request #16 from A-ema755/feature/combat-stub-implementations
+3ad6c97 feat(combat): implement CaptureSystem, StatusEffectProcessor, MoveEffectApplier
+255a15b refactor(combat): apply code review fixes to AI Decision System
+aa5641a Merge pull request #15 from A-ema755/feature/Combat-UI
+ed2dccc feat(ui): add Combat UI system (#26) — HUD, controllers, tile highlights, tests
+a8c76fb fix(ui): replace List.GetRange with LINQ Skip for IReadOnlyList compatibility
+c532a60 fix(combat): fix PlayerStartTiles.Length → .Count after IReadOnlyList change
+8d4095c fix(combat): apply code review fixes to Encounter System
+d159aba Merge pull request #14 from A-ema755/feature/AI-Decision-System
+3a9a874 refactor(combat): apply code review fixes to Encounter System
+5a8bb52 feat(combat): add AI Decision System — scoring-based enemy behavior
+c2b9513 Merge pull request #13 from A-ema755/feature/Encounter-System
+9d2445b feat(combat): add Encounter System — config, manager, and battle context
+7876d52 Merge pull request #12 from A-ema755/chore/pending-changes
+23280dd chore: update local settings, fix test Contains calls, sync solution and session log
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_205113
+### Commits
+976930e feat(data): add test ScriptableObjects for combat — Balanced AI, TestWildEncounter, GameSettings backfill
+2152e02 Merge pull request #16 from A-ema755/feature/combat-stub-implementations
+3ad6c97 feat(combat): implement CaptureSystem, StatusEffectProcessor, MoveEffectApplier
+255a15b refactor(combat): apply code review fixes to AI Decision System
+aa5641a Merge pull request #15 from A-ema755/feature/Combat-UI
+ed2dccc feat(ui): add Combat UI system (#26) — HUD, controllers, tile highlights, tests
+a8c76fb fix(ui): replace List.GetRange with LINQ Skip for IReadOnlyList compatibility
+c532a60 fix(combat): fix PlayerStartTiles.Length → .Count after IReadOnlyList change
+8d4095c fix(combat): apply code review fixes to Encounter System
+d159aba Merge pull request #14 from A-ema755/feature/AI-Decision-System
+3a9a874 refactor(combat): apply code review fixes to Encounter System
+5a8bb52 feat(combat): add AI Decision System — scoring-based enemy behavior
+c2b9513 Merge pull request #13 from A-ema755/feature/Encounter-System
+9d2445b feat(combat): add Encounter System — config, manager, and battle context
+7876d52 Merge pull request #12 from A-ema755/chore/pending-changes
+23280dd chore: update local settings, fix test Contains calls, sync solution and session log
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
