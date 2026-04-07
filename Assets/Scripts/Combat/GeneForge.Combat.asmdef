@@ -2,7 +2,7 @@
     "name": "GeneForge.Combat",
     "rootNamespace": "GeneForge.Combat",
     "references": [
-        "GeneForge.Core"
+        "GUID:a2365be9fbad0954a9bb29716da7ec7e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
