@@ -57,6 +57,9 @@ namespace GeneForge.Core
         [SerializeField] int conservationBonusThreshold = 80;
         [SerializeField] float migrationCycleHours = 2f;
 
+        [Header("Party")]
+        [SerializeField] int maxPartySize = 6;
+
         public float BaseCaptureRate => baseCaptureRate;
         public float HpWeightMultiplier => hpWeightMultiplier;
         public float StatusCaptureBonus => statusCaptureBonus;
@@ -82,6 +85,7 @@ namespace GeneForge.Core
         public int FallDamageMinDelta => fallDamageMinDelta;
         public int ConservationBonusThreshold => conservationBonusThreshold;
         public float MigrationCycleHours => migrationCycleHours;
+        public int MaxPartySize => maxPartySize;
         public float GrowthMultiplierFast => growthMultiplierFast;
         public float GrowthMultiplierMedium => growthMultiplierMedium;
         public float GrowthMultiplierSlow => growthMultiplierSlow;
