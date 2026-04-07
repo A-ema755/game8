@@ -1,0 +1,689 @@
+/* ═══════════════════════════════════════════════════════════════
+   Gene Forge — Combat HUD Stylesheet
+   Visual spec: design/art/combat-ui-visual-spec.md
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+    /* Panel Backgrounds */
+    --panel-bg-primary: #0D1117;
+    --panel-bg-secondary: #151C25;
+    --panel-bg-raised: #1C2631;
+
+    /* Borders */
+    --panel-border-default: #2A3A4A;
+    --panel-border-active: #C8980A;
+    --panel-border-subtle: #1E2D3D;
+
+    /* Text */
+    --text-primary: #E8EEF4;
+    --text-secondary: #7A9BB5;
+    --text-disabled: #5A7A90; /* Bumped from #3D5468 for WCAG AA 4.5:1 contrast */
+    --text-warning: #E8A020;
+    --text-danger: #D94040;
+
+    /* HP Bar */
+    --hp-green: #2ECC5A;
+    --hp-amber: #E8A020;
+    --hp-red: #D94040;
+    --hp-track: #0A1520;
+
+    /* Catch Predictor */
+    --catch-green: #2ECC5A;
+    --catch-amber: #E8A020;
+    --catch-red: #D94040;
+}
+
+/* ── Root ──────────────────────────────────────────────────── */
+.combat-hud-root {
+    flex-grow: 1;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+/* ── Turn Order Bar ────────────────────────────────────────── */
+.turn-order-bar {
+    height: 72px;
+    background-color: var(--panel-bg-secondary);
+    border-bottom-width: 1px;
+    border-bottom-color: var(--panel-border-subtle);
+    padding: 8px 12px;
+    border-radius: 0 0 3px 3px;
+}
+
+.turn-order-scroll {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.turn-order-icons {
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+}
+
+/* Turn Order Icon */
+.turn-order-icon {
+    width: 52px;
+    height: 52px;
+    margin-right: 8px;
+    border-radius: 3px;
+    border-width: 1px;
+    border-color: var(--panel-border-default);
+    overflow: hidden;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    transition-property: width, height;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-out;
+}
+
+.turn-order-icon .icon-initials {
+    font-size: 16px;
+    color: #FFFFFF;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.turn-order-icon .icon-hp-pips {
+    flex-direction: row;
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+}
+
+.turn-order-icon .hp-pip {
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+    margin-right: 2px;
+    background-color: var(--panel-border-subtle);
+}
+
+.hp-pip--filled {
+    background-color: var(--hp-green);
+}
+
+.turn-order-icon .icon-status {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: rgba(13, 17, 23, 0.5);
+}
+
+/* Team tints */
+.icon--player {
+    background-color: rgba(26, 74, 138, 0.7);
+}
+
+.icon--enemy {
+    background-color: rgba(122, 26, 26, 0.7);
+}
+
+/* Active creature */
+.icon--active {
+    width: 62px;
+    height: 62px;
+    border-width: 2px;
+    border-color: var(--panel-border-active);
+    background-color: rgba(200, 144, 10, 0.5);
+}
+
+/* ── Middle Row ────────────────────────────────────────────── */
+.middle-row {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+/* ── Creature Info Panel ───────────────────────────────────── */
+.creature-info-panel {
+    width: 320px;
+    background-color: var(--panel-bg-primary);
+    border-right-width: 1px;
+    border-right-color: var(--panel-border-subtle);
+    padding: 12px;
+    border-radius: 0 3px 3px 0;
+    flex-shrink: 0;
+}
+
+.info-header {
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.creature-name {
+    font-size: 22px;
+    color: var(--text-primary);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    flex-grow: 1;
+}
+
+.creature-level {
+    font-size: 14px;
+    color: var(--text-secondary);
+    -unity-font-style: bold;
+    margin-left: 8px;
+}
+
+/* Type Badges */
+.type-badges {
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.type-badge {
+    height: 20px;
+    min-width: 52px;
+    padding: 0 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: #FFFFFF;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+    margin-right: 4px;
+    background-color: var(--panel-bg-raised);
+}
+
+/* Per-type badge colors */
+.type-badge--thermal { background-color: #C84A1A; }
+.type-badge--aqua { background-color: #1A6ECC; }
+.type-badge--organic { background-color: #2A7A2E; }
+.type-badge--bioelectric { background-color: #B8A010; }
+.type-badge--cryo { background-color: #3A8FB5; }
+.type-badge--mineral { background-color: #6A7A5A; }
+.type-badge--toxic { background-color: #9040D0; } /* Lightened from #8030C0 for WCAG contrast */
+.type-badge--neural { background-color: #7060B8; } /* Lightened from #6050A8 for WCAG contrast */
+.type-badge--ferro { background-color: #4A6078; }
+.type-badge--kinetic { background-color: #A05020; }
+.type-badge--aero { background-color: #2898B0; }
+.type-badge--sonic { background-color: #922870; }
+.type-badge--ark { background-color: #C89A10; color: #0D1117; }
+.type-badge--blight { background-color: #587010; }
+
+/* Stat Rows */
+.stat-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 12px; /* Bumped from 11px for accessibility minimum */
+    color: var(--text-secondary);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    width: 80px;
+}
+
+.stat-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    flex-grow: 1;
+}
+
+/* HP Bar */
+.hp-bar-track {
+    height: 10px;
+    background-color: var(--hp-track);
+    border-width: 1px;
+    border-color: var(--panel-border-subtle);
+    border-radius: 2px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.hp-bar-fill {
+    height: 100%;
+    width: 100%;
+    border-radius: 1px;
+    transition-property: width;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out;
+}
+
+.hp-bar--healthy { background-color: var(--hp-green); }
+.hp-bar--caution { background-color: var(--hp-amber); }
+.hp-bar--critical { background-color: var(--hp-red); }
+
+/* Instability Bar */
+.instability-bar-track {
+    height: 8px;
+    background-color: var(--hp-track);
+    border-width: 1px;
+    border-color: var(--panel-border-subtle);
+    border-radius: 2px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.instability-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--hp-green);
+    border-radius: 1px;
+}
+
+/* Instability color states */
+.instability--stable { background-color: #2ECC5A; }
+.instability--volatile { background-color: #E8A020; }
+.instability--critical { background-color: #CC2222; }
+
+.instability-warning {
+    font-size: 14px;
+    color: var(--text-warning);
+    -unity-font-style: bold;
+    margin-left: 4px;
+    display: none;
+}
+
+.instability-warning--visible {
+    display: flex;
+}
+
+/* Status Effects */
+.status-effects {
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.status-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    margin-right: 4px;
+    background-color: rgba(13, 17, 23, 0.5);
+    display: none;
+}
+
+.status-icon--active {
+    display: flex;
+}
+
+.status-icon .status-badge {
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background-color: var(--panel-bg-raised);
+    border-width: 1px;
+    border-color: var(--panel-border-default);
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    font-size: 9px;
+    color: var(--text-primary);
+    -unity-text-align: middle-center;
+}
+
+/* Body Part Slots */
+.body-part-slots {
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.body-slot-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 4px;
+    border-radius: 2px;
+    background-color: var(--panel-bg-raised);
+    border-width: 1px;
+    border-color: var(--panel-border-subtle);
+}
+
+/* Catch Predictor */
+.catch-predictor {
+    background-color: var(--hp-track);
+    border-width: 1px;
+    border-color: var(--panel-border-subtle);
+    padding: 8px;
+    border-radius: 2px;
+    margin-top: 10px;
+}
+
+.catch-predictor-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.catch-predictor-value {
+    font-size: 28px;
+    -unity-font-style: bold;
+}
+
+.catch-predictor--good { color: var(--catch-green); }
+.catch-predictor--marginal { color: var(--catch-amber); }
+.catch-predictor--low { color: var(--catch-red); }
+.catch-predictor--disabled { color: var(--text-disabled); }
+
+/* ── Grid Viewport ─────────────────────────────────────────── */
+.grid-viewport {
+    flex-grow: 1;
+}
+
+/* ── Move Selection Panel ──────────────────────────────────── */
+.move-selection-panel {
+    height: 140px;
+    background-color: var(--panel-bg-primary);
+    border-top-width: 1px;
+    border-top-color: var(--panel-border-subtle);
+    padding: 8px 12px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px 3px 0 0;
+}
+
+.move-button-container {
+    max-width: 1200px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Move Button */
+.move-button {
+    width: 392px;
+    height: 64px;
+    padding: 8px 12px;
+    margin: 4px;
+    border-radius: 4px;
+    background-color: var(--panel-bg-raised);
+    border-width: 1px;
+    border-color: var(--panel-border-default);
+    flex-direction: column;
+    justify-content: space-between;
+    transition-property: background-color, border-color;
+    transition-duration: 0.1s;
+}
+
+.move-button:hover {
+    background-color: #243040;
+    border-color: #3A5A6A;
+}
+
+.move-btn-row1 {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.move-type-label {
+    font-size: 11px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    /* Default color; overridden per-type via C# AddToClassList */
+    color: var(--text-secondary);
+}
+
+.move-form-label {
+    font-size: 10px;
+    -unity-font-style: bold;
+    /* Default color; overridden per-form via C# AddToClassList */
+    color: var(--text-secondary);
+}
+
+/* Per-type colors for move type labels (visual spec §1.6) */
+.type-label--thermal { color: #C84A1A; }
+.type-label--aqua { color: #1A6ECC; }
+.type-label--organic { color: #2A7A2E; }
+.type-label--bioelectric { color: #B8A010; }
+.type-label--cryo { color: #3A8FB5; }
+.type-label--mineral { color: #6A7A5A; }
+.type-label--toxic { color: #8030C0; }
+.type-label--neural { color: #6050A8; }
+.type-label--ferro { color: #4A6078; }
+.type-label--kinetic { color: #A05020; }
+.type-label--aero { color: #2898B0; }
+.type-label--sonic { color: #922870; }
+.type-label--ark { color: #C89A10; }
+.type-label--blight { color: #587010; }
+
+.move-name-label {
+    font-size: 15px;
+    color: var(--text-primary);
+    -unity-font-style: bold;
+}
+
+.move-btn-row3 {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.move-pp-label {
+    font-size: 12px;
+    color: var(--text-primary);
+}
+
+/* Power Dots (visual spec §4.4) */
+.power-dots {
+    flex-direction: row;
+    align-items: center;
+}
+
+.power-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    margin-right: 3px;
+    background-color: #1E2D3D;
+}
+
+.power-dot--filled {
+    opacity: 0.8;
+}
+
+/* Move Button States */
+.move-button:active {
+    background-color: #111820;
+    border-color: #2A3A4A;
+}
+
+.move-button:active .move-name-label {
+    color: #C0CCD8;
+}
+
+.move-button--selected {
+    background-color: #1E1A0A;
+    border-width: 2px;
+    border-color: #C8900A;
+}
+
+.move-button--selected .move-name-label {
+    color: #E8D880;
+}
+
+.move-button--no-pp {
+    opacity: 0.55;
+}
+
+.move-button--no-access {
+    background-color: #1A1010;
+    border-color: #4A2020;
+}
+
+.move-button--no-access .move-name-label {
+    color: #884040;
+}
+
+.move-button--struggle {
+    background-color: #0D1A1A;
+    border-color: #304848;
+}
+
+.move-button--struggle .move-name-label {
+    color: #708888;
+}
+
+.move-button--empty {
+    opacity: 0.3;
+}
+
+.move-button--disabled {
+    opacity: 0.55;
+}
+
+.move-button--special {
+    align-items: center;
+    justify-content: center;
+}
+
+/* Focus ring for keyboard navigation (accessibility §7.4) */
+.move-button:focus {
+    border-width: 2px;
+    border-color: #E8EEF4;
+}
+
+.switch-slot:focus,
+.switch-slot--focused {
+    border-width: 2px;
+    border-color: var(--panel-border-active);
+}
+
+/* Panel locked state */
+.panel--locked {
+    opacity: 0.5;
+}
+
+/* ── Switch Overlay ────────────────────────────────────────── */
+.switch-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.switch-backdrop {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.72);
+    transition-property: opacity;
+    transition-duration: 0.2s;
+}
+
+/* Centering via flex on parent instead of translate (unsupported % in USS) */
+.switch-panel {
+    width: 600px;
+    background-color: var(--panel-bg-primary);
+    border-width: 1px;
+    border-color: var(--panel-border-default);
+    border-radius: 3px;
+    padding: 16px;
+}
+
+.switch-title {
+    font-size: 18px;
+    color: var(--text-primary);
+    -unity-font-style: bold;
+    margin-bottom: 12px;
+    -unity-text-align: middle-center;
+}
+
+.switch-slots {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.switch-slot {
+    width: 120px;
+    height: 80px;
+    margin: 4px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: var(--panel-bg-raised);
+    border-width: 1px;
+    border-color: var(--panel-border-default);
+    align-items: center;
+    justify-content: center;
+}
+
+.switch-slot:hover {
+    border-color: #3A5A6A;
+    background-color: #243040;
+}
+
+.switch-slot--fainted {
+    opacity: 0.35;
+    -unity-background-image-tint-color: rgba(128, 128, 128, 0.8);
+}
+
+.switch-slot--active {
+    border-color: var(--panel-border-active);
+}
+
+.switch-slot .slot-name {
+    font-size: 12px;
+    color: var(--text-primary);
+    -unity-font-style: bold;
+}
+
+.switch-slot .slot-hp {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.switch-info {
+    font-size: 13px;
+    color: var(--text-secondary);
+    -unity-text-align: middle-center;
+    margin-top: 8px;
+}
+
+/* ── Type Effectiveness Callout ────────────────────────────── */
+.callout-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.type-callout {
+    position: absolute;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    transition-property: opacity, scale;
+    transition-duration: 0.3s;
+}
+
+.type-callout--super-effective {
+    font-size: 28px;
+    color: #FF4444;
+}
+
+.type-callout--not-very-effective {
+    font-size: 22px;
+    color: #5588FF;
+}
+
+/* ── Combat End Overlay ────────────────────────────────────── */
+.combat-end-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.72);
+    align-items: center;
+    justify-content: center;
+}
+
+.combat-end-label {
+    font-size: 48px;
+    color: var(--text-primary);
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+/* ── Damage Form Colors ────────────────────────────────────── */
+.form--physical { color: #D4C8A8; }
+.form--energy { color: #40A8E8; }
+.form--bio { color: #58C870; }

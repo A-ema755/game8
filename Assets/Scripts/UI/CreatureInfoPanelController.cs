@@ -33,6 +33,7 @@ namespace GeneForge.UI
         private readonly VisualElement _statusEffects;
         private readonly VisualElement _catchPredictor;
         private readonly Label _catchPredictorValue;
+        private readonly VisualElement[] _statusIcons = new VisualElement[4];
 
         // Target tracking (priority stack per UX spec §8.3)
         // Priority: (1) explicit click > (2) hover > (3) default
@@ -78,6 +79,10 @@ namespace GeneForge.UI
             _statusEffects = root.Q("status-effects");
             _catchPredictor = root.Q("catch-predictor");
             _catchPredictorValue = root.Q<Label>("catch-predictor-value");
+
+            // Cache status icon elements to avoid Q() in refresh loop
+            for (int i = 0; i < 4; i++)
+                _statusIcons[i] = _statusEffects?.Q($"status-icon-{i}");
         }
 
         /// <summary>Set the default target (player's active creature).</summary>
@@ -242,19 +247,24 @@ namespace GeneForge.UI
             else
                 _hpBarFill.AddToClassList("hp-bar--critical");
 
-            // Instability bar
+            // Instability bar — max 100 per GDD instability-system.md §4
+            const float MaxInstability = 100f;
             int instability = creature.Instability;
-            float instabilityRatio = instability / 100f;
+            float instabilityRatio = instability / MaxInstability;
             _instabilityValue.text = instability.ToString();
             _instabilityBarFill.style.width = Length.Percent(instabilityRatio * 100f);
 
-            // Instability color
+            // Instability color via USS classes (not inline styles)
+            _instabilityBarFill.RemoveFromClassList("instability--stable");
+            _instabilityBarFill.RemoveFromClassList("instability--volatile");
+            _instabilityBarFill.RemoveFromClassList("instability--critical");
+
             if (instability >= 75)
-                _instabilityBarFill.style.backgroundColor = new Color(0.80f, 0.13f, 0.13f);
+                _instabilityBarFill.AddToClassList("instability--critical");
             else if (instability >= 50)
-                _instabilityBarFill.style.backgroundColor = new Color(0.91f, 0.63f, 0.06f);
+                _instabilityBarFill.AddToClassList("instability--volatile");
             else
-                _instabilityBarFill.style.backgroundColor = new Color(0.18f, 0.80f, 0.35f);
+                _instabilityBarFill.AddToClassList("instability--stable");
 
             // Instability warning
             if (instability >= 50)
@@ -313,7 +323,7 @@ namespace GeneForge.UI
             var effects = creature.ActiveStatusEffects;
             for (int i = 0; i < 4; i++)
             {
-                var iconElement = _statusEffects.Q($"status-icon-{i}");
+                var iconElement = _statusIcons[i];
                 if (iconElement == null) continue;
 
                 if (effects != null && i < effects.Count)

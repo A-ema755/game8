@@ -1,0 +1,18 @@
+{
+    "name": "GeneForge.UI",
+    "rootNamespace": "GeneForge.UI",
+    "references": [
+        "GUID:a2365be9fbad0954a9bb29716da7ec7e",
+        "GUID:ac121ad629328e54a9154761bb5ff138",
+        "GUID:a420e07fa2692194cb2e6c26e72f6720"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
