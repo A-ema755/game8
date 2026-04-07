@@ -8,21 +8,21 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 
 | # | System | MVP | Status | Description |
 |---|--------|-----|--------|-------------|
-| 1 | Data Configuration Pipeline* | Yes | **Approved** | ScriptableObjects, enums, ConfigLoader |
-| 2 | Grid / Tile System* | Yes | Draft | Isometric 3D grid, height, A*, flanking, line-of-sight (LoS owned here, not Terrain System) |
-| 3 | Game State Manager* | Yes | **Approved** | Scene state machine, transitions |
+| 1 | Data Configuration Pipeline* | Yes | **Implemented** | ScriptableObjects, enums, ConfigLoader |
+| 2 | Grid / Tile System* | Yes | **Implemented** | Isometric 3D grid, height, A*, flanking, line-of-sight (LoS owned here, not Terrain System) |
+| 3 | Game State Manager* | Yes | **Implemented** | Scene state machine, transitions |
 | 4 | Save/Load System* | Yes | Draft | JSON persistence for all state |
-| 5 | Type Chart System* | Yes | **Approved** | 14 genome types (3 tiers), 36 SE relationships, STAB, no immunities |
+| 5 | Type Chart System* | Yes | **Implemented** | 14 genome types (3 tiers), 36 SE relationships, STAB, no immunities |
 
 ## Core Layer (Depends on Foundation)
 
 | # | System | MVP | Status | Description |
 |---|--------|-----|--------|-------------|
-| 6 | Creature Database* | Yes | **In Review** | Species configs: types, base stats, move pools, catch rates |
-| 7 | Move Database* | Yes | **In Review** | Move configs: genome type, damage form, power, accuracy, PP, effects, targeting |
+| 6 | Creature Database* | Yes | **Implemented** | Species configs: types, base stats, move pools, catch rates |
+| 7 | Move Database* | Yes | **Implemented** | Move configs: genome type, damage form, power, accuracy, PP, effects, targeting |
 | 8 | Turn Manager* | Yes | Draft | Phase-based combat sequencing, events |
 | 9 | Damage & Health System* | Yes | Draft | Combat math with 3 damage forms (Physical/Energy/Bio), type multipliers, terrain synergy, height bonus |
-| 10 | Creature Instance* | Yes | Draft | Runtime creature state: HP, level, XP, moves, DNA mods |
+| 10 | Creature Instance* | Yes | **Implemented** | Runtime creature state: HP, level, XP, moves, DNA mods |
 | 11 | Terrain System | No | Draft | Tile effects, type synergy tiles, LoS |
 | 39 | Terrain Alteration System | No | Draft | Select creatures alter tiles mid-battle (scorch, freeze, grow, flood) |
 | 40 | Threat / Aggro System* | Yes | Draft | Threat scoring, taunt, stealth, aggro manipulation |

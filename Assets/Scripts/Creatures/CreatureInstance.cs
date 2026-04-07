@@ -217,6 +217,25 @@ namespace GeneForge.Creatures
         [SerializeField] private List<string> _affinityCreatureIds = new();
         [SerializeField] private List<int> _affinityValues = new();
 
+        // ── Accuracy / Evasion Stage Multipliers (Stub) ─────────────────────
+        // Stubs for the post-MVP stat stage system.
+        // Full implementation: maintain a stage int (-3 to +3) and map via the
+        // stage table in GDD Turn Manager §3.9. TurnManager.MoveHitCheck reads these.
+
+        /// <summary>
+        /// Accuracy stage multiplier used in hit-chance calculation.
+        /// Stub — always returns 1.0f until the stat stage system is implemented (post-MVP).
+        /// Full stage table: -3=0.50, -2=0.67, -1=0.75, 0=1.00, +1=1.33, +2=1.50, +3=2.00.
+        /// </summary>
+        public float AccuracyStageMultiplier => 1.0f;
+
+        /// <summary>
+        /// Evasion stage multiplier used in hit-chance calculation.
+        /// Stub — always returns 1.0f until the stat stage system is implemented (post-MVP).
+        /// Full stage table: -3=0.50, -2=0.67, -1=0.75, 0=1.00, +1=1.33, +2=1.50, +3=2.00.
+        /// </summary>
+        public float EvasionStageMultiplier => 1.0f;
+
         // ── Battle State ─────────────────────────────────────────────────
         [SerializeField] private Vector2Int _gridPosition;
 
@@ -438,7 +457,7 @@ namespace GeneForge.Creatures
         /// <summary>Equip a body part to a slot. Validates archetype compatibility.</summary>
         public bool EquipPart(BodySlot slot, string partId)
         {
-            if (!_config.AvailableSlots.Contains(slot))
+            if (!Enumerable.Contains(_config.AvailableSlots, slot))
                 return false;
 
             var partConfig = ConfigLoader.GetBodyPart(partId);

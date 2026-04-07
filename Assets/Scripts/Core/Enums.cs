@@ -229,4 +229,29 @@ namespace GeneForge.Core
         Curious = 5,
         Territorial = 6
     }
+
+    /// <summary>
+    /// Type of combat encounter. Determines Flee and Capture behavior in TurnManager.
+    /// Wild: fleeing succeeds, capturing allowed.
+    /// Trainer: fleeing always fails, capturing trainer creatures always fails.
+    /// Nest/Trophy/Horde: wild-type rules apply unless specified otherwise.
+    /// Implements GDD Turn Manager §3.13 and §3.8 (Flee/Capture sequences).
+    /// </summary>
+    public enum EncounterType
+    {
+        /// <summary>Wild creature encounter. Flee allowed; capture allowed.</summary>
+        Wild    = 0,
+
+        /// <summary>Trainer battle. Flee not allowed; capture always fails.</summary>
+        Trainer = 1,
+
+        /// <summary>Creature nest encounter. Flee allowed; capture allowed.</summary>
+        Nest    = 2,
+
+        /// <summary>Trophy hunt encounter (rare/legendary). Flee allowed; capture allowed.</summary>
+        Trophy  = 3,
+
+        /// <summary>Horde encounter (multiple wild creatures). Flee allowed; capture allowed.</summary>
+        Horde   = 4
+    }
 }

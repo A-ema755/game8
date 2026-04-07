@@ -2,7 +2,8 @@
     "name": "GeneForge.Combat",
     "rootNamespace": "GeneForge.Combat",
     "references": [
-        "GUID:a2365be9fbad0954a9bb29716da7ec7e"
+        "GUID:a2365be9fbad0954a9bb29716da7ec7e",
+        "GUID:a420e07fa2692194cb2e6c26e72f6720"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
