@@ -13,9 +13,25 @@ namespace GeneForge.Combat
     /// Pure C# — no MonoBehaviour (ADR-002).
     /// Implements GDD: design/gdd/encounter-system.md §3.3.
     /// </summary>
-    public class EncounterManager
+    public class EncounterManager : IEncounterManager
     {
         const string Tag = "[EncounterManager]";
+
+        private readonly System.Func<string, CreatureConfig> _creatureLookup;
+
+        /// <summary>
+        /// Create an EncounterManager with default ConfigLoader creature lookup.
+        /// </summary>
+        public EncounterManager() : this(ConfigLoader.GetCreature) { }
+
+        /// <summary>
+        /// Create an EncounterManager with an injected creature lookup function.
+        /// Enables testing without ConfigLoader static state.
+        /// </summary>
+        public EncounterManager(System.Func<string, CreatureConfig> creatureLookup)
+        {
+            _creatureLookup = creatureLookup;
+        }
 
         // ── Public API ──────────────────────────────────────────────────
 
@@ -70,10 +86,10 @@ namespace GeneForge.Combat
             int expectedSize = width * depth;
 
             // Flat array lengths
-            if (config.HeightMapFlat.Length != expectedSize)
-                errors.Add($"HeightMapFlat length {config.HeightMapFlat.Length} != expected {expectedSize} (width * depth).");
-            if (config.TileLayoutFlat.Length != expectedSize)
-                errors.Add($"TileLayoutFlat length {config.TileLayoutFlat.Length} != expected {expectedSize} (width * depth).");
+            if (config.HeightMapFlat.Count != expectedSize)
+                errors.Add($"HeightMapFlat length {config.HeightMapFlat.Count} != expected {expectedSize} (width * depth).");
+            if (config.TileLayoutFlat.Count != expectedSize)
+                errors.Add($"TileLayoutFlat length {config.TileLayoutFlat.Count} != expected {expectedSize} (width * depth).");
 
             // Player start tiles in bounds
             for (int i = 0; i < config.PlayerStartTiles.Length; i++)
@@ -97,8 +113,7 @@ namespace GeneForge.Combat
                     continue;
                 }
 
-                if (ConfigLoader.Creatures != null &&
-                    !ConfigLoader.Creatures.ContainsKey(entry.SpeciesId))
+                if (_creatureLookup(entry.SpeciesId) == null)
                     errors.Add($"Enemy[{i}] speciesId '{entry.SpeciesId}' not found in creature database.");
 
                 var spawn = entry.SpawnTile;
@@ -123,8 +138,8 @@ namespace GeneForge.Combat
             var grid = new GridSystem(width, depth);
             int expectedSize = width * depth;
 
-            bool hasValidHeightMap = config.HeightMapFlat.Length == expectedSize;
-            bool hasValidTileLayout = config.TileLayoutFlat.Length == expectedSize;
+            bool hasValidHeightMap = config.HeightMapFlat.Count == expectedSize;
+            bool hasValidTileLayout = config.TileLayoutFlat.Count == expectedSize;
 
             for (int z = 0; z < depth; z++)
             {
@@ -162,7 +177,7 @@ namespace GeneForge.Combat
             for (int i = 0; i < config.Enemies.Count; i++)
             {
                 var entry = config.Enemies[i];
-                var creatureConfig = ConfigLoader.GetCreature(entry.SpeciesId);
+                var creatureConfig = _creatureLookup(entry.SpeciesId);
 
                 if (creatureConfig == null)
                 {
@@ -177,7 +192,11 @@ namespace GeneForge.Combat
 
                 var tileData = grid.GetTile(spawnTile);
                 if (tileData != null)
+                {
+                    if (tileData.Occupant != null)
+                        Debug.LogWarning($"{Tag} Enemy[{i}] tile ({spawnTile.x}, {spawnTile.y}) already occupied. Overwriting.");
                     tileData.Occupant = creature;
+                }
 
                 enemies.Add(creature);
             }
@@ -209,7 +228,11 @@ namespace GeneForge.Combat
 
                 var tileData = grid.GetTile(targetTile);
                 if (tileData != null)
+                {
+                    if (tileData.Occupant != null)
+                        Debug.LogWarning($"{Tag} Player tile ({targetTile.x}, {targetTile.y}) already occupied. Overwriting.");
                     tileData.Occupant = creature;
+                }
 
                 placed.Add(creature);
                 tileIndex++;

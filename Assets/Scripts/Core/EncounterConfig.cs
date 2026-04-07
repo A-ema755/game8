@@ -42,10 +42,10 @@ namespace GeneForge.Core
         public Vector2Int GridDimensions => gridDimensions;
 
         /// <summary>Flat height map. Use GetHeight(x, z) for indexed access.</summary>
-        public int[] HeightMapFlat => heightMapFlat;
+        public IReadOnlyList<int> HeightMapFlat => heightMapFlat;
 
         /// <summary>Flat terrain layout. Use GetTerrain(x, z) for indexed access.</summary>
-        public TerrainType[] TileLayoutFlat => tileLayoutFlat;
+        public IReadOnlyList<TerrainType> TileLayoutFlat => tileLayoutFlat;
 
         /// <summary>Tiles where player creatures spawn, in party-slot order.</summary>
         public Vector2Int[] PlayerStartTiles => playerStartTiles;
