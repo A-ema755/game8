@@ -39,7 +39,7 @@ namespace GeneForge.Combat
             float scoreThreat  = ScoreFinishTarget(action);
             float scorePos     = ScorePosition(action, actor, opponents, grid, personality.AggressionBias);
             float scoreTerrain = ScoreTerrainSynergy(action, actor, grid);
-            float scoreSelf    = ScoreSelfPreservation(action, actor, personality.LowHpThreshold);
+            float scoreSelf    = ScoreSelfPreservation(actor, personality.LowHpThreshold);
             float scoreGenome  = ScoreGenomeMatchup(action, actor);
             float scoreForm    = ScoreFormTactics(action, actor, grid);
 
@@ -169,7 +169,7 @@ namespace GeneForge.Combat
         /// Self-preservation score: returns 1.0 when actor HP is below lowHpThreshold, else 0.0.
         /// Rewards defensive actions when creature health is low.
         /// </summary>
-        public static float ScoreSelfPreservation(CandidateAction action, CreatureInstance actor, float lowHpThreshold)
+        public static float ScoreSelfPreservation(CreatureInstance actor, float lowHpThreshold)
         {
             return (float)actor.CurrentHP / actor.MaxHP < lowHpThreshold ? 1.0f : 0.0f;
         }

@@ -341,7 +341,7 @@ namespace GeneForge.Tests
             var action = new CandidateAction(null, null, creature.GridPosition);
 
             // Act
-            float score = AIActionScorer.ScoreSelfPreservation(action, creature, 0.3f);
+            float score = AIActionScorer.ScoreSelfPreservation(creature, 0.3f);
 
             // Assert
             Assert.AreEqual(1.0f, score);
@@ -355,7 +355,7 @@ namespace GeneForge.Tests
             var action = new CandidateAction(null, null, creature.GridPosition);
 
             // Act
-            float score = AIActionScorer.ScoreSelfPreservation(action, creature, 0.3f);
+            float score = AIActionScorer.ScoreSelfPreservation(creature, 0.3f);
 
             // Assert
             Assert.AreEqual(0.0f, score);
@@ -463,15 +463,20 @@ namespace GeneForge.Tests
         {
             // Arrange
             var personality = CreatePersonality(randomness: 0.1f);
+            var move = CreateMove("flame-claw", CreatureType.Thermal, DamageForm.Physical, 60);
+            Func<string, MoveConfig> mockLookup = id => id == "flame-claw" ? move : null;
+
             var attacker = CreatureInstance.Create(_thermalConfig, 10);
             var target = CreatureInstance.Create(_aquaConfig, 10);
             attacker.SetGridPosition(new Vector2Int(2, 2));
             target.SetGridPosition(new Vector2Int(3, 3));
 
-            // Give attacker a move it can use (need to set up ConfigLoader mock scenario)
-            // Since ConfigLoader.GetMove requires loaded configs, test determinism via scorer
-            var system1 = new AIDecisionSystem(personality, new System.Random(42));
-            var system2 = new AIDecisionSystem(personality, new System.Random(42));
+            // Give attacker a learned move via reflection
+            SetField(attacker, "_learnedMoveIds", new List<string> { "flame-claw" });
+            SetField(attacker, "_learnedMovePP", new List<int> { 10 });
+
+            var system1 = new AIDecisionSystem(personality, new System.Random(42), mockLookup);
+            var system2 = new AIDecisionSystem(personality, new System.Random(42), mockLookup);
 
             var opponents = new List<CreatureInstance> { target };
             var allies = new List<CreatureInstance>();
@@ -483,17 +488,20 @@ namespace GeneForge.Tests
             // Assert
             Assert.AreEqual(result1.Action, result2.Action,
                 "Same seed should produce identical action type");
+            Assert.AreEqual(ActionType.UseMove, result1.Action,
+                "Should select a move, not Wait, when a valid move is available");
         }
 
         [Test]
         public void test_DecideAction_random_jitter_within_randomness_factor_bounds()
         {
-            // Arrange — test that jitter doesn't exceed randomnessFactor
-            // Use 0 randomness and verify score matches raw scoring
+            // Arrange — run multiple iterations and verify all jittered scores
+            // fall within rawScore ± randomnessFactor
+            float randomness = 0.1f;
             var personality = CreatePersonality(
                 wDamage: 1f, wKill: 0f, wThreat: 0f,
                 wPosition: 0f, wTerrain: 0f, wSelf: 0f,
-                wGenome: 0f, wForm: 0f, randomness: 0f);
+                wGenome: 0f, wForm: 0f, randomness: randomness);
 
             var move = CreateMove("flame-claw", CreatureType.Thermal, DamageForm.Physical, 60);
             var attacker = CreatureInstance.Create(_thermalConfig, 10);
@@ -501,16 +509,25 @@ namespace GeneForge.Tests
             attacker.SetGridPosition(new Vector2Int(2, 2));
             target.SetGridPosition(new Vector2Int(3, 3));
             var action = new CandidateAction(move, target, attacker.GridPosition);
-
-            // Act — with 0 randomness, jitter should be exactly 0
             var opponents = new List<CreatureInstance> { target };
+
+            // Compute raw score (no jitter)
             float rawScore = AIActionScorer.ScoreAction(
                 action, attacker, opponents, _grid, personality);
 
-            // The composite score should equal the raw score when randomness is 0
-            // We can't directly inspect candidate scores from DecideAction,
-            // but we verify the scorer itself works correctly
-            Assert.GreaterOrEqual(rawScore, 0f, "Raw score should be non-negative for a damaging move");
+            // Act — simulate jitter across 100 iterations
+            var rng = new System.Random(42);
+            for (int i = 0; i < 100; i++)
+            {
+                float jitter = ((float)rng.NextDouble() * 2f - 1f) * randomness;
+                float jitteredScore = rawScore + jitter;
+
+                // Assert — each jittered score must be within bounds
+                Assert.GreaterOrEqual(jitteredScore, rawScore - randomness,
+                    $"Iteration {i}: jittered score {jitteredScore} below lower bound {rawScore - randomness}");
+                Assert.LessOrEqual(jitteredScore, rawScore + randomness,
+                    $"Iteration {i}: jittered score {jitteredScore} above upper bound {rawScore + randomness}");
+            }
         }
 
         // ══════════════════════════════════════════════════════════════════
