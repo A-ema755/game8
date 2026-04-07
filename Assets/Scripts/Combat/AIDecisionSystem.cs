@@ -171,7 +171,6 @@ namespace GeneForge.Combat
             GridSystem grid)
         {
             var candidates = new List<CandidateAction>();
-            bool hasUsableMove = false;
 
             // Enumerate move + target combinations
             for (int slot = 0; slot < creature.LearnedMoveIds.Count; slot++)
@@ -187,8 +186,6 @@ namespace GeneForge.Combat
                 // Check form access (DamageForm.None is always accessible — status moves)
                 if (moveConfig.Form != DamageForm.None && !creature.AvailableForms.Contains(moveConfig.Form))
                     continue;
-
-                hasUsableMove = true;
 
                 // Generate candidates based on targeting type
                 switch (moveConfig.TargetType)
