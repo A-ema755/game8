@@ -20,8 +20,8 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 |---|--------|-----|--------|-------------|
 | 6 | Creature Database* | Yes | **Implemented** | Species configs: types, base stats, move pools, catch rates |
 | 7 | Move Database* | Yes | **Implemented** | Move configs: genome type, damage form, power, accuracy, PP, effects, targeting |
-| 8 | Turn Manager* | Yes | Draft | Phase-based combat sequencing, events |
-| 9 | Damage & Health System* | Yes | Draft | Combat math with 3 damage forms (Physical/Energy/Bio), type multipliers, terrain synergy, height bonus |
+| 8 | Turn Manager* | Yes | **Implemented** | Phase-based combat sequencing, events |
+| 9 | Damage & Health System* | Yes | **Implemented** | Combat math with 3 damage forms (Physical/Energy/Bio), type multipliers, terrain synergy, height bonus |
 | 10 | Creature Instance* | Yes | **Implemented** | Runtime creature state: HP, level, XP, moves, DNA mods |
 | 11 | Terrain System | No | Draft | Tile effects, type synergy tiles, LoS |
 | 39 | Terrain Alteration System | No | Draft | Select creatures alter tiles mid-battle (scorch, freeze, grow, flood) |
