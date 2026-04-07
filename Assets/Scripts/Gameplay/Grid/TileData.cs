@@ -1,5 +1,6 @@
 using UnityEngine;
 using GeneForge.Core;
+using GeneForge.Creatures;
 
 namespace GeneForge.Grid
 {
@@ -27,11 +28,8 @@ namespace GeneForge.Grid
         /// <summary>True if this tile provides cover (reduces Energy move damage by 0.5×).</summary>
         public bool ProvidesCover { get; }
 
-        /// <summary>
-        /// The creature occupying this tile, or null if empty.
-        /// TODO: Type as CreatureInstance once that class exists.
-        /// </summary>
-        public object Occupant { get; set; }
+        /// <summary>The creature occupying this tile, or null if empty.</summary>
+        public CreatureInstance Occupant { get; set; }
 
         /// <summary>True when a creature occupies this tile.</summary>
         public bool IsOccupied => Occupant != null;
