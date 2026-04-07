@@ -31,17 +31,17 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 
 | # | System | MVP | Status | Description |
 |---|--------|-----|--------|-------------|
-| 12 | Capture System* | Yes | Draft | Gene traps, catch rate formula, catch predictor UI |
+| 12 | Capture System* | Yes | **Implemented** | Gene traps, catch rate formula, catch predictor UI |
 | 13 | DNA Alteration System* | Yes | Draft | Stat boosts, perk grafts, instability, mutation risk |
 | 34 | Body Part System* | Yes | Draft | Modular body slots, part blueprints, part conflicts, synergy sets |
 | 35 | Color & Pattern System | No | Draft | Type-driven color, donor patterns, camouflage, scars |
 | 36 | Creature Personality System | No | Draft | Behavioral DNA traits, visual personality indicators |
 | 37 | Procedural Animation System | No | Draft | Part-driven animation blending, size-based playback |
 | 38 | Sound Mutation System | No | Draft | DNA-driven vocalization layering |
-| 14 | Party System* | Yes | Draft | Active party, storage, swap, field abilities |
+| 14 | Party System* | Yes | **Implemented** | Active party, storage, swap, field abilities |
 | 15 | Leveling / XP System* | Yes | Draft | XP gain, stat growth curves, move learning |
-| 16 | AI Decision System* | Yes | Draft | Scoring-based enemy AI, trainer personalities |
-| 17 | Encounter System* | Yes | Draft | Wild, trainer, nest, trophy, horde encounter types |
+| 16 | AI Decision System* | Yes | **Implemented** | Scoring-based enemy AI, trainer personalities |
+| 17 | Encounter System* | Yes | **Implemented** | Wild, trainer, nest, trophy, horde encounter types |
 | 18 | Pokedex System* | Yes | Draft | Progressive discovery, research tiers, lore entries |
 | 19 | Creature Affinity | No | Draft | Bond levels, affinity perks, combo move unlocks |
 | 20 | Combo Move System | No | Draft | Adjacent creature fusion attacks, type pairing |
@@ -65,7 +65,7 @@ All 53 systems organized by dependency layer. **MVP requires 27 systems** (marke
 
 | # | System | MVP | Status | Description |
 |---|--------|-----|--------|-------------|
-| 26 | Combat UI* | Yes | Draft | Grid display, creature info, move selection, capture UI |
+| 26 | Combat UI* | Yes | **Implemented** | Grid display, creature info, move selection, capture UI |
 | 27 | Combat Feedback* | Yes | Draft | Damage popups, type effectiveness callouts, animations |
 | 28 | Party Management UI* | Yes | Draft | Party screen, creature details, DNA alteration interface |
 
