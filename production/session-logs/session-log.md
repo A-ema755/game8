@@ -1989,3 +1989,985 @@ e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
 4113f50 Caveman skill + creature redesign
 ---
 
+## Session End: 20260406_235634
+### Commits
+8a0eacb feat(creatures): add CreatureInstance runtime system (#10)
+645e4af Merge pull request #5 from A-ema755/feature/Grid-Tile-System
+655a82d Fix asmdef references to use GUID format for Burst compatibility
+b30ff91 Add Grid/Tile System — isometric combat arena foundation
+7aaf134 Merge pull request #4 from A-ema755/feature/Creature-and-Move-System
+b0f49e7 Update session-log.md
+8468032 session update
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+---
+
+## Session End: 20260406_235724
+### Commits
+00ac2e6 Merge pull request #6 from A-ema755/feature/Creature-Instance-System
+8a0eacb feat(creatures): add CreatureInstance runtime system (#10)
+645e4af Merge pull request #5 from A-ema755/feature/Grid-Tile-System
+655a82d Fix asmdef references to use GUID format for Burst compatibility
+b30ff91 Add Grid/Tile System — isometric combat arena foundation
+7aaf134 Merge pull request #4 from A-ema755/feature/Creature-and-Move-System
+b0f49e7 Update session-log.md
+8468032 session update
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_000121
+### Commits
+00ac2e6 Merge pull request #6 from A-ema755/feature/Creature-Instance-System
+8a0eacb feat(creatures): add CreatureInstance runtime system (#10)
+645e4af Merge pull request #5 from A-ema755/feature/Grid-Tile-System
+655a82d Fix asmdef references to use GUID format for Burst compatibility
+b30ff91 Add Grid/Tile System — isometric combat arena foundation
+7aaf134 Merge pull request #4 from A-ema755/feature/Creature-and-Move-System
+b0f49e7 Update session-log.md
+8468032 session update
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_000202
+### Commits
+00ac2e6 Merge pull request #6 from A-ema755/feature/Creature-Instance-System
+8a0eacb feat(creatures): add CreatureInstance runtime system (#10)
+645e4af Merge pull request #5 from A-ema755/feature/Grid-Tile-System
+655a82d Fix asmdef references to use GUID format for Burst compatibility
+b30ff91 Add Grid/Tile System — isometric combat arena foundation
+7aaf134 Merge pull request #4 from A-ema755/feature/Creature-and-Move-System
+b0f49e7 Update session-log.md
+8468032 session update
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_000225
+### Commits
+00ac2e6 Merge pull request #6 from A-ema755/feature/Creature-Instance-System
+8a0eacb feat(creatures): add CreatureInstance runtime system (#10)
+645e4af Merge pull request #5 from A-ema755/feature/Grid-Tile-System
+655a82d Fix asmdef references to use GUID format for Burst compatibility
+b30ff91 Add Grid/Tile System — isometric combat arena foundation
+7aaf134 Merge pull request #4 from A-ema755/feature/Creature-and-Move-System
+b0f49e7 Update session-log.md
+8468032 session update
+14dbfc6 Creature and move system
+e7756e5 Merge pull request #3 from A-ema755/feature/Type-Chart-System
+04f68c5 Merge branch 'main' into feature/Type-Chart-System
+8594d03 Add type chart system and tests
+1efdedd session log update
+4113f50 Caveman skill + creature redesign
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_133100
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_133320
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_133444
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_133838
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_133956
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_134441
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_134657
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135147
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135237
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135349
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135445
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135548
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135647
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135743
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_135827
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_140442
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_140520
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_140609
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_140659
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_141028
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_141455
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_141943
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_142050
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_142240
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_142415
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_143112
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_143608
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_143758
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_144031
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_144129
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_144144
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_144335
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_145305
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/GeneForge.Combat.asmdef
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_145310
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/GeneForge.Combat.asmdef
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_145409
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/GeneForge.Combat.asmdef
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_145515
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/GeneForge.Combat.asmdef
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_145854
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/GeneForge.Combat.asmdef
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_145900
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/GeneForge.Combat.asmdef
+Assets/Scripts/Core/Enums.cs
+Assets/Scripts/Creatures/CreatureInstance.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+design/gdd/turn-manager.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_150052
+### Commits
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_150319
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_150400
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_155049
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_155555
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_161215
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_162910
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/TypeChart.cs
+Assets/Scripts/Gameplay/Grid/TileData.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_163003
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/TypeChart.cs
+Assets/Scripts/Gameplay/Grid/TileData.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_163138
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/TypeChart.cs
+Assets/Scripts/Gameplay/Grid/TileData.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_163336
+### Commits
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Combat/TypeChart.cs
+Assets/Scripts/Gameplay/Grid/TileData.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+design/gdd/systems-index.md
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_163916
+### Commits
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_164010
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_164039
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_164240
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_164306
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_165104
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_170007
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_170047
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_170309
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_170633
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_170717
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_170755
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_170939
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameSettings.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_171033
+### Commits
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Scripts/Core/GameSettings.cs
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_171157
+### Commits
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_171221
+### Commits
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_171448
+### Commits
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_171758
+### Commits
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_171823
+### Commits
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_172009
+### Commits
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_172110
+### Commits
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_172145
+### Commits
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_172212
+### Commits
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
+## Session End: 20260407_172227
+### Commits
+4f0797f Merge pull request #11 from A-ema755/fix/missing-meta-files
+5faa6cc fix: add missing Unity .meta files for Creatures, Grid, and Tests
+33ba362 Merge pull request #9 from A-ema755/feature/Party-System
+ab7655c Merge pull request #10 from A-ema755/feature/Capture-System
+43c655b feat(combat): add Capture System — Gene Trap catch-rate formula and resolution
+bdd1c71 feat(gameplay): add Party System — active roster management with storage and wipe detection
+8354c78 Merge pull request #8 from A-ema755/feature/Damage-Health-System
+8258bdf feat(combat): add Damage & Health System — 3-form damage calculator with terrain synergy
+47aff36 Merge pull request #7 from A-ema755/feature/Turn-Manager-System
+df9601b feat(combat): add Turn Manager system — phase-based combat sequencer
+### Uncommitted Changes
+.claude/settings.local.json
+Assets/Tests/EditMode/CreatureInstanceTests.cs
+game8.slnx
+production/session-logs/session-log.md
+---
+
