@@ -24,6 +24,9 @@ namespace GeneForge.Grid
         /// <summary>True for walls and tall cover that block line-of-sight.</summary>
         public bool BlocksLineOfSight { get; }
 
+        /// <summary>True if this tile provides cover (reduces Energy move damage by 0.5×).</summary>
+        public bool ProvidesCover { get; }
+
         /// <summary>
         /// The creature occupying this tile, or null if empty.
         /// TODO: Type as CreatureInstance once that class exists.
@@ -50,14 +53,17 @@ namespace GeneForge.Grid
         /// <param name="terrain">Terrain type for synergy effects.</param>
         /// <param name="isPassable">Whether creatures can traverse this tile.</param>
         /// <param name="blocksLoS">Whether this tile blocks line-of-sight.</param>
+        /// <param name="providesCover">Whether this tile provides cover (reduces Energy damage by 0.5×).</param>
         public TileData(Vector2Int gridPosition, int height, TerrainType terrain,
-                        bool isPassable = true, bool blocksLoS = false)
+                        bool isPassable = true, bool blocksLoS = false,
+                        bool providesCover = false)
         {
             GridPosition = gridPosition;
             Height = Mathf.Clamp(height, 0, GridSystem.MaxHeight);
             Terrain = terrain;
             IsPassable = isPassable;
             BlocksLineOfSight = blocksLoS;
+            ProvidesCover = providesCover;
         }
     }
 }

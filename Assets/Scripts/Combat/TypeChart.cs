@@ -208,6 +208,27 @@ namespace GeneForge.Combat
             return hasStab ? _stabMultiplier : 1.0f;
         }
 
+        /// <summary>
+        /// Returns true if the terrain type corresponds to the given creature type
+        /// for terrain synergy checks. Used by DamageCalculator.
+        /// </summary>
+        public static bool TerrainMatchesCreatureType(TerrainType terrain, CreatureType creatureType)
+        {
+            CreatureType mapped = terrain switch
+            {
+                TerrainType.Thermal => CreatureType.Thermal,
+                TerrainType.Aqua    => CreatureType.Aqua,
+                TerrainType.Organic => CreatureType.Organic,
+                TerrainType.Cryo    => CreatureType.Cryo,
+                TerrainType.Mineral => CreatureType.Mineral,
+                TerrainType.Kinetic => CreatureType.Kinetic,
+                TerrainType.Neural  => CreatureType.Neural,
+                TerrainType.Toxic   => CreatureType.Toxic,
+                _                   => CreatureType.None,
+            };
+            return mapped != CreatureType.None && mapped == creatureType;
+        }
+
         // -- Cached multipliers -- loaded from GameSettings during Initialize() --
         // Fallback defaults used when GameSettings is unavailable (EditMode tests)
         private static float _stabMultiplier = 1.5f;
