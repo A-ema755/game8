@@ -23,6 +23,10 @@ namespace GeneForge.Combat
                  "At 40: low mobility (SPD 60 = 1 tile).")]
         [SerializeField] private int movementDivisor = 20;
 
+        [Header("Capture")]
+        [Tooltip("Chebyshev distance for Gene Trap throw range. GDD default 1. Range 1–3.")]
+        [SerializeField] private int captureRange = 1;
+
         [Header("Round Limit")]
         [Tooltip("Maximum rounds before combat ends in a Draw. 0 = no limit (MVP default). " +
                  "Range 30–100. Requires CombatResult.Draw implementation (post-MVP).")]
@@ -83,6 +87,9 @@ namespace GeneForge.Combat
         /// SPD divisor for movement range. movementRange = max(1, floor(SPD / MovementDivisor)).
         /// </summary>
         public int MovementDivisor => movementDivisor;
+
+        /// <summary>Chebyshev distance for Gene Trap throw range.</summary>
+        public int CaptureRange => captureRange;
 
         /// <summary>
         /// Maximum rounds before combat is a Draw. 0 means no limit (MVP).
