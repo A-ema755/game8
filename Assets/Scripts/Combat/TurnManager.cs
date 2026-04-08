@@ -69,15 +69,13 @@ namespace GeneForge.Combat
         private readonly IStatusEffectProcessor _statusEffectProcessor;
 
         /// <summary>
-        /// Synchronous player input provider. Called once per round during PlayerCreatureSelect.
-        /// Receives the list of non-fainted player party creatures; returns one TurnAction per creature.
-        ///
-        /// Post-MVP migration note: This will be replaced with an async delegate
-        /// (Func&lt;List&lt;CreatureInstance&gt;, Task&lt;Dictionary&lt;CreatureInstance, TurnAction&gt;&gt;&gt;)
-        /// once the input system supports awaitable player decisions with timeout.
+        /// Player input provider abstraction. CombatController's coroutine calls
+        /// <see cref="IPlayerInputProvider.BeginActionCollection"/> and polls
+        /// <see cref="IPlayerInputProvider.AllActionsReady"/> before invoking
+        /// <see cref="AdvanceRound"/>. TurnManager only calls
+        /// <see cref="IPlayerInputProvider.GetActions"/> during PlayerCreatureSelect.
         /// </summary>
-        private readonly Func<List<CreatureInstance>, Dictionary<CreatureInstance, TurnAction>>
-            _playerInputProvider;
+        private readonly IPlayerInputProvider _inputProvider;
 
         // ── Party State ───────────────────────────────────────────────────
 
@@ -128,9 +126,11 @@ namespace GeneForge.Combat
         /// <param name="aiDecisionSystem">AI action provider implementation.</param>
         /// <param name="moveEffectApplier">Move effect application implementation.</param>
         /// <param name="statusEffectProcessor">Status effect tick implementation.</param>
-        /// <param name="playerInputProvider">
-        /// Synchronous delegate that receives non-fainted player creatures and returns
-        /// one TurnAction per creature. Post-MVP: replace with async overload.
+        /// <param name="inputProvider">
+        /// Player input abstraction. CombatController guarantees
+        /// <see cref="IPlayerInputProvider.AllActionsReady"/> is true before
+        /// calling <see cref="AdvanceRound"/>. TurnManager only calls
+        /// <see cref="IPlayerInputProvider.GetActions"/> during PlayerCreatureSelect.
         /// </param>
         /// <param name="seed">
         /// RNG seed for deterministic behavior. 0 = use Environment.TickCount (non-deterministic).
@@ -147,7 +147,7 @@ namespace GeneForge.Combat
             IAIDecisionSystem aiDecisionSystem,
             IMoveEffectApplier moveEffectApplier,
             IStatusEffectProcessor statusEffectProcessor,
-            Func<List<CreatureInstance>, Dictionary<CreatureInstance, TurnAction>> playerInputProvider,
+            IPlayerInputProvider inputProvider,
             int seed = 0)
         {
             if (playerParty == null || playerParty.Count == 0)
@@ -166,7 +166,7 @@ namespace GeneForge.Combat
             _aiDecisionSystem      = aiDecisionSystem;
             _moveEffectApplier     = moveEffectApplier;
             _statusEffectProcessor = statusEffectProcessor;
-            _playerInputProvider   = playerInputProvider;
+            _inputProvider         = inputProvider;
             _rng                   = seed == 0 ? new System.Random() : new System.Random(seed);
 
             InitializeStatusDurations();
@@ -251,9 +251,10 @@ namespace GeneForge.Combat
                     _initiativeBuffer.Add(c);
             }
             if (_initiativeBuffer.Count == 0) return;
-            var activePlayers = new List<CreatureInstance>(_initiativeBuffer);
 
-            var actions = _playerInputProvider(activePlayers);
+            // Contract: CombatController has already called BeginActionCollection
+            // and polled AllActionsReady before calling AdvanceRound().
+            var actions = _inputProvider.GetActions();
             if (actions != null)
             {
                 foreach (var kvp in actions)
