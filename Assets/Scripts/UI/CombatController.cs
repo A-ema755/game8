@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using GeneForge.Combat;
 using GeneForge.Core;
 using GeneForge.Creatures;
@@ -100,6 +99,9 @@ namespace GeneForge.UI
         // Input collection via IPlayerInputProvider
         private PlayerInputCollector _inputCollector;
 
+        // Reusable buffer for active (non-fainted) player creatures — avoids per-round allocation
+        private readonly List<CreatureInstance> _activeBuffer = new();
+
         // Phase tracking for EnemyExecuting detection
         private bool _enemyPhaseSignaled;
 
@@ -188,6 +190,7 @@ namespace GeneForge.UI
             _enemyParty = enemyParty;
             _encounterType = encounterType;
             _remainingTraps = initialTrapCount;
+            _context = null; // Only set by convenience overload; null signals full-param init
 
             _inputCollector = new PlayerInputCollector();
 
@@ -232,8 +235,12 @@ namespace GeneForge.UI
                 yield return null;
 
                 // PlayerSelect — begin input collection, yield until all actions submitted
-                var activeCreatures = _playerParty.Where(c => !c.IsFainted).ToList();
-                _inputCollector.BeginActionCollection(activeCreatures);
+                _activeBuffer.Clear();
+                foreach (var c in _playerParty)
+                {
+                    if (!c.IsFainted) _activeBuffer.Add(c);
+                }
+                _inputCollector.BeginActionCollection(_activeBuffer);
                 _enemyPhaseSignaled = false;
 
                 SetPhase(CombatUIPhase.PlayerSelect);

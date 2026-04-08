@@ -300,30 +300,40 @@ namespace GeneForge.Tests
         [Test]
         public void TurnManagerCreatureFainted_RelayedThroughController()
         {
-            // Arrange — enemy with 1 HP so it faints on first hit
+            // Arrange — enemy with 1 HP, player attacks with a damage move
             var weakEnemy = CreateCreatureInstance(
                 CreateCreatureConfig("weak", "Weak", hp: 1));
             PlaceCreature(weakEnemy, 8, 0);
 
-            // Remove the normal enemy from grid
-            var oldTile = _grid.GetTile(8, 0);
-            oldTile.Occupant = weakEnemy;
+            SetField(_player1, "_learnedMoveIds", new List<string> { "tackle" });
+            SetField(_player1, "_learnedMovePP", new List<int> { 20 });
 
-            StartCombatOnController(
+            var provider = new TestPlayerInputProvider(new Dictionary<CreatureInstance, TurnAction>
+            {
+                { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: weakEnemy, movePPSlot: 0) }
+            });
+
+            var tm = new TurnManager(
+                _grid,
                 new List<CreatureInstance> { _player1 },
-                new List<CreatureInstance> { weakEnemy });
+                new List<CreatureInstance> { weakEnemy },
+                EncounterType.Wild, _settings,
+                new StubDamageCalculator(10),
+                new StubCaptureSystem(),
+                new StubAIDecisionSystem(),
+                new StubMoveEffectApplier(),
+                new StubStatusEffectProcessor(),
+                provider,
+                seed: 42);
 
             CreatureInstance faintedCreature = null;
-            _controller.CreatureFainted += (creature) => faintedCreature = creature;
+            tm.CreatureFainted += (creature) => faintedCreature = creature;
 
-            // Act — TurnManager with stub damage 10 vs 1 HP enemy
-            _controller.TurnManager.AdvanceRound();
+            // Act
+            tm.AdvanceRound();
 
-            // Assert — weak enemy should faint (AI attacks with Wait, but player waits too)
-            // The stub AI uses Wait, so damage won't be dealt unless player attacks.
-            // This test verifies the event subscription is wired — faint depends on actions.
-            // If no faint occurs, the wiring is still correct (no action dealt damage).
-            Assert.Pass("Event relay subscription verified");
+            // Assert — weak enemy (1 HP) takes 10 damage and faints
+            Assert.That(faintedCreature, Is.EqualTo(weakEnemy));
         }
 
         [Test]
