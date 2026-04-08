@@ -139,8 +139,8 @@ namespace GeneForge.Tests
             SetField(settings, "confusionDuration", 3);
             SetField(settings, "tauntDuration", 3);
             SetField(settings, "paralysisSuppressionChance", 0.25f);
-            SetField(settings, "burnDotFraction", 1f / 16f);
-            SetField(settings, "poisonDotFraction", 1f / 8f);
+            SetField(settings, "burnDotDivisor", 16);
+            SetField(settings, "poisonDotDivisor", 8);
             return settings;
         }
 
@@ -213,10 +213,10 @@ namespace GeneForge.Tests
                 new StubDamageCalculator(10), new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             var phaseOrder = new List<CombatPhase>();
             tm.RoundStarted += (round) => phaseOrder.Add(CombatPhase.RoundStart);
@@ -241,10 +241,10 @@ namespace GeneForge.Tests
                 new StubDamageCalculator(10), new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             tm.RoundStarted += (round) => roundsStarted.Add(round);
 
@@ -268,10 +268,10 @@ namespace GeneForge.Tests
                 new StubDamageCalculator(10), new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             tm.RoundEnded += (round) => roundsEnded.Add(round);
 
@@ -294,11 +294,11 @@ namespace GeneForge.Tests
                 new StubDamageCalculator(10), new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) },
                     { _player2, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             tm.CreatureActed += (args) => actedCount++;
 
@@ -322,10 +322,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) }
-                });
+                }));
 
             tm.CreatureFainted += (creature) => faintedCreatures.Add(creature);
 
@@ -353,10 +353,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(successRate: 1.0f), // Always succeeds
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Capture, target: _enemy1) }
-                });
+                }));
 
             tm.CreatureCaptured += (args) => captureResults.Add(args.Success);
 
@@ -383,10 +383,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait, movementTarget: targetPos) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -407,10 +407,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait, movementTarget: null) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -432,10 +432,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait, movementTarget: targetPos) }
-                });
+                }));
 
             tm.CreatureActed += (args) => actionExecuted = true;
 
@@ -462,10 +462,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { fastCreature, new TurnAction(ActionType.Wait, movementTarget: targetPos) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -487,10 +487,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Flee, movementTarget: moveTarget) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -515,10 +515,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
 
@@ -550,10 +550,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
 
@@ -584,11 +584,11 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) },
                     { slowCreature, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
 
@@ -620,11 +620,11 @@ namespace GeneForge.Tests
                     new StubCaptureSystem(),
                     new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                     new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                    (players) => new Dictionary<CreatureInstance, TurnAction>
+                    new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                     {
                         { _player1, new TurnAction(ActionType.Wait) },
                         { _player2, new TurnAction(ActionType.Wait) }
-                    },
+                    }),
                     seed: 12345); // Fixed seed
 
                 tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
@@ -651,10 +651,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.UseMove, move: _priorityMove, target: _player1)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
-                });
+                }));
 
             tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
 
@@ -686,11 +686,11 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) },
                     { _player2, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
 
@@ -728,10 +728,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), statusProcessor,
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -764,10 +764,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), statusProcessor,
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -795,10 +795,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), statusProcessor,
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.UseMove, movementTarget: moveTarget, move: _damageMove, target: _enemy1) }
-                });
+                }));
 
             tm.CreatureActed += (args) =>
             {
@@ -833,10 +833,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), statusProcessor,
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
-                },
+                }),
                 seed: 12345); // Deterministic seed
 
             tm.CreatureActed += (args) =>
@@ -872,10 +872,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), statusProcessor,
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
-                },
+                }),
                 seed: 12345);
 
             tm.CreatureActed += (args) =>
@@ -902,7 +902,7 @@ namespace GeneForge.Tests
                     new StubCaptureSystem(),
                     new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                     new StubMoveEffectApplier(), statusProcessor,
-                    (players) => new Dictionary<CreatureInstance, TurnAction>
+                    new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                     {
                         { player, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
                     },
@@ -935,10 +935,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
-                });
+                }));
 
             SetField(_player1, "_learnedMoveIds", new List<string> { "damage-move" });
             SetField(_player1, "_learnedMovePP", new List<int> { 20 });
@@ -962,10 +962,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.UseMove, move: _damageMove, target: _player1)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Wait) }
-                });
+                }));
 
             SetField(_enemy1, "_learnedMoveIds", new List<string> { "damage-move" });
             SetField(_enemy1, "_learnedMovePP", new List<int> { 20 });
@@ -998,10 +998,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.UseMove, move: recoilMove, target: _enemy1) }
-                });
+                }));
 
             SetField(_player1, "_learnedMoveIds", new List<string> { "recoil-move" });
             SetField(_player1, "_learnedMovePP", new List<int> { 10 });
@@ -1027,10 +1027,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Flee) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -1051,10 +1051,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(),
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Flee) }
-                });
+                }));
 
             // Act
             tm.AdvanceRound();
@@ -1075,10 +1075,10 @@ namespace GeneForge.Tests
                 new StubCaptureSystem(successRate: 1.0f), // Even with 100% success rate
                 new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                (players) => new Dictionary<CreatureInstance, TurnAction>
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
                     { _player1, new TurnAction(ActionType.Capture, target: _enemy1) }
-                });
+                }));
 
             var captureResults = new List<bool>();
             tm.CreatureCaptured += (args) => captureResults.Add(args.Success);
@@ -1117,11 +1117,11 @@ namespace GeneForge.Tests
                     new StubCaptureSystem(),
                     new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                     new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
-                    (players) => new Dictionary<CreatureInstance, TurnAction>
+                    new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                     {
                         { _player1, new TurnAction(ActionType.Wait) },
                         { _player2, new TurnAction(ActionType.Wait) }
-                    },
+                    }),
                     seed: 12345);
 
                 tm.CreatureActed += (args) => order.Add(args.Actor);
@@ -1136,6 +1136,37 @@ namespace GeneForge.Tests
         // ════════════════════════════════════════════════════════════════
         // § Stub Implementations (Test Doubles)
         // ════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Test IPlayerInputProvider that wraps a Func delegate.
+        /// Actions are immediately ready (synchronous for EditMode tests).
+        /// </summary>
+        private class TestPlayerInputProvider : IPlayerInputProvider
+        {
+            private readonly Func<List<CreatureInstance>, Dictionary<CreatureInstance, TurnAction>> _provider;
+            private List<CreatureInstance> _creatures;
+
+            public TestPlayerInputProvider(
+                Func<List<CreatureInstance>, Dictionary<CreatureInstance, TurnAction>> provider)
+            {
+                _provider = provider;
+            }
+
+            public bool AllActionsReady => true;
+
+            public void BeginActionCollection(IReadOnlyList<CreatureInstance> creatures)
+            {
+                _creatures = new List<CreatureInstance>(creatures);
+            }
+
+            public IReadOnlyDictionary<CreatureInstance, TurnAction> GetActions()
+            {
+                // In tests, TurnManager calls GetActions directly.
+                // Use stored creatures from BeginActionCollection if available,
+                // otherwise pass empty list (lambda usually ignores the parameter).
+                return _provider(_creatures ?? new List<CreatureInstance>());
+            }
+        }
 
         /// <summary>
         /// Stub IDamageCalculator that returns a configurable fixed damage value.
