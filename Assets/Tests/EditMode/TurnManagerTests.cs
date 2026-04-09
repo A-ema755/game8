@@ -77,12 +77,11 @@ namespace GeneForge.Tests
             SetField(move, "id", id);
             SetField(move, "displayName", name);
             SetField(move, "power", power);
-            SetField(move, "accuracy", accuracy);
+            SetField(move, "accuracy", alwaysHits ? 0 : accuracy); // accuracy=0 means AlwaysHits
             SetField(move, "pp", pp);
             SetField(move, "priority", priority);
             SetField(move, "form", form);
             SetField(move, "genomeType", genomeType);
-            SetField(move, "alwaysHits", alwaysHits);
             SetField(move, "effects", effects ?? new List<MoveEffect>());
             SetField(move, "targetType", TargetType.Single);
             return move;
