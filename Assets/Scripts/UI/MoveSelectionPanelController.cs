@@ -232,7 +232,7 @@ namespace GeneForge.UI
         public void UpdateTrapCount(int count)
         {
             if (_trapCountLabel != null)
-                _trapCountLabel.text = $"x{count}";
+                _trapCountLabel.text = string.Format(CombatStrings.TrapCountFormat, count);
 
             UpdateGeneTrapState(count);
         }
@@ -288,7 +288,7 @@ namespace GeneForge.UI
             _isStruggleMode = allPPDepleted && creature.LearnedMoveIds.Count > 0;
             if (_isStruggleMode)
             {
-                _moveNames[0].text = "STRUGGLE";
+                _moveNames[0].text = CombatStrings.Struggle;
                 _moveTypes[0].text = "";
                 _moveForms[0].text = "Physical";
                 _movePPs[0].text = "—";

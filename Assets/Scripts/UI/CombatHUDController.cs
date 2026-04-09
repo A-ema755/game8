@@ -439,6 +439,7 @@ namespace GeneForge.UI
                     break;
                 case KeyCode.Tab:
                     _moveSelectionPanel.CycleTarget(evt.shiftKey);
+                    evt.PreventDefault();
                     evt.StopPropagation();
                     break;
                 case KeyCode.Return:
@@ -453,15 +454,16 @@ namespace GeneForge.UI
 
         private void ShowCombatEndOverlay()
         {
+            _typeCallout?.ClearAll();
             ShowElement(_combatEndOverlay);
 
             var result = combatController.TurnManager?.Stats?.Result ?? CombatResult.Ongoing;
             string text = result switch
             {
-                CombatResult.Victory => "VICTORY",
-                CombatResult.Defeat => "DEFEAT",
-                CombatResult.Fled => "ESCAPED",
-                CombatResult.Draw => "DRAW",
+                CombatResult.Victory => CombatStrings.Victory,
+                CombatResult.Defeat => CombatStrings.Defeat,
+                CombatResult.Fled => CombatStrings.Escaped,
+                CombatResult.Draw => CombatStrings.Draw,
                 _ => ""
             };
 

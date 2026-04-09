@@ -108,7 +108,7 @@ namespace GeneForge.UI
             var icon = new VisualElement();
             icon.AddToClassList("turn-order-icon");
             icon.AddToClassList(isPlayer ? "icon--player" : "icon--enemy");
-            icon.tooltip = $"{(isPlayer ? "[Player]" : "[Enemy]")} {creature.Nickname ?? creature.DisplayName}";
+            icon.tooltip = $"{(isPlayer ? CombatStrings.PlayerTag : CombatStrings.EnemyTag)} {creature.Nickname ?? creature.DisplayName}";
 
             if (isActive)
                 icon.AddToClassList("icon--active");

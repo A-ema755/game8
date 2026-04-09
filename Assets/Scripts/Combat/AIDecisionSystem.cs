@@ -66,11 +66,43 @@ namespace GeneForge.Combat
         {
             var candidates = EnumerateCandidates(creature, opponents, grid);
 
+            // Determine if creature is in retreat state (C1: RetreatHpThreshold)
+            float hpFraction = creature.MaxHP > 0
+                ? (float)creature.CurrentHP / creature.MaxHP
+                : 1f;
+            bool isRetreating = hpFraction < _personality.RetreatHpThreshold;
+
             // Score all candidates
             foreach (var candidate in candidates)
             {
                 candidate.CompositeScore = AIActionScorer.ScoreAction(
                     candidate, creature, opponents, grid, _personality);
+
+                // C1a: Retreat — heavily boost self-preservation when HP is critically low.
+                // Re-score self-preservation at 3x weight and add the delta to the composite.
+                if (isRetreating)
+                {
+                    float baseSelf = AIActionScorer.ScoreSelfPreservation(creature, _personality.LowHpThreshold);
+                    candidate.CompositeScore += baseSelf * _personality.WeightSelfPreservation * 2f; // +2x on top of existing 1x = 3x total
+                }
+
+                // C1b: FocusFireBias — scale the FinishTarget contribution by the bias value.
+                // ScoreFinishTarget is already included in the composite at WeightThreat.
+                // We add an additional bonus proportional to FocusFireBias so Hunter archetypes
+                // (high FocusFireBias) compound pressure on wounded targets.
+                if (candidate.Move != null && candidate.Target != null)
+                {
+                    float finishScore = AIActionScorer.ScoreFinishTarget(candidate);
+                    candidate.CompositeScore += finishScore * _personality.FocusFireBias;
+
+                    // C1c: AbilityPreference — bonus for status moves (power 0) when > 0.5;
+                    // bonus for damage moves when < 0.5.
+                    bool isStatusMove = !candidate.Move.IsDamaging;
+                    if (isStatusMove && _personality.AbilityPreference > 0.5f)
+                        candidate.CompositeScore += (_personality.AbilityPreference - 0.5f) * 2f;
+                    else if (!isStatusMove && _personality.AbilityPreference < 0.5f)
+                        candidate.CompositeScore += (0.5f - _personality.AbilityPreference) * 2f;
+                }
 
                 // Add random jitter for unpredictability (GDD §3.6)
                 float jitter = ((float)_rng.NextDouble() * 2f - 1f) * _personality.RandomnessFactor;
@@ -223,22 +255,18 @@ namespace GeneForge.Combat
                         break;
 
                     case TargetType.AoE:
-                        // AoE: target the closest live opponent in range
-                        CreatureInstance closestForAoE = null;
-                        int closestDist = int.MaxValue;
+                        // C3 fix: generate a candidate per in-range opponent so the scorer
+                        // can evaluate multi-hit value for each possible AoE center point.
+                        // Previously only the single closest opponent was generated, which
+                        // prevented the scorer from discovering better AoE positions.
                         for (int i = 0; i < opponents.Count; i++)
                         {
                             if (opponents[i].IsFainted) continue;
                             int dist = GridSystem.ChebyshevDistance(
                                 creature.GridPosition, opponents[i].GridPosition);
-                            if (dist <= moveConfig.Range && dist < closestDist)
-                            {
-                                closestDist = dist;
-                                closestForAoE = opponents[i];
-                            }
+                            if (dist <= moveConfig.Range)
+                                candidates.Add(new CandidateAction(moveConfig, opponents[i], creature.GridPosition));
                         }
-                        if (closestForAoE != null)
-                            candidates.Add(new CandidateAction(moveConfig, closestForAoE, creature.GridPosition));
                         break;
                 }
             }

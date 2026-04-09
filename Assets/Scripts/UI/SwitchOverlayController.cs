@@ -75,7 +75,7 @@ namespace GeneForge.UI
             // Show info if no valid switch targets
             if (switchableCount == 0)
             {
-                _infoLabel.text = "No other creatures available.";
+                _infoLabel.text = CombatStrings.NoOtherCreatures;
                 _infoLabel.style.display = DisplayStyle.Flex;
             }
             else
@@ -154,11 +154,11 @@ namespace GeneForge.UI
             hpLabel.AddToClassList("slot-hp");
 
             if (creature.IsFainted)
-                hpLabel.text = "FAINTED";
+                hpLabel.text = CombatStrings.Fainted;
             else if (isActive)
-                hpLabel.text = "ACTIVE";
+                hpLabel.text = CombatStrings.Active;
             else
-                hpLabel.text = $"{creature.CurrentHP} / {creature.MaxHP}";
+                hpLabel.text = string.Format(CombatStrings.HpFormat, creature.CurrentHP, creature.MaxHP);
 
             slot.Add(hpLabel);
 
