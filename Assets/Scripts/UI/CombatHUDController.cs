@@ -207,6 +207,7 @@ namespace GeneForge.UI
         private void OnPhaseChanged(CombatUIPhase phase)
         {
             _currentPhase = phase;
+            if (!_initialized) return;
             UpdatePanelVisibility(phase);
         }
 

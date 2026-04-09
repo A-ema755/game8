@@ -71,7 +71,7 @@ namespace GeneForge.Tests
 
         private void InjectIntoConfigLoader()
         {
-            var movesDict = (Dictionary<string, MoveConfig>)GetStaticField(typeof(ConfigLoader), "_moves");
+            var movesDict = (Dictionary<string, ConfigBase>)GetStaticField(typeof(ConfigLoader), "_moves");
             movesDict.Clear();
             movesDict["move-a"] = _moveA;
             SetStaticField(typeof(ConfigLoader), "_initialized", true);
@@ -100,7 +100,7 @@ namespace GeneForge.Tests
         [TearDown]
         public void TearDown()
         {
-            var movesDict = (Dictionary<string, MoveConfig>)GetStaticField(typeof(ConfigLoader), "_moves");
+            var movesDict = (Dictionary<string, ConfigBase>)GetStaticField(typeof(ConfigLoader), "_moves");
             movesDict?.Clear();
             SetStaticField(typeof(ConfigLoader), "_initialized", false);
             ScriptableObject.DestroyImmediate(_testConfig);

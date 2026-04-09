@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d13511fb058694c4b9b16467dfb3f12a, type: 3}
+  m_Name: CombatSettings
+  m_EditorClassIdentifier: GeneForge.Combat::GeneForge.Combat.CombatSettings
+  initiativeDistanceWeight: 1000
+  movementDivisor: 20
+  captureRange: 1
+  maxRoundsPerCombat: 0
+  wildFleeSuccessRate: 1
+  burnDotDivisor: 16
+  poisonDotDivisor: 8
+  sleepDuration: 3
+  freezeDuration: 2
+  confusionDuration: 3
+  tauntDuration: 3
+  paralysisSuppressionChance: 0.25
+  confusionSelfHitChance: 0.33
+  confusionSelfHitPower: 40
+  critMultiplier: 1.5
+  critBaseChance: 0.0625
+  critHighChance: 0.125
+  varianceMin: 0.85
+  varianceRange: 0.15
+  estimateVariance: 0.925
+  heightBonusPerLevel: 0.1
+  heightBonusCap: 2
+  attackerTerrainSynergy: 1.2
+  defenderTerrainSynergy: 0.8
+  coverReduction: 0.5
+  statDivisor: 50
+  baseDamageFloor: 2
+  minDamage: 1

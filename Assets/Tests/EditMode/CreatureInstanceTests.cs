@@ -91,7 +91,7 @@ namespace GeneForge.Tests
 
         private void InjectIntoConfigLoader()
         {
-            var movesDict = (Dictionary<string, MoveConfig>)GetStaticField(typeof(ConfigLoader), "_moves");
+            var movesDict = (Dictionary<string, ConfigBase>)GetStaticField(typeof(ConfigLoader), "_moves");
             movesDict.Clear();
             movesDict["move-a"] = _moveA;
             movesDict["move-b"] = _moveB;
@@ -99,7 +99,7 @@ namespace GeneForge.Tests
             movesDict["move-d"] = _moveD;
             movesDict["move-e"] = _moveE;
 
-            var partsDict = (Dictionary<string, BodyPartConfig>)GetStaticField(typeof(ConfigLoader), "_bodyParts");
+            var partsDict = (Dictionary<string, ConfigBase>)GetStaticField(typeof(ConfigLoader), "_bodyParts");
             partsDict.Clear();
             partsDict["claw-part"] = _testPart;
 
@@ -146,9 +146,9 @@ namespace GeneForge.Tests
         [TearDown]
         public void TearDown()
         {
-            var movesDict = (Dictionary<string, MoveConfig>)GetStaticField(typeof(ConfigLoader), "_moves");
+            var movesDict = (Dictionary<string, ConfigBase>)GetStaticField(typeof(ConfigLoader), "_moves");
             movesDict?.Clear();
-            var partsDict = (Dictionary<string, BodyPartConfig>)GetStaticField(typeof(ConfigLoader), "_bodyParts");
+            var partsDict = (Dictionary<string, ConfigBase>)GetStaticField(typeof(ConfigLoader), "_bodyParts");
             partsDict?.Clear();
             SetStaticField(typeof(ConfigLoader), "_initialized", false);
 
