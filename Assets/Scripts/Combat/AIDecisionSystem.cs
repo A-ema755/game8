@@ -44,7 +44,7 @@ namespace GeneForge.Combat
         {
             _personality = personality;
             _rng = rng;
-            _moveLookup = moveLookup ?? ConfigLoader.GetMove;
+            _moveLookup = moveLookup ?? (id => ConfigLoader.GetMove(id) as MoveConfig);
         }
 
         /// <summary>

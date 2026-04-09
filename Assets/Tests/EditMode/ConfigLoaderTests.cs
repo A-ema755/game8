@@ -18,12 +18,12 @@ namespace GeneForge.Tests
             var initialized = typeof(ConfigLoader).GetField("_initialized", flags);
             initialized.SetValue(null, false);
 
-            ClearRegistry<CreatureConfig>("_creatures");
-            ClearRegistry<MoveConfig>("_moves");
-            ClearRegistry<BodyPartConfig>("_bodyParts");
-            ClearRegistry<StatusEffectConfig>("_statusEffects");
-            ClearRegistry<EncounterConfig>("_encounters");
-            ClearRegistry<AIPersonalityConfig>("_aiPersonalities");
+            ClearRegistry("_creatures");
+            ClearRegistry("_moves");
+            ClearRegistry("_bodyParts");
+            ClearRegistry("_statusEffects");
+            ClearRegistry("_encounters");
+            ClearRegistry("_aiPersonalities");
 
             var settingsProp = typeof(ConfigLoader).GetProperty("Settings",
                 BindingFlags.Static | BindingFlags.Public);
@@ -39,16 +39,16 @@ namespace GeneForge.Tests
             thresholdType.GetField("_breakdownMin", thresholdFlags).SetValue(null, 100);
         }
 
-        static Dictionary<string, T> GetRegistry<T>(string fieldName) where T : ConfigBase
+        static Dictionary<string, ConfigBase> GetRegistry(string fieldName)
         {
             var field = typeof(ConfigLoader).GetField(fieldName,
                 BindingFlags.Static | BindingFlags.NonPublic);
-            return (Dictionary<string, T>)field.GetValue(null);
+            return (Dictionary<string, ConfigBase>)field.GetValue(null);
         }
 
-        static void ClearRegistry<T>(string fieldName) where T : ConfigBase
+        static void ClearRegistry(string fieldName)
         {
-            GetRegistry<T>(fieldName).Clear();
+            GetRegistry(fieldName).Clear();
         }
 
         static T CreateConfig<T>(string id, string displayName) where T : ConfigBase
@@ -78,7 +78,7 @@ namespace GeneForge.Tests
         [Test]
         public void Creatures_ExposesRegistryCount_MatchesInsertedAssets()
         {
-            var registry = GetRegistry<CreatureConfig>("_creatures");
+            var registry = GetRegistry("_creatures");
             var a = CreateConfig<CreatureConfig>("emberfox", "Emberfox");
             var b = CreateConfig<CreatureConfig>("thorn-slug", "Thorn Slug");
             registry.Add(a.Id, a);
@@ -93,7 +93,7 @@ namespace GeneForge.Tests
             LogAssert.Expect(LogType.Warning,
                 new System.Text.RegularExpressions.Regex("Duplicate ID 'emberfox'"));
 
-            var registry = GetRegistry<CreatureConfig>("_creatures");
+            var registry = GetRegistry("_creatures");
             var first = CreateConfig<CreatureConfig>("emberfox", "Emberfox");
             var duplicate = CreateConfig<CreatureConfig>("emberfox", "Emberfox Duplicate");
 
@@ -122,14 +122,14 @@ namespace GeneForge.Tests
                 Debug.LogError($"[ConfigLoader] {typeof(CreatureConfig).Name} at Data/Creatures has empty ID.");
             }
 
-            var registry = GetRegistry<CreatureConfig>("_creatures");
+            var registry = GetRegistry("_creatures");
             Assert.AreEqual(0, registry.Count);
         }
 
         [Test]
         public void Get_ReturnsCorrectAsset_ForKnownId()
         {
-            var registry = GetRegistry<CreatureConfig>("_creatures");
+            var registry = GetRegistry("_creatures");
             var config = CreateConfig<CreatureConfig>("emberfox", "Emberfox");
             registry.Add(config.Id, config);
 
@@ -189,19 +189,19 @@ namespace GeneForge.Tests
         public void TypedGetMethods_WorkForAllRegistries()
         {
             var move = CreateConfig<MoveConfig>("flame-claw", "Flame Claw");
-            GetRegistry<MoveConfig>("_moves").Add(move.Id, move);
+            GetRegistry("_moves").Add(move.Id, move);
 
             var bodyPart = CreateConfig<BodyPartConfig>("fire-glands", "Fire Glands");
-            GetRegistry<BodyPartConfig>("_bodyParts").Add(bodyPart.Id, bodyPart);
+            GetRegistry("_bodyParts").Add(bodyPart.Id, bodyPart);
 
             var status = CreateConfig<StatusEffectConfig>("burn", "Burn");
-            GetRegistry<StatusEffectConfig>("_statusEffects").Add(status.Id, status);
+            GetRegistry("_statusEffects").Add(status.Id, status);
 
             var encounter = CreateConfig<EncounterConfig>("forest-ambush", "Forest Ambush");
-            GetRegistry<EncounterConfig>("_encounters").Add(encounter.Id, encounter);
+            GetRegistry("_encounters").Add(encounter.Id, encounter);
 
             var ai = CreateConfig<AIPersonalityConfig>("predator", "Predator");
-            GetRegistry<AIPersonalityConfig>("_aiPersonalities").Add(ai.Id, ai);
+            GetRegistry("_aiPersonalities").Add(ai.Id, ai);
 
             Assert.AreEqual("Flame Claw", ConfigLoader.GetMove("flame-claw").DisplayName);
             Assert.AreEqual("Fire Glands", ConfigLoader.GetBodyPart("fire-glands").DisplayName);

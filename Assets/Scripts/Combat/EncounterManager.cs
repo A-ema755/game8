@@ -22,7 +22,7 @@ namespace GeneForge.Combat
         /// <summary>
         /// Create an EncounterManager with default ConfigLoader creature lookup.
         /// </summary>
-        public EncounterManager() : this(ConfigLoader.GetCreature) { }
+        public EncounterManager() : this(id => ConfigLoader.GetCreature(id) as CreatureConfig) { }
 
         /// <summary>
         /// Create an EncounterManager with an injected creature lookup function.

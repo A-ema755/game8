@@ -424,7 +424,7 @@ namespace GeneForge.UI
             _pendingMoveSlot = -1;
             for (int i = 0; i < _activeCreature.LearnedMoveIds.Count; i++)
             {
-                var loadedMove = ConfigLoader.GetMove(_activeCreature.LearnedMoveIds[i]);
+                var loadedMove = ConfigLoader.GetMove(_activeCreature.LearnedMoveIds[i]) as MoveConfig;
                 if (loadedMove == move)
                 {
                     _pendingMoveSlot = i;

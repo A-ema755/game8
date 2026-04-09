@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using GeneForge.Creatures;
 using UnityEngine;
 
 namespace GeneForge.Core
@@ -8,6 +8,7 @@ namespace GeneForge.Core
     /// Singleton loader for all ScriptableObject config data.
     /// Must be initialized before any system queries creature, move, or part data.
     /// Singleton pattern approved under ADR-003.
+    /// Uses ConfigBase-typed registries to avoid circular assembly references.
     /// </summary>
     public class ConfigLoader : MonoBehaviour
     {
@@ -23,19 +24,32 @@ namespace GeneForge.Core
         /// <summary>Singleton settings — not a collection, loaded separately.</summary>
         public static GameSettings Settings { get; private set; }
 
-        public static IReadOnlyDictionary<string, CreatureConfig> Creatures => _creatures;
-        public static IReadOnlyDictionary<string, MoveConfig> Moves => _moves;
-        public static IReadOnlyDictionary<string, BodyPartConfig> BodyParts => _bodyParts;
-        public static IReadOnlyDictionary<string, StatusEffectConfig> StatusEffects => _statusEffects;
-        public static IReadOnlyDictionary<string, EncounterConfig> Encounters => _encounters;
-        public static IReadOnlyDictionary<string, AIPersonalityConfig> AIPersonalities => _aiPersonalities;
+        // ── Typed registry accessors (callers cast via Get<T>) ───────────
 
-        static readonly Dictionary<string, CreatureConfig> _creatures = new();
-        static readonly Dictionary<string, MoveConfig> _moves = new();
-        static readonly Dictionary<string, BodyPartConfig> _bodyParts = new();
-        static readonly Dictionary<string, StatusEffectConfig> _statusEffects = new();
-        static readonly Dictionary<string, EncounterConfig> _encounters = new();
-        static readonly Dictionary<string, AIPersonalityConfig> _aiPersonalities = new();
+        /// <summary>All loaded creature configs keyed by ID.</summary>
+        public static IReadOnlyDictionary<string, ConfigBase> Creatures => _creatures;
+
+        /// <summary>All loaded move configs keyed by ID.</summary>
+        public static IReadOnlyDictionary<string, ConfigBase> Moves => _moves;
+
+        /// <summary>All loaded body part configs keyed by ID.</summary>
+        public static IReadOnlyDictionary<string, ConfigBase> BodyParts => _bodyParts;
+
+        /// <summary>All loaded status effect configs keyed by ID.</summary>
+        public static IReadOnlyDictionary<string, ConfigBase> StatusEffects => _statusEffects;
+
+        /// <summary>All loaded encounter configs keyed by ID.</summary>
+        public static IReadOnlyDictionary<string, ConfigBase> Encounters => _encounters;
+
+        /// <summary>All loaded AI personality configs keyed by ID.</summary>
+        public static IReadOnlyDictionary<string, ConfigBase> AIPersonalities => _aiPersonalities;
+
+        static readonly Dictionary<string, ConfigBase> _creatures = new();
+        static readonly Dictionary<string, ConfigBase> _moves = new();
+        static readonly Dictionary<string, ConfigBase> _bodyParts = new();
+        static readonly Dictionary<string, ConfigBase> _statusEffects = new();
+        static readonly Dictionary<string, ConfigBase> _encounters = new();
+        static readonly Dictionary<string, ConfigBase> _aiPersonalities = new();
 
         static bool _initialized;
 
@@ -59,12 +73,12 @@ namespace GeneForge.Core
         {
             if (_initialized) return;
 
-            LoadAll<CreatureConfig>(CreaturesPath, _creatures);
-            LoadAll<MoveConfig>(MovesPath, _moves);
-            LoadAll<BodyPartConfig>(BodyPartsPath, _bodyParts);
-            LoadAll<StatusEffectConfig>(StatusEffectsPath, _statusEffects);
-            LoadAll<EncounterConfig>(EncountersPath, _encounters);
-            LoadAll<AIPersonalityConfig>(AIPersonalitiesPath, _aiPersonalities);
+            LoadAll(CreaturesPath, _creatures);
+            LoadAll(MovesPath, _moves);
+            LoadAll(BodyPartsPath, _bodyParts);
+            LoadAll(StatusEffectsPath, _statusEffects);
+            LoadAll(EncountersPath, _encounters);
+            LoadAll(AIPersonalitiesPath, _aiPersonalities);
 
             Settings = Resources.Load<GameSettings>("Data/GameSettings");
             if (Settings == null)
@@ -75,50 +89,78 @@ namespace GeneForge.Core
             _initialized = true;
         }
 
-        static void LoadAll<T>(string resourcePath, Dictionary<string, T> registry)
-            where T : ConfigBase
+        static void LoadAll(string resourcePath, Dictionary<string, ConfigBase> registry)
         {
-            var assets = Resources.LoadAll<T>(resourcePath);
+            var assets = Resources.LoadAll<ConfigBase>(resourcePath);
             foreach (var asset in assets)
             {
                 if (string.IsNullOrEmpty(asset.Id))
                 {
-                    Debug.LogError($"[ConfigLoader] {typeof(T).Name} at {resourcePath} has empty ID.");
+                    Debug.LogError($"[ConfigLoader] {asset.GetType().Name} at {resourcePath} has empty ID.");
                     continue;
                 }
                 if (!registry.TryAdd(asset.Id, asset))
-                    Debug.LogWarning($"[ConfigLoader] Duplicate ID '{asset.Id}' in {typeof(T).Name}.");
+                    Debug.LogWarning($"[ConfigLoader] Duplicate ID '{asset.Id}' in {asset.GetType().Name}.");
             }
 #if UNITY_EDITOR
-            Debug.Log($"[ConfigLoader] Loaded {registry.Count} {typeof(T).Name} assets.");
+            Debug.Log($"[ConfigLoader] Loaded {registry.Count} assets from {resourcePath}.");
 #endif
         }
 
-        static T Get<T>(IReadOnlyDictionary<string, T> registry, string id)
-            where T : ConfigBase
+        /// <summary>
+        /// Generic config lookup by ID. Returns null if not found.
+        /// Callers specify the concrete type: ConfigLoader.Get&lt;CreatureConfig&gt;("emberfox").
+        /// </summary>
+        public static T Get<T>(string id) where T : ConfigBase
+        {
+            // Search all registries for the ID
+            if (TryGet(_creatures, id, out T result)) return result;
+            if (TryGet(_moves, id, out result)) return result;
+            if (TryGet(_bodyParts, id, out result)) return result;
+            if (TryGet(_statusEffects, id, out result)) return result;
+            if (TryGet(_encounters, id, out result)) return result;
+            if (TryGet(_aiPersonalities, id, out result)) return result;
+
+            Debug.LogError($"[ConfigLoader] Config not found: '{id}' as {typeof(T).Name}.");
+            return null;
+        }
+
+        static bool TryGet<T>(Dictionary<string, ConfigBase> registry, string id, out T result) where T : ConfigBase
+        {
+            if (registry.TryGetValue(id, out var config) && config is T typed)
+            {
+                result = typed;
+                return true;
+            }
+            result = null;
+            return false;
+        }
+
+        /// <summary>Look up a config from a specific registry by ID.</summary>
+        public static ConfigBase GetFromRegistry(IReadOnlyDictionary<string, ConfigBase> registry, string id)
         {
             if (registry.TryGetValue(id, out var config)) return config;
-            Debug.LogError($"[ConfigLoader] Config not found: '{id}' in {typeof(T).Name} registry.");
+            Debug.LogError($"[ConfigLoader] Config not found: '{id}'.");
             return null;
         }
 
         /// <summary>Look up a creature config by kebab-case ID.</summary>
-        public static CreatureConfig GetCreature(string id) => Get(_creatures, id);
+        public static ConfigBase GetCreature(string id) => GetFromRegistry(_creatures, id);
 
         /// <summary>Look up a move config by kebab-case ID.</summary>
-        public static MoveConfig GetMove(string id) => Get(_moves, id);
+        public static ConfigBase GetMove(string id) => GetFromRegistry(_moves, id);
 
         /// <summary>Look up a body part config by kebab-case ID.</summary>
-        public static BodyPartConfig GetBodyPart(string id) => Get(_bodyParts, id);
+        public static ConfigBase GetBodyPart(string id) => GetFromRegistry(_bodyParts, id);
 
         /// <summary>Look up a status effect config by kebab-case ID.</summary>
-        public static StatusEffectConfig GetStatusEffect(string id) => Get(_statusEffects, id);
+        public static ConfigBase GetStatusEffect(string id) => GetFromRegistry(_statusEffects, id);
 
         /// <summary>Look up an encounter config by kebab-case ID.</summary>
-        public static EncounterConfig GetEncounter(string id) => Get(_encounters, id);
+        public static ConfigBase GetEncounter(string id) => GetFromRegistry(_encounters, id);
 
         /// <summary>Look up an AI personality config by kebab-case ID.</summary>
-        public static AIPersonalityConfig GetAIPersonality(string id) => Get(_aiPersonalities, id);
+        public static ConfigBase GetAIPersonality(string id) => GetFromRegistry(_aiPersonalities, id);
 
 #if UNITY_EDITOR
         /// <summary>

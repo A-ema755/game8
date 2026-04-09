@@ -129,7 +129,7 @@ namespace GeneForge.UI
             {
                 foreach (var kvp in ConfigLoader.AIPersonalities)
                 {
-                    aiPersonality = kvp.Value;
+                    aiPersonality = kvp.Value as AIPersonalityConfig;
                     break;
                 }
             }

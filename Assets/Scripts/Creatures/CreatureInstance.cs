@@ -200,7 +200,7 @@ namespace GeneForge.Creatures
             _formsCache.Clear();
             for (int i = 0; i < _equippedPartIds.Count; i++)
             {
-                var partConfig = ConfigLoader.GetBodyPart(_equippedPartIds[i]);
+                var partConfig = ConfigLoader.GetBodyPart(_equippedPartIds[i]) as BodyPartConfig;
                 if (partConfig != null && partConfig.FormAccess != DamageForm.None)
                     _formsCache.Add(partConfig.FormAccess);
             }
@@ -392,7 +392,7 @@ namespace GeneForge.Creatures
                 if (entry.Level <= _level && _learnedMoveIds.Count < 4)
                 {
                     _learnedMoveIds.Add(entry.MoveId);
-                    var moveConfig = ConfigLoader.GetMove(entry.MoveId);
+                    var moveConfig = ConfigLoader.GetMove(entry.MoveId) as MoveConfig;
                     _learnedMovePP.Add(moveConfig != null ? moveConfig.PP : 5);
                 }
             }
@@ -403,7 +403,7 @@ namespace GeneForge.Creatures
         {
             if (_learnedMoveIds.Contains(moveId)) return;
 
-            var moveConfig = ConfigLoader.GetMove(moveId);
+            var moveConfig = ConfigLoader.GetMove(moveId) as MoveConfig;
             if (moveConfig == null) return;
 
             if (slot < 0 || slot >= _learnedMoveIds.Count)
@@ -444,7 +444,7 @@ namespace GeneForge.Creatures
         {
             for (int i = 0; i < _learnedMoveIds.Count; i++)
             {
-                var moveConfig = ConfigLoader.GetMove(_learnedMoveIds[i]);
+                var moveConfig = ConfigLoader.GetMove(_learnedMoveIds[i]) as MoveConfig;
                 if (moveConfig != null)
                     _learnedMovePP[i] = moveConfig.PP;
             }

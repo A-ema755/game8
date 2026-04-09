@@ -248,7 +248,7 @@ namespace GeneForge.UI
                 if (i < creature.LearnedMoveIds.Count)
                 {
                     string moveId = creature.LearnedMoveIds[i];
-                    var move = ConfigLoader.GetMove(moveId);
+                    var move = ConfigLoader.GetMove(moveId) as MoveConfig;
                     _loadedMoves[i] = move;
 
                     if (move != null)
