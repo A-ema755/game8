@@ -2,7 +2,8 @@
     "name": "GeneForge.Grid",
     "rootNamespace": "GeneForge.Grid",
     "references": [
-        "GUID:a2365be9fbad0954a9bb29716da7ec7e"
+        "GUID:a2365be9fbad0954a9bb29716da7ec7e",
+        "GUID:c1e2f3a4b5d6e7f8a9b0c1d2e3f4a5b6"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

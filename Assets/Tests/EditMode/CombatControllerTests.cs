@@ -576,6 +576,8 @@ namespace GeneForge.Tests
             public StubDamageCalculator(int damage = 10) { _damage = damage; }
             public int Calculate(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid)
                 => Mathf.Max(1, _damage);
+            public int CalculateRaw(int power, DamageForm form, CreatureInstance attacker, CreatureInstance defender)
+                => Mathf.Max(1, _damage);
         }
 
         private class StubCaptureSystem : ICaptureSystem

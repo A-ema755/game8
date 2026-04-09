@@ -1,3 +1,4 @@
+using GeneForge.Core;
 using GeneForge.Creatures;
 using GeneForge.Grid;
 

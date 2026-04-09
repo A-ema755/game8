@@ -1387,8 +1387,7 @@ namespace GeneForge.Tests
                     var entry = statusEntries[i];
                     if (entry.RemainingRounds > 0)
                     {
-                        entry.RemainingRounds--;
-                        statusEntries[i] = entry;
+                        statusEntries[i] = entry.WithDecrementedRounds();
                     }
                 }
             }
