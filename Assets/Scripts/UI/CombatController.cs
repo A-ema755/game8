@@ -139,19 +139,19 @@ namespace GeneForge.UI
                 aiPersonality = ScriptableObject.CreateInstance<AIPersonalityConfig>();
             }
 
-            var rng = seed == 0 ? new System.Random() : new System.Random(seed);
-            var damageCalculator = new DamageCalculator(rng);
-            var captureSystem = new CaptureSystem(rng);
-            var moveEffectApplier = new MoveEffectApplier(rng);
-            var statusEffectProcessor = new StatusEffectProcessor();
-            var aiDecisionSystem = new AIDecisionSystem(aiPersonality, rng);
-
             var combatSettings = Resources.Load<CombatSettings>("Data/CombatSettings");
             if (combatSettings == null)
             {
-                Debug.LogWarning("[CombatController] CombatSettings not found at Resources/Data/CombatSettings. Using defaults.");
+                Debug.LogError("[CombatController] CombatSettings not found at Resources/Data/CombatSettings. Using defaults.");
                 combatSettings = ScriptableObject.CreateInstance<CombatSettings>();
             }
+
+            var rng = seed == 0 ? new System.Random() : new System.Random(seed);
+            var damageCalculator = new DamageCalculator(combatSettings, rng);
+            var captureSystem = new CaptureSystem(rng);
+            var moveEffectApplier = new MoveEffectApplier(rng);
+            var statusEffectProcessor = new StatusEffectProcessor(combatSettings);
+            var aiDecisionSystem = new AIDecisionSystem(aiPersonality, rng);
 
             StartCombat(
                 context.Grid,

@@ -75,6 +75,52 @@ namespace GeneForge.Combat
                  "GDD default 40. Range 30–50. Above 60 rivals DoT effects.")]
         [SerializeField] private int confusionSelfHitPower = 40;
 
+        [Header("Damage Calculator — Critical Hits")]
+        [Tooltip("Damage multiplier applied on critical hit. GDD default 1.5. Range 1.25–2.0.")]
+        [SerializeField] private float critMultiplier = 1.5f;
+
+        [Tooltip("Base critical hit chance (1/16). GDD default 0.0625. Range 0.03–0.15.")]
+        [SerializeField] [Range(0f, 1f)] private float critBaseChance = 0.0625f;
+
+        [Tooltip("Elevated critical hit chance for HighCrit moves (1/8). GDD default 0.125.")]
+        [SerializeField] [Range(0f, 1f)] private float critHighChance = 0.125f;
+
+        [Header("Damage Calculator — Variance")]
+        [Tooltip("Minimum random variance factor. GDD default 0.85. Max damage = varianceMin + varianceRange.")]
+        [SerializeField] private float varianceMin = 0.85f;
+
+        [Tooltip("Random variance range added to varianceMin. GDD default 0.15 (so max = 1.0).")]
+        [SerializeField] private float varianceRange = 0.15f;
+
+        [Tooltip("Fixed variance used by AI Estimate (midpoint of range). GDD default 0.925.")]
+        [SerializeField] private float estimateVariance = 0.925f;
+
+        [Header("Damage Calculator — Terrain & Height")]
+        [Tooltip("Height bonus per level above defender. GDD default 0.1 (+10%/level). Range 0.05–0.2.")]
+        [SerializeField] private float heightBonusPerLevel = 0.1f;
+
+        [Tooltip("Maximum height bonus multiplier cap. GDD default 2.0.")]
+        [SerializeField] private float heightBonusCap = 2.0f;
+
+        [Tooltip("Attacker terrain synergy multiplier. GDD default 1.2.")]
+        [SerializeField] private float attackerTerrainSynergy = 1.2f;
+
+        [Tooltip("Defender terrain synergy multiplier. GDD default 0.8.")]
+        [SerializeField] private float defenderTerrainSynergy = 0.8f;
+
+        [Header("Damage Calculator — Formula")]
+        [Tooltip("Cover damage reduction for Energy form. GDD default 0.5 (50% reduction).")]
+        [SerializeField] private float coverReduction = 0.5f;
+
+        [Tooltip("Divisor in base damage formula. GDD default 50.")]
+        [SerializeField] private float statDivisor = 50f;
+
+        [Tooltip("Floor added after stat ratio calculation. GDD default 2.")]
+        [SerializeField] private float baseDamageFloor = 2f;
+
+        [Tooltip("Absolute minimum damage for any damaging move. GDD default 1.")]
+        [SerializeField] private int minDamage = 1;
+
         // ── Properties ────────────────────────────────────────────────────
 
         /// <summary>
@@ -125,5 +171,49 @@ namespace GeneForge.Combat
 
         /// <summary>Base power of the synthetic confusion self-hit move.</summary>
         public int ConfusionSelfHitPower => confusionSelfHitPower;
+
+        // ── Damage Calculator Properties ─────────────────────────────────
+
+        /// <summary>Damage multiplier on critical hit (GDD default 1.5×).</summary>
+        public float CritMultiplier => critMultiplier;
+
+        /// <summary>Base critical hit chance (GDD default 1/16 = 0.0625).</summary>
+        public float CritBaseChance => critBaseChance;
+
+        /// <summary>Elevated crit chance for HighCrit moves (GDD default 1/8 = 0.125).</summary>
+        public float CritHighChance => critHighChance;
+
+        /// <summary>Minimum random variance factor (GDD default 0.85).</summary>
+        public float VarianceMin => varianceMin;
+
+        /// <summary>Random variance range (GDD default 0.15, so max = 1.0).</summary>
+        public float VarianceRange => varianceRange;
+
+        /// <summary>Fixed variance for AI damage estimation (GDD default 0.925).</summary>
+        public float EstimateVariance => estimateVariance;
+
+        /// <summary>Height bonus per level above defender (GDD default 0.1).</summary>
+        public float HeightBonusPerLevel => heightBonusPerLevel;
+
+        /// <summary>Maximum height bonus cap (GDD default 2.0×).</summary>
+        public float HeightBonusCap => heightBonusCap;
+
+        /// <summary>Attacker terrain synergy multiplier (GDD default 1.2×).</summary>
+        public float AttackerTerrainSynergy => attackerTerrainSynergy;
+
+        /// <summary>Defender terrain synergy multiplier (GDD default 0.8×).</summary>
+        public float DefenderTerrainSynergy => defenderTerrainSynergy;
+
+        /// <summary>Cover damage reduction for Energy form (GDD default 0.5).</summary>
+        public float CoverReduction => coverReduction;
+
+        /// <summary>Divisor in base damage formula (GDD default 50).</summary>
+        public float StatDivisor => statDivisor;
+
+        /// <summary>Floor added after stat ratio in damage formula (GDD default 2).</summary>
+        public float BaseDamageFloor => baseDamageFloor;
+
+        /// <summary>Absolute minimum damage for damaging moves (GDD default 1).</summary>
+        public int MinDamage => minDamage;
     }
 }

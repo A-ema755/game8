@@ -105,12 +105,19 @@ namespace GeneForge.UI
         /// Wire up dependencies. Called by CombatHUDController or scene setup
         /// after all controllers are created.
         /// </summary>
+        /// <param name="combatController">CombatController driving the combat loop.</param>
+        /// <param name="movePanel">Move selection UI controller.</param>
+        /// <param name="tileHighlight">Tile highlight controller for movement/attack range.</param>
+        /// <param name="switchOverlay">Switch overlay controller for creature swapping.</param>
+        /// <param name="infoPanel">Creature info panel controller.</param>
+        /// <param name="settings">CombatSettings with movement divisor and capture range.</param>
         public void Initialize(
             CombatController combatController,
             MoveSelectionPanelController movePanel,
             TileHighlightController tileHighlight,
             SwitchOverlayController switchOverlay,
-            CreatureInfoPanelController infoPanel)
+            CreatureInfoPanelController infoPanel,
+            CombatSettings settings)
         {
             _combatController = combatController;
             _movePanel = movePanel;
@@ -118,10 +125,10 @@ namespace GeneForge.UI
             _switchOverlay = switchOverlay;
             _infoPanel = infoPanel;
 
-            _settings = Resources.Load<CombatSettings>("Data/CombatSettings");
+            _settings = settings;
             if (_settings == null)
             {
-                Debug.LogWarning("[PlayerInputController] CombatSettings not found. Using defaults.");
+                Debug.LogError("[PlayerInputController] CombatSettings is null. Using defaults.");
                 _settings = ScriptableObject.CreateInstance<CombatSettings>();
             }
 
