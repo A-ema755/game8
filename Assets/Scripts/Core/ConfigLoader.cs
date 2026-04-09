@@ -89,7 +89,9 @@ namespace GeneForge.Core
                 if (!registry.TryAdd(asset.Id, asset))
                     Debug.LogWarning($"[ConfigLoader] Duplicate ID '{asset.Id}' in {typeof(T).Name}.");
             }
+#if UNITY_EDITOR
             Debug.Log($"[ConfigLoader] Loaded {registry.Count} {typeof(T).Name} assets.");
+#endif
         }
 
         static T Get<T>(IReadOnlyDictionary<string, T> registry, string id)

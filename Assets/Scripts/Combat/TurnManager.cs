@@ -107,6 +107,9 @@ namespace GeneForge.Combat
         /// <summary>Reusable list for initiative ordering — avoids per-round allocation.</summary>
         private readonly List<CreatureInstance> _initiativeBuffer = new();
 
+        /// <summary>Reusable tiebreak dictionary — cleared per GetInitiativeOrder call.</summary>
+        private readonly Dictionary<CreatureInstance, int> _tiebreaks = new();
+
         // ── RNG ───────────────────────────────────────────────────────────
 
         private readonly System.Random _rng;
@@ -513,7 +516,15 @@ namespace GeneForge.Combat
         private bool ResolveConfusionSelfHit(CreatureInstance actor)
         {
             var entries = GetStatusEntries(actor);
-            bool isConfused = entries.Any(e => e.Effect == StatusEffect.Confusion && !e.IsExpired);
+            bool isConfused = false;
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (entries[i].Effect == StatusEffect.Confusion && !entries[i].IsExpired)
+                {
+                    isConfused = true;
+                    break;
+                }
+            }
             if (!isConfused || _rng.NextDouble() >= _settings.ConfusionSelfHitChance)
                 return false;
 
@@ -723,8 +734,24 @@ namespace GeneForge.Combat
         /// </summary>
         private bool CheckEndCondition(out CombatResult result)
         {
-            bool allEnemyFainted  = _enemyParty.Count == 0 || _enemyParty.All(c => c.IsFainted);
-            bool allPlayerFainted = _playerParty.Count == 0 || _playerParty.All(c => c.IsFainted);
+            bool allEnemyFainted = _enemyParty.Count == 0;
+            if (!allEnemyFainted)
+            {
+                allEnemyFainted = true;
+                for (int i = 0; i < _enemyParty.Count; i++)
+                {
+                    if (!_enemyParty[i].IsFainted) { allEnemyFainted = false; break; }
+                }
+            }
+            bool allPlayerFainted = _playerParty.Count == 0;
+            if (!allPlayerFainted)
+            {
+                allPlayerFainted = true;
+                for (int i = 0; i < _playerParty.Count; i++)
+                {
+                    if (!_playerParty[i].IsFainted) { allPlayerFainted = false; break; }
+                }
+            }
 
             // Victory takes priority over mutual faint (recoil scenario — GDD §5).
             if (allEnemyFainted)  { result = CombatResult.Victory; return true; }
@@ -754,9 +781,10 @@ namespace GeneForge.Combat
             }
 
             // Pre-compute tiebreak values once before the sort (Gap fix: not inline in comparator).
-            var tiebreaks = new Dictionary<CreatureInstance, int>(_initiativeBuffer.Count);
+            // Reuse instance dict — clear instead of allocating.
+            _tiebreaks.Clear();
             foreach (var c in _initiativeBuffer)
-                tiebreaks[c] = _rng.Next();
+                _tiebreaks[c] = _rng.Next();
 
             _initiativeBuffer.Sort((a, b) =>
             {
@@ -771,7 +799,7 @@ namespace GeneForge.Combat
                 if (ia != ib) return ia.CompareTo(ib);
 
                 // Step 3: Pre-computed random tiebreak (stable within round).
-                return tiebreaks[a].CompareTo(tiebreaks[b]);
+                return _tiebreaks[a].CompareTo(_tiebreaks[b]);
             });
 
             // Return a copy — callers iterate while combat state mutates.

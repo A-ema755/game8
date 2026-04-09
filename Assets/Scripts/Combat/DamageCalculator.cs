@@ -46,7 +46,7 @@ namespace GeneForge.Combat
         /// <inheritdoc/>
         public int CalculateRaw(int power, DamageForm form, CreatureInstance attacker, CreatureInstance defender)
         {
-            GetFormStatPairing(form, attacker, defender, out int offStat, out int defStat);
+            DamageFormHelper.GetStatPairing(form, attacker, defender, out int offStat, out int defStat);
             float levelCoeff = (2f * attacker.Level / 5f) + 2f;
             float statRatio = (float)offStat / Mathf.Max(1, defStat);
             float baseDamage = (levelCoeff * power * statRatio / _settings.StatDivisor) + _settings.BaseDamageFloor;
@@ -85,7 +85,7 @@ namespace GeneForge.Combat
         /// </summary>
         private static float ComputeBase(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid, CombatSettings settings)
         {
-            GetFormStatPairing(move.Form, attacker, target, out int offStat, out int defStat);
+            DamageFormHelper.GetStatPairing(move.Form, attacker, target, out int offStat, out int defStat);
 
             float levelCoeff = (2f * attacker.Level / 5f) + 2f;
             float statRatio = (float)offStat / Mathf.Max(1, defStat);
@@ -105,35 +105,6 @@ namespace GeneForge.Combat
             float coverMult = GetCoverMultiplier(move.Form, defenderTile, settings);
 
             return baseDamage * stabMult * typeEffectMult * terrainMult * heightMult * coverMult;
-        }
-
-        /// <summary>
-        /// Select offensive and defensive stats based on damage form.
-        /// Physical: ATK vs DEF. Energy: ATK vs SPD. Bio: ACC vs DEF.
-        /// </summary>
-        private static void GetFormStatPairing(
-            DamageForm form,
-            CreatureInstance attacker,
-            CreatureInstance defender,
-            out int offStat,
-            out int defStat)
-        {
-            switch (form)
-            {
-                case DamageForm.Energy:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.SPD;
-                    break;
-                case DamageForm.Bio:
-                    offStat = attacker.ComputedStats.ACC;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-                case DamageForm.Physical:
-                default:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-            }
         }
 
         /// <summary>

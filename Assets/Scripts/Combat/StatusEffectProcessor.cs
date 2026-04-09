@@ -57,9 +57,9 @@ namespace GeneForge.Combat
                     // ── Suppression (unconditional + duration) ────────────
                     case StatusEffect.Sleep:
                         suppressed = true;
-                        entry.RemainingRounds--;
+                        entry = entry.WithDecrementedRounds();
                         statusEntries[i] = entry;
-                        if (entry.RemainingRounds <= 0)
+                        if (entry.IsExpired)
                         {
                             statusEntries.RemoveAt(i);
                             creature.RemoveStatusEffect(StatusEffect.Sleep);
@@ -68,9 +68,9 @@ namespace GeneForge.Combat
 
                     case StatusEffect.Freeze:
                         suppressed = true;
-                        entry.RemainingRounds--;
+                        entry = entry.WithDecrementedRounds();
                         statusEntries[i] = entry;
-                        if (entry.RemainingRounds <= 0)
+                        if (entry.IsExpired)
                         {
                             statusEntries.RemoveAt(i);
                             creature.RemoveStatusEffect(StatusEffect.Freeze);
@@ -103,8 +103,8 @@ namespace GeneForge.Combat
                     continue;
 
                 // Confusion, Taunt: decrement here.
-                entry.RemainingRounds--;
-                if (entry.RemainingRounds <= 0)
+                entry = entry.WithDecrementedRounds();
+                if (entry.IsExpired)
                 {
                     statusEntries.RemoveAt(i);
                     creature.RemoveStatusEffect(entry.Effect);

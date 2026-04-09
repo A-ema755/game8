@@ -18,6 +18,7 @@ namespace GeneForge.UI
         private readonly VisualElement _container;
         private readonly List<VisualElement> _iconElements = new();
         private readonly Dictionary<CreatureInstance, VisualElement> _creatureToIcon = new();
+        private VisualElement _activeIcon;
 
         // Type color lookup matching visual spec §1.6
         internal static readonly Dictionary<CreatureType, Color> TypeColors = new()
@@ -75,13 +76,15 @@ namespace GeneForge.UI
         /// <summary>Set the active creature indicator (gold border + enlarged).</summary>
         public void SetActiveCreature(CreatureInstance creature)
         {
-            // Remove active from all icons
-            foreach (var kvp in _creatureToIcon)
-                kvp.Value.RemoveFromClassList("icon--active");
+            // O(1): remove from previous active only
+            _activeIcon?.RemoveFromClassList("icon--active");
+            _activeIcon = null;
 
-            // Set active on the specified creature
             if (creature != null && _creatureToIcon.TryGetValue(creature, out var icon))
+            {
                 icon.AddToClassList("icon--active");
+                _activeIcon = icon;
+            }
         }
 
         /// <summary>Update HP pips and status icon for a single creature.</summary>

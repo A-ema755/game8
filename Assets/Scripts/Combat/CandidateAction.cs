@@ -20,7 +20,7 @@ namespace GeneForge.Combat
         public Vector2Int DestinationTile { get; }
 
         /// <summary>Weighted composite score assigned by AIActionScorer. Mutable during scoring pass.</summary>
-        public float CompositeScore { get; set; }
+        public float CompositeScore { get; internal set; }
 
         /// <summary>
         /// Create a candidate action for AI evaluation.

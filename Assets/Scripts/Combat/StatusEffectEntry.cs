@@ -20,16 +20,22 @@ namespace GeneForge.Combat
     ///   Burn      = indefinite (-1)
     ///   Poison    = indefinite (-1)
     /// </summary>
-    public struct StatusEffectEntry
+    public readonly struct StatusEffectEntry
     {
         /// <summary>The status effect.</summary>
-        public StatusEffect Effect;
+        public StatusEffect Effect { get; }
 
         /// <summary>
         /// Rounds remaining. -1 = indefinite.
         /// Do not read 0 as "one round left" — 0 means expired.
         /// </summary>
-        public int RemainingRounds;
+        public int RemainingRounds { get; }
+
+        /// <summary>True when this entry has no duration limit (Burn, Poison, Paralysis).</summary>
+        public bool IsIndefinite => RemainingRounds == -1;
+
+        /// <summary>True when this entry has expired and should be removed.</summary>
+        public bool IsExpired => !IsIndefinite && RemainingRounds <= 0;
 
         /// <summary>
         /// Creates a StatusEffectEntry with the given effect and duration.
@@ -38,14 +44,17 @@ namespace GeneForge.Combat
         /// <param name="remainingRounds">Duration in rounds. Pass -1 for indefinite.</param>
         public StatusEffectEntry(StatusEffect effect, int remainingRounds)
         {
-            Effect         = effect;
+            Effect          = effect;
             RemainingRounds = remainingRounds;
         }
 
-        /// <summary>True when this entry has expired and should be removed.</summary>
-        public bool IsExpired => RemainingRounds == 0;
-
-        /// <summary>True when this entry has no duration limit (Burn, Poison, Paralysis).</summary>
-        public bool IsIndefinite => RemainingRounds == -1;
+        /// <summary>
+        /// Returns a new StatusEffectEntry with RemainingRounds decremented by one.
+        /// Does not mutate this instance (readonly struct).
+        /// </summary>
+        public StatusEffectEntry WithDecrementedRounds()
+        {
+            return new StatusEffectEntry(Effect, RemainingRounds - 1);
+        }
     }
 }

@@ -213,7 +213,7 @@ namespace GeneForge.Combat
                 return 0f;
 
             // Stat pairing favorability
-            GetFormStatPairing(action.Move.Form, actor, action.Target, out int offStat, out int defStat);
+            DamageFormHelper.GetStatPairing(action.Move.Form, actor, action.Target, out int offStat, out int defStat);
             float statRatio = (float)offStat / Mathf.Max(1, defStat);
             float formStatScore = Mathf.Clamp((statRatio - 1.0f) / 2.0f, -0.5f, 1.0f);
 
@@ -248,36 +248,6 @@ namespace GeneForge.Combat
             }
 
             return formStatScore + Mathf.Clamp(formPositionScore, 0f, 1.0f);
-        }
-
-        /// <summary>
-        /// Select offensive and defensive stats based on damage form.
-        /// Physical: ATK vs DEF. Energy: ATK vs SPD. Bio: ACC vs DEF.
-        /// Mirrors DamageCalculator stat pairing logic.
-        /// </summary>
-        private static void GetFormStatPairing(
-            DamageForm form,
-            CreatureInstance attacker,
-            CreatureInstance defender,
-            out int offStat,
-            out int defStat)
-        {
-            switch (form)
-            {
-                case DamageForm.Energy:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.SPD;
-                    break;
-                case DamageForm.Bio:
-                    offStat = attacker.ComputedStats.ACC;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-                case DamageForm.Physical:
-                default:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-            }
         }
 
         /// <summary>
