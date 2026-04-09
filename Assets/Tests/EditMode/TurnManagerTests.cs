@@ -48,9 +48,14 @@ namespace GeneForge.Tests
         private static void SetField(object obj, string fieldName, object value)
         {
             var type = obj.GetType();
-            var field = type.GetField(fieldName,
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            Assert.IsNotNull(field, $"Field '{fieldName}' not found on {type.Name}");
+            System.Reflection.FieldInfo field = null;
+            while (type != null && field == null)
+            {
+                field = type.GetField(fieldName,
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                type = type.BaseType;
+            }
+            Assert.IsNotNull(field, $"Field '{fieldName}' not found on {obj.GetType().Name}");
             field.SetValue(obj, value);
         }
 

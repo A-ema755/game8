@@ -620,7 +620,8 @@ namespace GeneForge.Tests
                 grid.SetTile(new TileData(new Vector2Int(x, z), 0, TerrainType.Neutral));
 
             for (int z = 0; z < 6; z++)
-                grid.SetTile(new TileData(new Vector2Int(3, z), 3, TerrainType.Neutral));
+                grid.SetTile(new TileData(new Vector2Int(3, z), 3, TerrainType.Neutral,
+                    isPassable: false, blocksLoS: true, providesCover: false));
 
             // Assert — every height-3 tile must report IsPassable == false.
             for (int z = 0; z < 6; z++)

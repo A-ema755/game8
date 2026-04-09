@@ -234,8 +234,14 @@ namespace GeneForge.Tests
 
         private static void SetPrivateField(object obj, string fieldName, object value)
         {
-            var field = obj.GetType().GetField(fieldName,
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var type = obj.GetType();
+            System.Reflection.FieldInfo field = null;
+            while (type != null && field == null)
+            {
+                field = type.GetField(fieldName,
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                type = type.BaseType;
+            }
             if (field != null)
                 field.SetValue(obj, value);
         }

@@ -7,7 +7,9 @@
         "GUID:a420e07fa2692194cb2e6c26e72f6720",
         "GUID:b8c4e1a2d3f5094ab9e7c6d8a1f2b3c4",
         "GUID:c1e2f3a4b5d6e7f8a9b0c1d2e3f4a5b6",
-        "GUID:d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2"
+        "GUID:d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"

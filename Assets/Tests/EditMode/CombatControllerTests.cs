@@ -108,7 +108,7 @@ namespace GeneForge.Tests
             SetField(move, "priority", 0);
             SetField(move, "form", DamageForm.Physical);
             SetField(move, "genomeType", CreatureType.None);
-            SetField(move, "alwaysHits", false);
+            SetField(move, "accuracy", 100);
             SetField(move, "effects", new List<MoveEffect>());
             SetField(move, "targetType", TargetType.Single);
             return move;
