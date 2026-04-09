@@ -655,11 +655,11 @@ namespace GeneForge.Tests
                 EncounterType.Wild, _settings,
                 new StubDamageCalculator(0),
                 new StubCaptureSystem(),
-                new StubAIDecisionSystem(() => new TurnAction(ActionType.UseMove, move: _priorityMove, target: _player1)),
+                new StubAIDecisionSystem(() => new TurnAction(ActionType.UseMove, move: _priorityMove, target: _player1, movePPSlot: 0)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
                 new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
-                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
+                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) }
                 }));
 
             tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
@@ -792,7 +792,7 @@ namespace GeneForge.Tests
             var suppressedCount = 0;
 
             var statusProcessor = new StubStatusEffectProcessor(
-                (creature, entries, roll) => true); // Always suppressed (Sleep)
+                (creature, entries, roll) => creature == _player1); // Only player suppressed (Sleep)
 
             var tm = new TurnManager(
                 _grid, new List<CreatureInstance> { _player1 }, new List<CreatureInstance> { _enemy1 },
@@ -803,7 +803,7 @@ namespace GeneForge.Tests
                 new StubMoveEffectApplier(), statusProcessor,
                 new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
-                    { _player1, new TurnAction(ActionType.UseMove, movementTarget: moveTarget, move: _damageMove, target: _enemy1) }
+                    { _player1, new TurnAction(ActionType.UseMove, movementTarget: moveTarget, move: _damageMove, target: _enemy1, movePPSlot: 0) }
                 }));
 
             tm.CreatureActed += (args) =>
@@ -841,7 +841,7 @@ namespace GeneForge.Tests
                 new StubMoveEffectApplier(), statusProcessor,
                 new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
-                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
+                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) }
                 }),
                 seed: 12345); // Deterministic seed
 
@@ -880,7 +880,7 @@ namespace GeneForge.Tests
                 new StubMoveEffectApplier(), statusProcessor,
                 new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
-                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
+                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) }
                 }),
                 seed: 12345);
 
@@ -910,7 +910,7 @@ namespace GeneForge.Tests
                     new StubMoveEffectApplier(), statusProcessor,
                     new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                     {
-                        { player, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
+                        { player, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) }
                     }),
                     seed: 12345 + i);
 
@@ -943,7 +943,7 @@ namespace GeneForge.Tests
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
                 new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
-                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
+                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) }
                 }));
 
             SetField(_player1, "_learnedMoveIds", new List<string> { "damage-move" });
@@ -960,13 +960,13 @@ namespace GeneForge.Tests
         [Test]
         public void CombatTermination_DefeatWhenAllPlayersFaint()
         {
-            // Arrange
+            // Arrange — damage must exceed player HP to faint in one round
             var tm = new TurnManager(
                 _grid, new List<CreatureInstance> { _player1 }, new List<CreatureInstance> { _enemy1 },
                 EncounterType.Wild, _settings,
-                new StubDamageCalculator(0),
+                new StubDamageCalculator(50),
                 new StubCaptureSystem(),
-                new StubAIDecisionSystem(() => new TurnAction(ActionType.UseMove, move: _damageMove, target: _player1)),
+                new StubAIDecisionSystem(() => new TurnAction(ActionType.UseMove, move: _damageMove, target: _player1, movePPSlot: 0)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
                 new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
