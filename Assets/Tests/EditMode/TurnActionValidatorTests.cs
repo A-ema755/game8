@@ -482,6 +482,13 @@ namespace GeneForge.Tests
             var movePP = new List<int> { ppRemaining };
             SetField(creature, "_learnedMoveIds", moveIds);
             SetField(creature, "_learnedMovePP", movePP);
+            // Grant form access so validator doesn't reject for missing body part
+            if (move.Form != DamageForm.None)
+            {
+                var forms = new HashSet<DamageForm> { move.Form };
+                SetField(creature, "_formsCache", forms);
+                SetField(creature, "_formsCacheDirty", false);
+            }
             return creature;
         }
 

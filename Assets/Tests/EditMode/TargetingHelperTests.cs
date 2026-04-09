@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using GeneForge.Core;
 using GeneForge.Creatures;
 using GeneForge.Grid;
 using GeneForge.Combat;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace GeneForge.Tests
 {
@@ -229,7 +231,8 @@ namespace GeneForge.Tests
             // Arrange
             var creature = CreateCreature(new Vector2Int(4, 4));
 
-            // Act
+            // Act — zero divisor fires LogError
+            LogAssert.Expect(LogType.Error, new Regex("movementDivisor must be > 0"));
             var tiles = TargetingHelper.GetMovementTiles(creature, _grid, 0);
 
             // Assert
@@ -366,6 +369,7 @@ namespace GeneForge.Tests
         private void FaintCreature(CreatureInstance creature)
         {
             SetField(creature, "_currentHP", 0);
+            SetField(creature, "_isFainted", true);
         }
 
         private MoveConfig CreateMoveConfig(DamageForm form, TargetType targetType, int range)

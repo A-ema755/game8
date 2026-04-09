@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 using GeneForge.Core;
 using GeneForge.Combat;
 using GeneForge.Creatures;
 using GeneForge.Grid;
-using UnityEngine;
 
 namespace GeneForge.Tests
 {
@@ -1087,13 +1089,13 @@ namespace GeneForge.Tests
             var captureResults = new List<bool>();
             tm.CreatureCaptured += (args) => captureResults.Add(args.Success);
 
-            // Act
+            // Act — trainer capture guard fires LogError
+            LogAssert.Expect(LogType.Error, new Regex("Capture attempted in trainer encounter"));
             tm.AdvanceRound();
 
-            // Assert: Capture should fail in trainer battle
-            // Note: CaptureSystem.Attempt should return false for trainer creatures
-            Assert.That(captureResults.Count, Is.GreaterThan(0));
-            // The stub returns based on encounter type — trainer should fail
+            // Assert: Guard returns early — no capture event fires at all
+            Assert.That(captureResults.Count, Is.EqualTo(0),
+                "Trainer capture guard must block before CaptureSystem.Attempt is called");
         }
 
         // ────────────────────────────────────────────────────────────────
@@ -1185,13 +1187,13 @@ namespace GeneForge.Tests
 
             tm.CreatureCaptured += (args) => captureResults.Add(args.Success);
 
-            // Act
+            // Act — trainer capture guard fires LogError
+            LogAssert.Expect(LogType.Error, new Regex("Capture attempted in trainer encounter"));
             tm.AdvanceRound();
 
-            // Assert — capture must not succeed; event may fire but Success must be false.
-            bool captureSucceeded = captureResults.Exists(r => r);
-            Assert.IsFalse(captureSucceeded,
-                "Trainer encounter must block capture: Success must never be true");
+            // Assert — guard returns early, no capture event fires
+            Assert.That(captureResults.Count, Is.EqualTo(0),
+                "Trainer encounter must block capture before event fires");
         }
 
         // ────────────────────────────────────────────────────────────────
