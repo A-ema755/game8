@@ -54,15 +54,29 @@ namespace GeneForge.Tests
             return config;
         }
 
+        // ── Settings Factory ─────────────────────────────────────────────
+
+        private CombatSettings CreateCombatSettings(
+            int burnDivisor = 16, int poisonDivisor = 8, float paralysisChance = 0.25f)
+        {
+            var settings = ScriptableObject.CreateInstance<CombatSettings>();
+            SetField(settings, "burnDotDivisor", burnDivisor);
+            SetField(settings, "poisonDotDivisor", poisonDivisor);
+            SetField(settings, "paralysisSuppressionChance", paralysisChance);
+            return settings;
+        }
+
         // ── Shared State ─────────────────────────────────────────────────
 
         private StatusEffectProcessor _processor;
+        private CombatSettings _settings;
         private CreatureConfig _config;
 
         [SetUp]
         public void SetUp()
         {
-            _processor = new StatusEffectProcessor();
+            _settings = CreateCombatSettings();
+            _processor = new StatusEffectProcessor(_settings);
             // hp=160 chosen so maxHP/16=10 (Burn) and maxHP/8=20 (Poison) are clean integers.
             var stats = new BaseStats(160, 40, 30, 30, 100);
             _config = CreateCreatureConfig("test-creature", stats);
@@ -317,6 +331,52 @@ namespace GeneForge.Tests
                 "Burn DoT should faint creature when HP drops to 0");
             Assert.AreEqual(0, creature.CurrentHP,
                 "CurrentHP should be 0 after lethal DoT tick");
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // CombatSettings Knob Verification
+        // ══════════════════════════════════════════════════════════════════
+
+        [Test]
+        public void test_StatusEffectProcessor_burn_reads_burnDotDivisor_from_settings()
+        {
+            // Arrange: override BurnDotDivisor to 4 (1/4 maxHP = 40 damage on 160 HP)
+            var customSettings = CreateCombatSettings(burnDivisor: 4);
+            var customProcessor = new StatusEffectProcessor(customSettings);
+            var creature = CreatureInstance.Create(_config, 10);
+            int hpBefore = creature.CurrentHP;
+            int expectedDamage = Math.Max(1, creature.MaxHP / 4);
+            var entries = new List<StatusEffectEntry>
+            {
+                new StatusEffectEntry(StatusEffect.Burn, -1)
+            };
+
+            // Act
+            customProcessor.ApplyStartOfRound(creature, entries, 0.5);
+
+            // Assert
+            Assert.AreEqual(hpBefore - expectedDamage, creature.CurrentHP,
+                "Burn should use BurnDotDivisor from CombatSettings, not hardcoded 16");
+        }
+
+        [Test]
+        public void test_StatusEffectProcessor_paralysis_reads_suppressionChance_from_settings()
+        {
+            // Arrange: set paralysis chance to 0.50 — roll of 0.40 should now suppress
+            var customSettings = CreateCombatSettings(paralysisChance: 0.50f);
+            var customProcessor = new StatusEffectProcessor(customSettings);
+            var creature = CreatureInstance.Create(_config, 10);
+            var entries = new List<StatusEffectEntry>
+            {
+                new StatusEffectEntry(StatusEffect.Paralysis, -1)
+            };
+
+            // Act: roll 0.40 is below 0.50 threshold
+            bool suppressed = customProcessor.ApplyStartOfRound(creature, entries, 0.40);
+
+            // Assert
+            Assert.IsTrue(suppressed,
+                "Paralysis should suppress at roll 0.40 when threshold is 0.50 (from settings)");
         }
     }
 }

@@ -74,7 +74,7 @@ namespace GeneForge.Combat
         /// <param name="estimatedDamage">Pre-computed damage from EstimateDamage().</param>
         public static float ScoreDamage(CandidateAction action, int estimatedDamage)
         {
-            if (action.Target == null || estimatedDamage <= 0)
+            if (action.Target == null || estimatedDamage <= 0 || action.Target.MaxHP <= 0)
                 return 0f;
 
             return Mathf.Clamp(estimatedDamage / (float)action.Target.MaxHP, 0f, 2f);
@@ -102,7 +102,7 @@ namespace GeneForge.Combat
         /// </summary>
         public static float ScoreFinishTarget(CandidateAction action)
         {
-            if (action.Target == null)
+            if (action.Target == null || action.Target.MaxHP <= 0)
                 return 0f;
 
             return 1.0f - ((float)action.Target.CurrentHP / action.Target.MaxHP);
@@ -110,7 +110,9 @@ namespace GeneForge.Combat
 
         /// <summary>
         /// Scores positional value: approach vs retreat based on aggressionBias.
-        /// Higher aggressionBias rewards closing distance to opponents.
+        /// Uses A* path length to score distance to the nearest live opponent.
+        /// Path results are computed once per call; callers should avoid redundant
+        /// invocations across the same scoring pass where possible.
         /// </summary>
         public static float ScorePosition(
             CandidateAction action,
@@ -123,7 +125,9 @@ namespace GeneForge.Combat
             for (int i = 0; i < opponents.Count; i++)
             {
                 if (opponents[i].IsFainted) continue;
-                int dist = GridSystem.ChebyshevDistance(action.DestinationTile, opponents[i].GridPosition);
+                // Use A* path length for accurate walkable distance (C2 fix)
+                var path = grid.FindPath(action.DestinationTile, opponents[i].GridPosition);
+                int dist = path != null ? path.Count : int.MaxValue;
                 if (dist < minDist) minDist = dist;
             }
 
@@ -177,8 +181,9 @@ namespace GeneForge.Combat
         /// <summary>
         /// Genome type matchup score using TypeChart.
         /// Rewards super-effective moves, penalizes resisted.
-        /// Type effectiveness normalized to [-0.25, +0.33] range,
-        /// STAB bonus added separately as +0.167 per GDD §3.2.
+        /// Type effectiveness normalized to [-0.25, +0.33] range.
+        /// STAB is NOT included here — it is already factored into
+        /// DamageCalculator.Estimate() which feeds ScoreDamage (C5 fix).
         /// </summary>
         public static float ScoreGenomeMatchup(CandidateAction action, CreatureInstance actor)
         {
@@ -191,16 +196,7 @@ namespace GeneForge.Combat
                 action.Target.ActiveSecondaryType);
 
             // Normalize effectiveness: -0.25 for 0.25x, 0 for 1.0x, +0.33 for 2.0x
-            float effectivenessScore = (mult - 1.0f) / 3.0f;
-
-            // Add STAB bonus separately (GDD: "Also adds STAB bonus")
-            float stab = TypeChart.GetStab(
-                action.Move.GenomeType,
-                actor.Config.PrimaryType,
-                actor.ActiveSecondaryType);
-            float stabBonus = stab > 1.0f ? (stab - 1.0f) / 3.0f : 0f;
-
-            return effectivenessScore + stabBonus;
+            return (mult - 1.0f) / 3.0f;
         }
 
         /// <summary>
@@ -217,7 +213,7 @@ namespace GeneForge.Combat
                 return 0f;
 
             // Stat pairing favorability
-            GetFormStatPairing(action.Move.Form, actor, action.Target, out int offStat, out int defStat);
+            DamageFormHelper.GetStatPairing(action.Move.Form, actor, action.Target, out int offStat, out int defStat);
             float statRatio = (float)offStat / Mathf.Max(1, defStat);
             float formStatScore = Mathf.Clamp((statRatio - 1.0f) / 2.0f, -0.5f, 1.0f);
 
@@ -234,8 +230,8 @@ namespace GeneForge.Combat
                 switch (action.Move.Form)
                 {
                     case DamageForm.Physical:
-                        // Bonus when adjacent and on higher ground
-                        if (dist <= 2) formPositionScore += 0.3f;
+                        // Bonus when truly adjacent (dist 1) and on higher ground (C4 fix: was <= 2)
+                        if (dist <= 1) formPositionScore += 0.3f;
                         if (heightDiff > 0) formPositionScore += 0.2f * heightDiff;
                         break;
 
@@ -252,36 +248,6 @@ namespace GeneForge.Combat
             }
 
             return formStatScore + Mathf.Clamp(formPositionScore, 0f, 1.0f);
-        }
-
-        /// <summary>
-        /// Select offensive and defensive stats based on damage form.
-        /// Physical: ATK vs DEF. Energy: ATK vs SPD. Bio: ACC vs DEF.
-        /// Mirrors DamageCalculator stat pairing logic.
-        /// </summary>
-        private static void GetFormStatPairing(
-            DamageForm form,
-            CreatureInstance attacker,
-            CreatureInstance defender,
-            out int offStat,
-            out int defStat)
-        {
-            switch (form)
-            {
-                case DamageForm.Energy:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.SPD;
-                    break;
-                case DamageForm.Bio:
-                    offStat = attacker.ComputedStats.ACC;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-                case DamageForm.Physical:
-                default:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-            }
         }
 
         /// <summary>

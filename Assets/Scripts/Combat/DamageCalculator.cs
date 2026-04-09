@@ -13,31 +13,19 @@ namespace GeneForge.Combat
     /// </summary>
     public class DamageCalculator : IDamageCalculator
     {
-        // ── Tuning Constants (GDD §7) ────────────────────────────────────
-        private const float StabMultiplier = 1.5f;       // unused here — lives in TypeChart, listed for reference
-        private const float CritMultiplier = 1.5f;
-        private const float BaseCritChance = 0.0625f;    // 1/16
-        private const float HighCritChance = 0.125f;     // 1/8
-        private const float VarianceMin = 0.85f;
-        private const float VarianceRange = 0.15f;       // max = VarianceMin + VarianceRange = 1.0
-        private const float EstimateVariance = 0.925f;   // midpoint of 0.85–1.0
-        private const float HeightBonusPerLevel = 0.1f;
-        private const float HeightBonusCap = 2.0f;
-        private const float AttackerTerrainSynergy = 1.2f;
-        private const float DefenderTerrainSynergy = 0.8f;
-        private const float CoverReduction = 0.5f;
-        private const float StatDivisor = 50f;
-        private const float BaseDamageFloor = 2f;
-        private const int MinDamage = 1;
-
+        private readonly CombatSettings _settings;
         private readonly System.Random _rng;
 
+        /// <summary>Cached default settings for static Estimate path (AI callers).</summary>
+        private static CombatSettings _defaultSettings;
+
         /// <summary>
-        /// Create a DamageCalculator with optional seeded RNG.
+        /// Create a DamageCalculator reading tuning knobs from CombatSettings.
         /// Pass a seeded System.Random for deterministic tests.
         /// </summary>
-        public DamageCalculator(System.Random rng = null)
+        public DamageCalculator(CombatSettings settings, System.Random rng = null)
         {
+            _settings = settings;
             _rng = rng ?? new System.Random();
         }
 
@@ -47,39 +35,61 @@ namespace GeneForge.Combat
             if (!move.IsDamaging)
                 return 0;
 
-            float baseDamage = ComputeBase(move, attacker, target, grid);
+            float baseDamage = ComputeBase(move, attacker, target, grid, _settings);
 
-            float critMult = RollCritical(move) ? CritMultiplier : 1f;
-            float variance = VarianceMin + (float)_rng.NextDouble() * VarianceRange;
+            float critMult = RollCritical(move) ? _settings.CritMultiplier : 1f;
+            float variance = _settings.VarianceMin + (float)_rng.NextDouble() * _settings.VarianceRange;
 
-            return Mathf.Max(MinDamage, (int)(baseDamage * critMult * variance));
+            return Mathf.Max(_settings.MinDamage, (int)(baseDamage * critMult * variance));
+        }
+
+        /// <inheritdoc/>
+        public int CalculateRaw(int power, DamageForm form, CreatureInstance attacker, CreatureInstance defender)
+        {
+            DamageFormHelper.GetStatPairing(form, attacker, defender, out int offStat, out int defStat);
+            float levelCoeff = (2f * attacker.Level / 5f) + 2f;
+            float statRatio = (float)offStat / Mathf.Max(1, defStat);
+            float baseDamage = (levelCoeff * power * statRatio / _settings.StatDivisor) + _settings.BaseDamageFloor;
+            return Mathf.Max(_settings.MinDamage, (int)baseDamage);
         }
 
         /// <summary>
         /// Estimate damage without randomness (for AI decision-making).
-        /// Uses fixed variance of 0.925 (midpoint). No critical hit.
+        /// Uses fixed variance (default 0.925 midpoint). No critical hit.
+        /// Pass CombatSettings explicitly or uses cached defaults.
         /// </summary>
-        public static int Estimate(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid)
+        public static int Estimate(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid, CombatSettings settings = null)
         {
             if (!move.IsDamaging)
                 return 0;
 
-            float baseDamage = ComputeBase(move, attacker, target, grid);
+            settings ??= GetDefaultSettings();
+            float baseDamage = ComputeBase(move, attacker, target, grid, settings);
 
-            return Mathf.Max(MinDamage, (int)(baseDamage * EstimateVariance));
+            return Mathf.Max(settings.MinDamage, (int)(baseDamage * settings.EstimateVariance));
+        }
+
+        /// <summary>
+        /// Returns a cached default CombatSettings instance for static callers.
+        /// </summary>
+        private static CombatSettings GetDefaultSettings()
+        {
+            if (_defaultSettings == null)
+                _defaultSettings = ScriptableObject.CreateInstance<CombatSettings>();
+            return _defaultSettings;
         }
 
         /// <summary>
         /// Shared damage pipeline: base formula × STAB × type × terrain × height × cover.
         /// Returns pre-variance, pre-crit damage as float.
         /// </summary>
-        private static float ComputeBase(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid)
+        private static float ComputeBase(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid, CombatSettings settings)
         {
-            GetFormStatPairing(move.Form, attacker, target, out int offStat, out int defStat);
+            DamageFormHelper.GetStatPairing(move.Form, attacker, target, out int offStat, out int defStat);
 
             float levelCoeff = (2f * attacker.Level / 5f) + 2f;
             float statRatio = (float)offStat / Mathf.Max(1, defStat);
-            float baseDamage = (levelCoeff * move.Power * statRatio / StatDivisor) + BaseDamageFloor;
+            float baseDamage = (levelCoeff * move.Power * statRatio / settings.StatDivisor) + settings.BaseDamageFloor;
 
             float stabMult = TypeChart.GetStab(
                 move.GenomeType, attacker.Config.PrimaryType, attacker.ActiveSecondaryType);
@@ -90,40 +100,11 @@ namespace GeneForge.Combat
             var attackerTile = grid.GetTile(attacker.GridPosition);
             var defenderTile = grid.GetTile(target.GridPosition);
 
-            float terrainMult = GetTerrainSynergyMultiplier(attackerTile, attacker, defenderTile, target);
-            float heightMult = GetFormHeightBonus(move.Form, attackerTile, defenderTile);
-            float coverMult = GetCoverMultiplier(move.Form, defenderTile);
+            float terrainMult = GetTerrainSynergyMultiplier(attackerTile, attacker, defenderTile, target, settings);
+            float heightMult = GetFormHeightBonus(move.Form, attackerTile, defenderTile, settings);
+            float coverMult = GetCoverMultiplier(move.Form, defenderTile, settings);
 
             return baseDamage * stabMult * typeEffectMult * terrainMult * heightMult * coverMult;
-        }
-
-        /// <summary>
-        /// Select offensive and defensive stats based on damage form.
-        /// Physical: ATK vs DEF. Energy: ATK vs SPD. Bio: ACC vs DEF.
-        /// </summary>
-        private static void GetFormStatPairing(
-            DamageForm form,
-            CreatureInstance attacker,
-            CreatureInstance defender,
-            out int offStat,
-            out int defStat)
-        {
-            switch (form)
-            {
-                case DamageForm.Energy:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.SPD;
-                    break;
-                case DamageForm.Bio:
-                    offStat = attacker.ComputedStats.ACC;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-                case DamageForm.Physical:
-                default:
-                    offStat = attacker.ComputedStats.ATK;
-                    defStat = defender.ComputedStats.DEF;
-                    break;
-            }
         }
 
         /// <summary>
@@ -131,7 +112,7 @@ namespace GeneForge.Combat
         /// Physical/Energy: +10% per height level above defender, cap 2.0×.
         /// Bio: no height bonus.
         /// </summary>
-        private static float GetFormHeightBonus(DamageForm form, TileData attackerTile, TileData defenderTile)
+        private static float GetFormHeightBonus(DamageForm form, TileData attackerTile, TileData defenderTile, CombatSettings settings)
         {
             if (form == DamageForm.Bio)
                 return 1f;
@@ -143,7 +124,7 @@ namespace GeneForge.Combat
             if (heightDiff <= 0)
                 return 1f;
 
-            return Mathf.Min(HeightBonusCap, 1f + (heightDiff * HeightBonusPerLevel));
+            return Mathf.Min(settings.HeightBonusCap, 1f + (heightDiff * settings.HeightBonusPerLevel));
         }
 
         /// <summary>
@@ -152,17 +133,18 @@ namespace GeneForge.Combat
         /// </summary>
         private static float GetTerrainSynergyMultiplier(
             TileData attackerTile, CreatureInstance attacker,
-            TileData defenderTile, CreatureInstance defender)
+            TileData defenderTile, CreatureInstance defender,
+            CombatSettings settings)
         {
             float mult = 1f;
 
             if (attackerTile != null
                 && TypeChart.TerrainMatchesCreatureType(attackerTile.Terrain, attacker.Config.TerrainSynergyType))
-                mult *= AttackerTerrainSynergy;
+                mult *= settings.AttackerTerrainSynergy;
 
             if (defenderTile != null
                 && TypeChart.TerrainMatchesCreatureType(defenderTile.Terrain, defender.Config.TerrainSynergyType))
-                mult *= DefenderTerrainSynergy;
+                mult *= settings.DefenderTerrainSynergy;
 
             return mult;
         }
@@ -171,10 +153,10 @@ namespace GeneForge.Combat
         /// Cover multiplier. Energy form: ×0.5 if defender tile provides cover.
         /// Bio ignores cover. Physical blocked at targeting phase (not here).
         /// </summary>
-        private static float GetCoverMultiplier(DamageForm form, TileData defenderTile)
+        private static float GetCoverMultiplier(DamageForm form, TileData defenderTile, CombatSettings settings)
         {
             if (form == DamageForm.Energy && defenderTile != null && defenderTile.ProvidesCover)
-                return CoverReduction;
+                return settings.CoverReduction;
 
             return 1f;
         }
@@ -184,13 +166,15 @@ namespace GeneForge.Combat
         /// </summary>
         private bool RollCritical(MoveConfig move)
         {
-            float critChance = BaseCritChance;
+            if (move.Effects == null) return false;
+
+            float critChance = _settings.CritBaseChance;
 
             foreach (var effect in move.Effects)
             {
                 if (effect.EffectType == MoveEffectType.HighCrit)
                 {
-                    critChance = HighCritChance;
+                    critChance = _settings.CritHighChance;
                     break;
                 }
             }

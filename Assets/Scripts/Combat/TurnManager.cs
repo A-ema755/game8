@@ -107,6 +107,9 @@ namespace GeneForge.Combat
         /// <summary>Reusable list for initiative ordering — avoids per-round allocation.</summary>
         private readonly List<CreatureInstance> _initiativeBuffer = new();
 
+        /// <summary>Reusable tiebreak dictionary — cleared per GetInitiativeOrder call.</summary>
+        private readonly Dictionary<CreatureInstance, int> _tiebreaks = new();
+
         // ── RNG ───────────────────────────────────────────────────────────
 
         private readonly System.Random _rng;
@@ -486,6 +489,19 @@ namespace GeneForge.Combat
             ResolvePostDamageEffects(actor, move, action.Target, damageDealt);
             if (!CombatActive) return;
 
+            // Struggle recoil: 25% of damage dealt as self-damage (GDD combat-ui.md).
+            // Identified by MovePPSlot == -1 with a non-null Move (normal moves always have slot >= 0).
+            if (action.MovePPSlot < 0 && move != null && damageDealt > 0)
+            {
+                int recoil = Mathf.Max(1, Mathf.FloorToInt(damageDealt * 0.25f));
+                actor.TakeDamage(recoil);
+                if (actor.IsFainted)
+                {
+                    HandleFaint(actor);
+                    if (!CombatActive) return;
+                }
+            }
+
             // Step 10: Fire CreatureActed.
             Stats.ActionsThisRound++;
             actor.SetActed(true);
@@ -500,7 +516,15 @@ namespace GeneForge.Combat
         private bool ResolveConfusionSelfHit(CreatureInstance actor)
         {
             var entries = GetStatusEntries(actor);
-            bool isConfused = entries.Any(e => e.Effect == StatusEffect.Confusion && !e.IsExpired);
+            bool isConfused = false;
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (entries[i].Effect == StatusEffect.Confusion && !entries[i].IsExpired)
+                {
+                    isConfused = true;
+                    break;
+                }
+            }
             if (!isConfused || _rng.NextDouble() >= _settings.ConfusionSelfHitChance)
                 return false;
 
@@ -600,6 +624,15 @@ namespace GeneForge.Combat
         /// </summary>
         private void ExecuteCapture(CreatureInstance actor, TurnAction action)
         {
+            // GDD §3.8: cannot capture trainer-owned creatures.
+            if (_encounterType == EncounterType.Trainer)
+            {
+                Debug.LogError("[TurnManager] Capture attempted in trainer encounter — blocked.");
+                actor.SetActed(true);
+                CreatureActed?.Invoke(new CreatureActedArgs(actor, ActionType.Capture, CurrentRound));
+                return;
+            }
+
             bool success = false;
 
             if (action.Target != null)
@@ -701,8 +734,24 @@ namespace GeneForge.Combat
         /// </summary>
         private bool CheckEndCondition(out CombatResult result)
         {
-            bool allEnemyFainted  = _enemyParty.Count == 0 || _enemyParty.All(c => c.IsFainted);
-            bool allPlayerFainted = _playerParty.Count == 0 || _playerParty.All(c => c.IsFainted);
+            bool allEnemyFainted = _enemyParty.Count == 0;
+            if (!allEnemyFainted)
+            {
+                allEnemyFainted = true;
+                for (int i = 0; i < _enemyParty.Count; i++)
+                {
+                    if (!_enemyParty[i].IsFainted) { allEnemyFainted = false; break; }
+                }
+            }
+            bool allPlayerFainted = _playerParty.Count == 0;
+            if (!allPlayerFainted)
+            {
+                allPlayerFainted = true;
+                for (int i = 0; i < _playerParty.Count; i++)
+                {
+                    if (!_playerParty[i].IsFainted) { allPlayerFainted = false; break; }
+                }
+            }
 
             // Victory takes priority over mutual faint (recoil scenario — GDD §5).
             if (allEnemyFainted)  { result = CombatResult.Victory; return true; }
@@ -732,9 +781,10 @@ namespace GeneForge.Combat
             }
 
             // Pre-compute tiebreak values once before the sort (Gap fix: not inline in comparator).
-            var tiebreaks = new Dictionary<CreatureInstance, int>(_initiativeBuffer.Count);
+            // Reuse instance dict — clear instead of allocating.
+            _tiebreaks.Clear();
             foreach (var c in _initiativeBuffer)
-                tiebreaks[c] = _rng.Next();
+                _tiebreaks[c] = _rng.Next();
 
             _initiativeBuffer.Sort((a, b) =>
             {
@@ -749,7 +799,7 @@ namespace GeneForge.Combat
                 if (ia != ib) return ia.CompareTo(ib);
 
                 // Step 3: Pre-computed random tiebreak (stable within round).
-                return tiebreaks[a].CompareTo(tiebreaks[b]);
+                return _tiebreaks[a].CompareTo(_tiebreaks[b]);
             });
 
             // Return a copy — callers iterate while combat state mutates.
@@ -800,26 +850,13 @@ namespace GeneForge.Combat
         // ── Confusion Self-Hit Damage ──────────────────────────────────────
 
         /// <summary>
-        /// Calculate confusion self-hit damage using a synthetic Power-40 Physical move.
-        /// No STAB (GenomeType.None). No type effectiveness. Minimum 1 damage.
+        /// Calculate confusion self-hit damage. Delegates to IDamageCalculator.CalculateRaw
+        /// with Physical form, actor as both attacker and defender. No STAB, no type effectiveness.
         /// Implements GDD §4.5.
-        ///
-        /// The IDamageCalculator is called with a synthetic MoveConfig that cannot be
-        /// a real ScriptableObject at runtime, so we create a substitute data object.
-        /// The calculator receives the actor as both attacker and target to produce
-        /// a "hits self" calculation.
         /// </summary>
         private int CalculateConfusionSelfHitDamage(CreatureInstance actor)
         {
-            // Approximation without creating a ScriptableObject at runtime:
-            // confusion self-hit = max(1, floor(ATK * ConfusionSelfHitPower / (DEF * 50)))
-            // This is a simplified formula matching the intent of GDD §4.5.
-            // Post-MVP: expose IDamageCalculator.CalculateRaw(power, form, attacker, target) overload.
-            int atk   = actor.ComputedStats.ATK;
-            int def   = Mathf.Max(1, actor.ComputedStats.DEF);
-            int power = _settings.ConfusionSelfHitPower;
-            int raw   = Mathf.FloorToInt((float)(atk * power) / (def * 50f));
-            return Mathf.Max(1, raw);
+            return _damageCalculator.CalculateRaw(_settings.ConfusionSelfHitPower, DamageForm.Physical, actor, actor);
         }
 
         // ── Recoil & Drain ────────────────────────────────────────────────

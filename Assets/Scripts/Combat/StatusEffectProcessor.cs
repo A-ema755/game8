@@ -12,10 +12,15 @@ namespace GeneForge.Combat
     /// </summary>
     public class StatusEffectProcessor : IStatusEffectProcessor
     {
-        // ── Tuning Constants (GDD §3.7) ──────────────────────────────────
-        private const int BurnDivisor = 16;
-        private const int PoisonDivisor = 8;
-        private const double ParalysisThreshold = 0.25;
+        private readonly CombatSettings _settings;
+
+        /// <summary>
+        /// Create a StatusEffectProcessor reading tuning knobs from CombatSettings.
+        /// </summary>
+        public StatusEffectProcessor(CombatSettings settings)
+        {
+            _settings = settings;
+        }
 
         /// <inheritdoc/>
         public bool ApplyStartOfRound(
@@ -34,27 +39,27 @@ namespace GeneForge.Combat
                 {
                     // ── DoT (indefinite, no suppression) ─────────────────
                     case StatusEffect.Burn:
-                        int burnDmg = Mathf.Max(1, creature.MaxHP / BurnDivisor);
+                        int burnDmg = Mathf.Max(1, creature.MaxHP / _settings.BurnDotDivisor);
                         creature.TakeDamage(burnDmg);
                         break;
 
                     case StatusEffect.Poison:
-                        int poisonDmg = Mathf.Max(1, creature.MaxHP / PoisonDivisor);
+                        int poisonDmg = Mathf.Max(1, creature.MaxHP / _settings.PoisonDotDivisor);
                         creature.TakeDamage(poisonDmg);
                         break;
 
                     // ── Suppression (probabilistic) ──────────────────────
                     case StatusEffect.Paralysis:
-                        if (rngRoll < ParalysisThreshold)
+                        if (rngRoll < _settings.ParalysisSuppressionChance)
                             suppressed = true;
                         break;
 
                     // ── Suppression (unconditional + duration) ────────────
                     case StatusEffect.Sleep:
                         suppressed = true;
-                        entry.RemainingRounds--;
+                        entry = entry.WithDecrementedRounds();
                         statusEntries[i] = entry;
-                        if (entry.RemainingRounds <= 0)
+                        if (entry.IsExpired)
                         {
                             statusEntries.RemoveAt(i);
                             creature.RemoveStatusEffect(StatusEffect.Sleep);
@@ -63,9 +68,9 @@ namespace GeneForge.Combat
 
                     case StatusEffect.Freeze:
                         suppressed = true;
-                        entry.RemainingRounds--;
+                        entry = entry.WithDecrementedRounds();
                         statusEntries[i] = entry;
-                        if (entry.RemainingRounds <= 0)
+                        if (entry.IsExpired)
                         {
                             statusEntries.RemoveAt(i);
                             creature.RemoveStatusEffect(StatusEffect.Freeze);
@@ -98,8 +103,8 @@ namespace GeneForge.Combat
                     continue;
 
                 // Confusion, Taunt: decrement here.
-                entry.RemainingRounds--;
-                if (entry.RemainingRounds <= 0)
+                entry = entry.WithDecrementedRounds();
+                if (entry.IsExpired)
                 {
                     statusEntries.RemoveAt(i);
                     creature.RemoveStatusEffect(entry.Effect);

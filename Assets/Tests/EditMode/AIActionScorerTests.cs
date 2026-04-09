@@ -615,5 +615,120 @@ namespace GeneForge.Tests
             // Assert
             Assert.AreEqual(0f, score);
         }
+
+        // ══════════════════════════════════════════════════════════════════
+        // C1/C5 Audit Fixes
+        // ══════════════════════════════════════════════════════════════════
+
+        [Test]
+        public void test_AIActionScorer_ScoreFinishTarget_MaxHP_zero_returns_zero()
+        {
+            // Arrange — target with MaxHP=0 should not produce NaN
+            var move = CreateMove("flame-claw", CreatureType.Thermal, DamageForm.Physical, 60);
+            var attacker = CreatureInstance.Create(_thermalConfig, 10);
+            var target = CreatureInstance.Create(_aquaConfig, 1);
+            // Override MaxHP via reflection to simulate the edge case
+            SetField(target, "_maxHP", 0);
+            SetField(target, "_currentHP", 0);
+            var action = new CandidateAction(move, target, attacker.GridPosition);
+
+            // Act
+            float score = AIActionScorer.ScoreFinishTarget(action);
+
+            // Assert — guard in ScoreFinishTarget: MaxHP <= 0 returns 0, not NaN
+            Assert.AreEqual(0f, score, "MaxHP=0 target must return 0, not NaN");
+            Assert.IsFalse(float.IsNaN(score), "Score must not be NaN");
+        }
+
+        [Test]
+        public void test_AIActionScorer_physical_adjacency_bonus_only_at_distance_1()
+        {
+            // Arrange — Physical move, attacker and target on flat grid
+            var move = CreateMove("punch", CreatureType.Thermal, DamageForm.Physical, 60);
+            var attacker = CreatureInstance.Create(_thermalConfig, 10);
+            var target = CreatureInstance.Create(_aquaConfig, 10);
+            attacker.SetGridPosition(new Vector2Int(0, 0));
+            target.SetGridPosition(new Vector2Int(2, 0)); // dist 2 — should NOT get adjacency bonus
+
+            // Act — target at distance 2
+            var action2 = new CandidateAction(move, target, attacker.GridPosition);
+            float scoreAtDist2 = AIActionScorer.ScoreFormTactics(action2, attacker, _grid);
+
+            // Move target to distance 1
+            target.SetGridPosition(new Vector2Int(1, 0));
+            var action1 = new CandidateAction(move, target, attacker.GridPosition);
+            float scoreAtDist1 = AIActionScorer.ScoreFormTactics(action1, attacker, _grid);
+
+            // Assert — distance 1 scores higher due to adjacency bonus (+0.3)
+            Assert.Greater(scoreAtDist1, scoreAtDist2,
+                "Physical adjacency bonus (+0.3) must only fire at dist <= 1, not dist 2");
+        }
+
+        // ══════════════════════════════════════════════════════════════════
+        // Phase F5 — AIDecisionSystem Struggle Generation
+        // ══════════════════════════════════════════════════════════════════
+
+        [Test]
+        public void test_AIDecisionSystem_PP_exhausted_generates_Struggle_candidate()
+        {
+            // Arrange — creature with one learned move, PP = 0.
+            // AIDecisionSystem must fall back to Struggle (id == "__struggle__", power == 10).
+            var personality = CreatePersonality(randomness: 0f);
+            var move = CreateMove("flame-claw", CreatureType.Thermal, DamageForm.Physical, 60);
+            Func<string, MoveConfig> moveLookup = id => id == "flame-claw" ? move : null;
+
+            var attacker = CreatureInstance.Create(_thermalConfig, 10);
+            var target = CreatureInstance.Create(_aquaConfig, 10);
+            attacker.SetGridPosition(new Vector2Int(0, 0));
+            target.SetGridPosition(new Vector2Int(1, 0)); // within Struggle range 1
+
+            // Give attacker a move with PP = 0 (exhausted).
+            SetField(attacker, "_learnedMoveIds", new List<string> { "flame-claw" });
+            SetField(attacker, "_learnedMovePP", new List<int> { 0 });
+
+            var system = new AIDecisionSystem(personality, new System.Random(42), moveLookup);
+            var opponents = new List<CreatureInstance> { target };
+            var allies = new List<CreatureInstance>();
+
+            // Act
+            var result = system.DecideAction(attacker, opponents, allies, _grid);
+
+            // Assert — must return UseMove with Struggle (id "__struggle__", power 10).
+            Assert.AreEqual(ActionType.UseMove, result.Action,
+                "All-PP-exhausted creature must use Struggle, not Wait");
+            Assert.IsNotNull(result.Move, "Struggle TurnAction must have a non-null Move");
+            Assert.AreEqual(AIDecisionSystem.StruggleMoveId, result.Move.Id,
+                "Move id must be '__struggle__'");
+            Assert.AreEqual(10, result.Move.Power,
+                "Struggle power must be 10 per GDD");
+            Assert.AreEqual(-1, result.MovePPSlot,
+                "Struggle TurnAction must use MovePPSlot = -1 (no PP deduction)");
+        }
+
+        [Test]
+        public void test_AIActionScorer_STAB_not_double_counted_in_genome_matchup()
+        {
+            // Arrange — STAB move: Thermal attacker using Thermal move vs Neural target (neutral matchup)
+            // Non-STAB move: Thermal attacker using Aqua move vs Neural target (neutral matchup)
+            // Both have identical type effectiveness (1.0x vs Neural). If STAB were in
+            // ScoreGenomeMatchup, the STAB move would score higher. It must not.
+            var neuralConfig = CreateCreatureConfig("neural", _balancedStats, CreatureType.Neural);
+            var attacker = CreatureInstance.Create(_thermalConfig, 10); // Thermal creature
+
+            var stabMove = CreateMove("ember", CreatureType.Thermal, DamageForm.Physical, 60);   // STAB (Thermal matches actor)
+            var nonStabMove = CreateMove("water-jet", CreatureType.Aqua, DamageForm.Physical, 60); // no STAB (Aqua on Thermal actor)
+            var target = CreatureInstance.Create(neuralConfig, 10);
+
+            var stabAction = new CandidateAction(stabMove, target, attacker.GridPosition);
+            var nonStabAction = new CandidateAction(nonStabMove, target, attacker.GridPosition);
+
+            // Act
+            float stabScore = AIActionScorer.ScoreGenomeMatchup(stabAction, attacker);
+            float nonStabScore = AIActionScorer.ScoreGenomeMatchup(nonStabAction, attacker);
+
+            // Assert — both moves hit Neural at 1.0x → both should produce identical genome scores
+            Assert.AreEqual(nonStabScore, stabScore, 0.001f,
+                "ScoreGenomeMatchup must not include STAB — STAB is already in ScoreDamage via DamageCalculator.Estimate");
+        }
     }
 }

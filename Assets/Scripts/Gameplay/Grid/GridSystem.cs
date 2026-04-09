@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 namespace GeneForge.Grid
@@ -51,6 +50,22 @@ namespace GeneForge.Grid
 
         // ── State ──────────────────────────────────────────────────────────
         private readonly TileData[,] _grid;
+
+        // ── Reusable A* buffers (pre-allocated, cleared per call) ──────────
+        private readonly HashSet<Vector2Int> _aStarClosed = new HashSet<Vector2Int>();
+        private readonly Dictionary<Vector2Int, float> _aStarBestG = new Dictionary<Vector2Int, float>();
+
+        // ── Reusable neighbour buffers (caller-owned pattern) ──────────────
+        private readonly List<TileData> _neighbourBuffer = new List<TileData>(8);
+        private readonly List<TileData> _passableNeighbourBuffer = new List<TileData>(8);
+
+        // ── Cached Dijkstra comparer for GetReachableTiles ────────────────
+        private static readonly IComparer<(float cost, int id, TileData tile)> DijkstraComparer =
+            Comparer<(float cost, int id, TileData tile)>.Create((a, b) =>
+            {
+                int cmp = a.cost.CompareTo(b.cost);
+                return cmp != 0 ? cmp : a.id.CompareTo(b.id);
+            });
 
         /// <summary>Grid width in tiles (x-axis).</summary>
         public int Width { get; }
@@ -109,13 +124,28 @@ namespace GeneForge.Grid
         public List<TileData> GetNeighbours(Vector2Int pos)
         {
             var result = new List<TileData>(8);
+            FillNeighbours(pos, result);
+            return result;
+        }
+
+        /// <summary>
+        /// Buffer-accepting variant of <see cref="GetNeighbours"/>. Clears
+        /// <paramref name="buffer"/> and fills it in-place — no allocation.
+        /// </summary>
+        public void GetNeighbours(Vector2Int pos, List<TileData> buffer)
+        {
+            buffer.Clear();
+            FillNeighbours(pos, buffer);
+        }
+
+        private void FillNeighbours(Vector2Int pos, List<TileData> result)
+        {
             for (int i = 0; i < Directions.Length; i++)
             {
                 var tile = GetTile(pos.x + Directions[i].x, pos.y + Directions[i].y);
                 if (tile != null)
                     result.Add(tile);
             }
-            return result;
         }
 
         /// <summary>
@@ -131,6 +161,24 @@ namespace GeneForge.Grid
         public List<TileData> GetPassableNeighbours(TileData from, Vector2Int? allowOccupiedGoal = null)
         {
             var result = new List<TileData>(8);
+            FillPassableNeighbours(from, result, allowOccupiedGoal);
+            return result;
+        }
+
+        /// <summary>
+        /// Buffer-accepting variant of <see cref="GetPassableNeighbours"/>. Clears
+        /// <paramref name="buffer"/> and fills it in-place — no allocation.
+        /// </summary>
+        public void GetPassableNeighbours(TileData from, List<TileData> buffer,
+            Vector2Int? allowOccupiedGoal = null)
+        {
+            buffer.Clear();
+            FillPassableNeighbours(from, buffer, allowOccupiedGoal);
+        }
+
+        private void FillPassableNeighbours(TileData from, List<TileData> result,
+            Vector2Int? allowOccupiedGoal)
+        {
             var pos = from.GridPosition;
 
             for (int i = 0; i < Directions.Length; i++)
@@ -162,7 +210,6 @@ namespace GeneForge.Grid
 
                 result.Add(tile);
             }
-            return result;
         }
 
         // ── Distance ───────────────────────────────────────────────────────
@@ -200,14 +247,16 @@ namespace GeneForge.Grid
             // Start == Goal edge case
             if (start == goal) return new List<Vector2Int> { start };
 
-            // Open set keyed by F cost; ties broken by hash
+            // Open set keyed by F cost; ties broken by unique node ID
             var open = new SortedSet<AStarNode>(AStarNode.Comparer);
-            var closed = new HashSet<Vector2Int>();
-            var bestG = new Dictionary<Vector2Int, float>();
+
+            // Reuse pre-allocated instance buffers — clear instead of reallocating
+            _aStarClosed.Clear();
+            _aStarBestG.Clear();
 
             var startNode = new AStarNode(start, 0f, ChebyshevDistance(start, goal), null);
             open.Add(startNode);
-            bestG[start] = 0f;
+            _aStarBestG[start] = 0f;
 
             while (open.Count > 0)
             {
@@ -217,23 +266,23 @@ namespace GeneForge.Grid
                 if (current.Position == goal)
                     return ReconstructPath(current);
 
-                if (!closed.Add(current.Position)) continue;
+                if (!_aStarClosed.Add(current.Position)) continue;
 
                 var currentTile = GetTile(current.Position);
-                var neighbours = GetPassableNeighbours(currentTile, goal);
+                GetPassableNeighbours(currentTile, _passableNeighbourBuffer, goal);
 
-                for (int i = 0; i < neighbours.Count; i++)
+                for (int i = 0; i < _passableNeighbourBuffer.Count; i++)
                 {
-                    var nb = neighbours[i];
-                    if (closed.Contains(nb.GridPosition)) continue;
+                    var nb = _passableNeighbourBuffer[i];
+                    if (_aStarClosed.Contains(nb.GridPosition)) continue;
 
                     int heightDelta = nb.Height - currentTile.Height;
                     float stepCost = heightDelta > 0 ? ClimbStepCost : FlatStepCost;
                     float newG = current.G + stepCost;
 
-                    if (!bestG.TryGetValue(nb.GridPosition, out float existing) || newG < existing)
+                    if (!_aStarBestG.TryGetValue(nb.GridPosition, out float existing) || newG < existing)
                     {
-                        bestG[nb.GridPosition] = newG;
+                        _aStarBestG[nb.GridPosition] = newG;
                         var node = new AStarNode(nb.GridPosition, newG,
                             ChebyshevDistance(nb.GridPosition, goal), current);
                         open.Add(node);
@@ -272,12 +321,8 @@ namespace GeneForge.Grid
             if (origin == null) return reachable;
 
             // Dijkstra: process tiles in cost order to guarantee optimal costs
-            var frontier = new SortedSet<(float cost, int id, TileData tile)>(
-                Comparer<(float cost, int id, TileData tile)>.Create((a, b) =>
-                {
-                    int cmp = a.cost.CompareTo(b.cost);
-                    return cmp != 0 ? cmp : a.id.CompareTo(b.id);
-                }));
+            // Use static cached comparer — avoids per-call lambda allocation
+            var frontier = new SortedSet<(float cost, int id, TileData tile)>(DijkstraComparer);
 
             int nextId = 0;
             frontier.Add((0f, nextId++, origin));
@@ -292,11 +337,11 @@ namespace GeneForge.Grid
                     && current.cost > known)
                     continue;
 
-                var neighbours = GetPassableNeighbours(current.tile);
+                GetPassableNeighbours(current.tile, _neighbourBuffer);
 
-                for (int i = 0; i < neighbours.Count; i++)
+                for (int i = 0; i < _neighbourBuffer.Count; i++)
                 {
-                    var nb = neighbours[i];
+                    var nb = _neighbourBuffer[i];
                     int heightDelta = nb.Height - current.tile.Height;
                     float stepCost = heightDelta > 0 ? ClimbStepCost : FlatStepCost;
                     float newCost = current.cost + stepCost;
@@ -430,7 +475,7 @@ namespace GeneForge.Grid
         }
 
         private static int _nextId;
-        private readonly int _id = Interlocked.Increment(ref _nextId);
+        private readonly int _id = ++_nextId;
 
         /// <summary>
         /// Comparer that sorts by F cost, breaking ties by unique ID to avoid

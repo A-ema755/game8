@@ -130,6 +130,8 @@ namespace GeneForge.Tests
         private CreatureConfig _thermalSynergyConfig;
         private CreatureConfig _aquaSynergyConfig;
 
+        private CombatSettings _combatSettings;
+
         // ── Setup ────────────────────────────────────────────────────────
 
         [OneTimeSetUp]
@@ -143,6 +145,8 @@ namespace GeneForge.Tests
         {
             // Inject ConfigLoader as initialized (moves/parts not needed for damage calc tests)
             SetStaticField(typeof(ConfigLoader), "_initialized", true);
+
+            _combatSettings = ScriptableObject.CreateInstance<CombatSettings>();
 
             _balancedStats = new BaseStats(50, 30, 20, 20, 30);
             _lowStats = new BaseStats(10, 5, 5, 5, 5);
@@ -186,10 +190,10 @@ namespace GeneForge.Tests
 
             var grid = CreateGrid();
             var move = CreateMove("phys-move", CreatureType.Ferro, DamageForm.Physical, 60);
-            var calc = new DamageCalculator(new System.Random(42));
+            var calc = new DamageCalculator(_combatSettings, new System.Random(42));
 
             // Act: Physical uses ATK vs DEF, so higher DEF defender takes less damage
-            var calc2 = new DamageCalculator(new System.Random(42));
+            var calc2 = new DamageCalculator(_combatSettings, new System.Random(42));
             int dmgVsHighDef = calc.Calculate(move, attacker, defenderDef, grid);
             int dmgVsHighSpd = calc2.Calculate(move, attacker, defenderSpd, grid);
 
@@ -220,8 +224,8 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("energy-move", CreatureType.Ferro, DamageForm.Energy, 60);
 
-            int dmgVsHighDef = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defenderDef, grid);
-            int dmgVsHighSpd = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defenderSpd, grid);
+            int dmgVsHighDef = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defenderDef, grid);
+            int dmgVsHighSpd = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defenderSpd, grid);
 
             // Energy uses SPD as defensive stat, so high SPD takes less damage
             Assert.Less(dmgVsHighSpd, dmgVsHighDef,
@@ -249,8 +253,8 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("bio-move", CreatureType.Ferro, DamageForm.Bio, 60);
 
-            int dmgHighAcc = new DamageCalculator(new System.Random(42)).Calculate(move, atkHi, def, grid);
-            int dmgLowAcc = new DamageCalculator(new System.Random(42)).Calculate(move, atkLo, def, grid);
+            int dmgHighAcc = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, atkHi, def, grid);
+            int dmgLowAcc = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, atkLo, def, grid);
 
             // Bio uses ACC as offensive stat
             Assert.Greater(dmgHighAcc, dmgLowAcc,
@@ -271,11 +275,11 @@ namespace GeneForge.Tests
             var move = CreateMove("bio", CreatureType.Ferro, DamageForm.Bio, 60);
 
             // Flat ground
-            int dmgFlat = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int dmgFlat = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             // Attacker at height 4, defender at height 0
             SetTile(grid, 0, 0, 4);
-            int dmgHigh = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int dmgHigh = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             Assert.AreEqual(dmgFlat, dmgHigh, "Bio form should ignore height difference");
         }
@@ -292,11 +296,11 @@ namespace GeneForge.Tests
             var move = CreateMove("phys", CreatureType.Ferro, DamageForm.Physical, 60);
 
             // Baseline: flat
-            int dmgFlat = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int dmgFlat = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             // Attacker +3 height
             SetTile(grid, 0, 0, 3);
-            int dmgHigh = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int dmgHigh = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             // 1.3x expected. Allow ±1 for int truncation
             float ratio = (float)dmgHigh / dmgFlat;
@@ -316,11 +320,11 @@ namespace GeneForge.Tests
             var move = CreateMove("phys", CreatureType.Ferro, DamageForm.Physical, 60);
 
             // Baseline flat
-            int dmgFlat = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int dmgFlat = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             // Height 4 vs 0 = +4 → 1.4x (under cap)
             SetTile(grid, 0, 0, 4);
-            int dmg4 = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int dmg4 = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             // Verify the cap: height difference is 4, bonus = min(2.0, 1+0.4) = 1.4
             // Since max tile height is 4 and min is 0, max diff is 4, which is 1.4x (under cap)
@@ -362,8 +366,8 @@ namespace GeneForge.Tests
 
             var move = CreateMove("thermal-move", CreatureType.Thermal, DamageForm.Physical, 60);
 
-            int stabDmg = new DamageCalculator(new System.Random(42)).Calculate(move, stabAttacker, defender, grid);
-            int noStabDmg = new DamageCalculator(new System.Random(42)).Calculate(move, noStabAttacker, defender, grid);
+            int stabDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, stabAttacker, defender, grid);
+            int noStabDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, noStabAttacker, defender, grid);
 
             float ratio = (float)stabDmg / noStabDmg;
             Assert.That(ratio, Is.InRange(1.4f, 1.6f),
@@ -391,8 +395,8 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("thermal-atk", CreatureType.Thermal, DamageForm.Physical, 60);
 
-            int seDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
-            int neutDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defNeutral, grid);
+            int seDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int neutDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defNeutral, grid);
 
             float ratio = (float)seDmg / neutDmg;
             Assert.That(ratio, Is.InRange(1.9f, 2.1f),
@@ -416,8 +420,8 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("thermal-atk", CreatureType.Thermal, DamageForm.Physical, 60);
 
-            int resistDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, thermalDef, grid);
-            int neutDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defNeutral, grid);
+            int resistDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, thermalDef, grid);
+            int neutDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defNeutral, grid);
 
             float ratio = (float)resistDmg / neutDmg;
             Assert.That(ratio, Is.InRange(0.45f, 0.55f),
@@ -454,8 +458,8 @@ namespace GeneForge.Tests
             // Aqua SE vs Thermal (2.0x) and Aqua SE vs Mineral (2.0x) = 4.0x total
             var move = CreateMove("aqua-atk", CreatureType.Aqua, DamageForm.Physical, 60);
 
-            int dualDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
-            int singleDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defSingle, grid);
+            int dualDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int singleDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defSingle, grid);
 
             float ratio = (float)dualDmg / singleDmg;
             Assert.That(ratio, Is.InRange(1.9f, 2.1f),
@@ -481,8 +485,8 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("aqua-atk", CreatureType.Aqua, DamageForm.Physical, 60);
 
-            int cancelDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
-            int neutDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defNeutral, grid);
+            int cancelDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int neutDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defNeutral, grid);
 
             float ratio = (float)cancelDmg / neutDmg;
             Assert.That(ratio, Is.InRange(0.9f, 1.1f),
@@ -503,11 +507,11 @@ namespace GeneForge.Tests
             var move = CreateMove("ferro-atk", CreatureType.Ferro, DamageForm.Physical, 60);
 
             // Baseline: neutral terrain
-            int baseDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int baseDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             // Set attacker tile to Thermal terrain (matches TerrainSynergyType)
             SetTile(grid, 0, 0, 0, TerrainType.Thermal);
-            int synergyDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int synergyDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             float ratio = (float)synergyDmg / baseDmg;
             Assert.That(ratio, Is.InRange(1.15f, 1.25f),
@@ -525,10 +529,10 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("ferro-atk", CreatureType.Ferro, DamageForm.Physical, 60);
 
-            int baseDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int baseDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             SetTile(grid, 1, 0, 0, TerrainType.Aqua);
-            int synergyDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int synergyDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             float ratio = (float)synergyDmg / baseDmg;
             Assert.That(ratio, Is.InRange(0.70f, 0.90f),
@@ -546,11 +550,11 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("ferro-atk", CreatureType.Ferro, DamageForm.Physical, 60);
 
-            int baseDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int baseDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             SetTile(grid, 0, 0, 0, TerrainType.Thermal);
             SetTile(grid, 1, 0, 0, TerrainType.Aqua);
-            int bothDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int bothDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             float ratio = (float)bothDmg / baseDmg;
             Assert.That(ratio, Is.InRange(0.85f, 1.05f),
@@ -570,10 +574,10 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("energy-atk", CreatureType.Ferro, DamageForm.Energy, 60);
 
-            int baseDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int baseDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             SetTile(grid, 1, 0, 0, TerrainType.Neutral, cover: true);
-            int coverDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int coverDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             float ratio = (float)coverDmg / baseDmg;
             Assert.That(ratio, Is.InRange(0.45f, 0.55f),
@@ -591,10 +595,10 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("bio-atk", CreatureType.Ferro, DamageForm.Bio, 60);
 
-            int baseDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int baseDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             SetTile(grid, 1, 0, 0, TerrainType.Neutral, cover: true);
-            int coverDmg = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+            int coverDmg = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
             Assert.AreEqual(baseDmg, coverDmg, "Bio form should ignore cover");
         }
@@ -615,8 +619,8 @@ namespace GeneForge.Tests
             {
                 var move = CreateMove($"test-{form}", CreatureType.Ferro, form, 60);
 
-                int dmg1 = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
-                int dmg2 = new DamageCalculator(new System.Random(42)).Calculate(move, attacker, defender, grid);
+                int dmg1 = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
+                int dmg2 = new DamageCalculator(_combatSettings, new System.Random(42)).Calculate(move, attacker, defender, grid);
 
                 Assert.AreEqual(dmg1, dmg2, $"Seeded RNG should produce deterministic {form} damage");
             }
@@ -640,7 +644,7 @@ namespace GeneForge.Tests
             // Thermal vs Thermal = 0.5x (self-resist), low power
             var move = CreateMove("weak-move", CreatureType.Thermal, DamageForm.Physical, 10);
 
-            var calc = new DamageCalculator(new System.Random(42));
+            var calc = new DamageCalculator(_combatSettings, new System.Random(42));
             int dmg = calc.Calculate(move, attacker, defender, grid);
 
             Assert.GreaterOrEqual(dmg, 1, "Damage should always be at least 1");
@@ -657,7 +661,7 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var statusMove = CreateStatusMove("status-move");
 
-            var calc = new DamageCalculator(new System.Random(42));
+            var calc = new DamageCalculator(_combatSettings, new System.Random(42));
             int dmg = calc.Calculate(statusMove, attacker, defender, grid);
 
             Assert.AreEqual(0, dmg, "Status move should deal 0 damage");
@@ -677,7 +681,7 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("phys", CreatureType.Ferro, DamageForm.Physical, 60);
 
-            var calc = new DamageCalculator(new System.Random(42));
+            var calc = new DamageCalculator(_combatSettings, new System.Random(42));
             Assert.DoesNotThrow(() => calc.Calculate(move, attacker, defender, grid),
                 "Should not throw on 0 DEF");
             Assert.GreaterOrEqual(calc.Calculate(move, attacker, defender, grid), 1);
@@ -696,7 +700,7 @@ namespace GeneForge.Tests
             var grid = CreateGrid();
             var move = CreateMove("bio", CreatureType.Ferro, DamageForm.Bio, 60);
 
-            var calc = new DamageCalculator(new System.Random(42));
+            var calc = new DamageCalculator(_combatSettings, new System.Random(42));
             Assert.DoesNotThrow(() => calc.Calculate(move, attacker, defender, grid),
                 "Should not throw on 0 ACC for Bio move");
         }
@@ -737,7 +741,7 @@ namespace GeneForge.Tests
             int maxCalc = 0;
             for (int i = 0; i < 1000; i++)
             {
-                int dmg = new DamageCalculator(new System.Random(i)).Calculate(move, attacker, defender, grid);
+                int dmg = new DamageCalculator(_combatSettings, new System.Random(i)).Calculate(move, attacker, defender, grid);
                 if (dmg > maxCalc) maxCalc = dmg;
             }
 
@@ -777,6 +781,51 @@ namespace GeneForge.Tests
             Assert.IsFalse(TypeChart.TerrainMatchesCreatureType(TerrainType.Neutral, CreatureType.None));
             Assert.IsFalse(TypeChart.TerrainMatchesCreatureType(TerrainType.Neutral, CreatureType.Thermal));
             Assert.IsFalse(TypeChart.TerrainMatchesCreatureType(TerrainType.Neutral, CreatureType.Aqua));
+        }
+
+        // ── CalculateRaw Tests ────────────────────────────────────────────
+
+        [Test]
+        public void test_DamageCalculator_CalculateRaw_level50_balancedStats_matchesGddFormula()
+        {
+            // Arrange
+            // Balanced stats: ATK=30, DEF=20 (from _balancedStats defined in SetUp)
+            // GDD §4.5 formula: floor((2*50/5 + 2) * 40 * ATK / (DEF * 50)) + 2, min 1
+            // = floor((20 + 2) * 40 * 30 / (20 * 50)) + 2
+            // = floor(22 * 1200 / 1000) + 2
+            // = floor(26.4) + 2
+            // = 26 + 2 = 28
+            var creature = CreateCreature(_thermalConfig, level: 50);
+            var calc = new DamageCalculator(_combatSettings);
+            const int confusionPower = 40;
+
+            // Act
+            int result = calc.CalculateRaw(confusionPower, DamageForm.Physical, creature, creature);
+
+            // Assert
+            // _combatSettings defaults: StatDivisor=50, BaseDamageFloor=2, MinDamage=1
+            float levelCoeff = (2f * 50f / 5f) + 2f; // 22
+            float statRatio = 30f / 20f;              // 1.5
+            float expected = (levelCoeff * confusionPower * statRatio / 50f) + 2f; // (22*40*1.5/50)+2 = 28.4 -> 28
+            int expectedDamage = Mathf.Max(1, (int)expected);
+            Assert.AreEqual(expectedDamage, result,
+                $"CalculateRaw at level 50, ATK=30, DEF=20, power=40 should yield {expectedDamage}");
+        }
+
+        [Test]
+        public void test_DamageCalculator_CalculateRaw_minimumDamageEnforced()
+        {
+            // Arrange — very weak attacker vs very strong defender should still deal MinDamage
+            var weakConfig = CreateCreatureConfig("weak", new BaseStats(1, 1, 1, 1, 1));
+            var weakCreature = CreateCreature(weakConfig, level: 1);
+            var calc = new DamageCalculator(_combatSettings);
+
+            // Act
+            int result = calc.CalculateRaw(1, DamageForm.Physical, weakCreature, weakCreature);
+
+            // Assert
+            Assert.GreaterOrEqual(result, _combatSettings.MinDamage,
+                "CalculateRaw must always return at least MinDamage");
         }
     }
 }

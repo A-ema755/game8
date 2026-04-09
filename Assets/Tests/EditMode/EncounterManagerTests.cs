@@ -517,5 +517,31 @@ namespace GeneForge.Tests
             // Assert
             Assert.AreEqual(TerrainType.Aqua, terrain);
         }
+
+        // ================================================================
+        // Phase F3 — Height-3 Impassability
+        // ================================================================
+
+        [Test]
+        public void test_EncounterManager_height3_produces_impassable_tile()
+        {
+            // Arrange — 8x6 config with tile at (4, 3) set to height 3 (cliff/unreachable).
+            // GDD encounter-system.md §3.3: height 3 = cliff, impassable.
+            var config = CreateEncounterConfig(width: 8, depth: 6);
+            var heights = new int[48];
+            heights[3 * 8 + 4] = 3; // index = z * width + x → (x=4, z=3)
+            SetField(config, "heightMapFlat", heights);
+            AddEnemy(config, "species-a", 3, new Vector2Int(7, 5));
+            var party = CreatePartyWithCreatures(_speciesA);
+
+            // Act
+            var ctx = _manager.InitializeEncounter(config, party);
+
+            // Assert — tile at (4,3) must be impassable (height >= 3 → cliff).
+            var tile = ctx.Grid.GetTile(4, 3);
+            Assert.IsNotNull(tile, "Tile at (4,3) must exist");
+            Assert.IsFalse(tile.IsPassable,
+                "Height-3 tile must be impassable (GDD encounter-system.md §3.3: cliff/unreachable)");
+        }
     }
 }

@@ -77,13 +77,27 @@ namespace GeneForge.Core
 
         // ── Helpers ────────────────────────────────────────────────────
 
-        /// <summary>Returns height at grid coordinate (x, z) using flat-array indexing.</summary>
-        public int GetHeight(int x, int z) =>
-            heightMapFlat[z * gridDimensions.x + x];
+        /// <summary>
+        /// Returns height at grid coordinate (x, z) using flat-array indexing.
+        /// Returns 0 for out-of-bounds coordinates.
+        /// </summary>
+        public int GetHeight(int x, int z)
+        {
+            if (x < 0 || x >= gridDimensions.x || z < 0 || z >= gridDimensions.y)
+                return 0;
+            return heightMapFlat[z * gridDimensions.x + x];
+        }
 
-        /// <summary>Returns terrain type at grid coordinate (x, z) using flat-array indexing.</summary>
-        public TerrainType GetTerrain(int x, int z) =>
-            tileLayoutFlat[z * gridDimensions.x + x];
+        /// <summary>
+        /// Returns terrain type at grid coordinate (x, z) using flat-array indexing.
+        /// Returns TerrainType.Neutral for out-of-bounds coordinates.
+        /// </summary>
+        public TerrainType GetTerrain(int x, int z)
+        {
+            if (x < 0 || x >= gridDimensions.x || z < 0 || z >= gridDimensions.y)
+                return TerrainType.Neutral;
+            return tileLayoutFlat[z * gridDimensions.x + x];
+        }
     }
 
     /// <summary>

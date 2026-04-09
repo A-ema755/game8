@@ -52,6 +52,7 @@ namespace GeneForge.UI
         private MoveConfig[] _loadedMoves = new MoveConfig[4];
         private int _selectedSlot = -1;
         private bool _isLocked;
+        private bool _isStruggleMode;
         private CreatureInstance _focusedTarget;
 
         /// <summary>Creates a MoveSelectionPanelController bound to the panel element.</summary>
@@ -82,20 +83,15 @@ namespace GeneForge.UI
             }
         }
 
-        /// <summary>Refresh the panel for the current active player creature.</summary>
-        public void RefreshForCreature()
+        /// <summary>
+        /// Refresh the panel for the given creature. Called by PlayerInputController
+        /// when advancing to each creature's action selection turn.
+        /// </summary>
+        /// <param name="creature">The creature whose moves should be displayed.</param>
+        public void RefreshForCreature(CreatureInstance creature)
         {
             _selectedSlot = -1;
-
-            // Find first non-fainted player creature
-            _activeCreature = null;
-            if (_combatController.PlayerParty != null)
-            {
-                foreach (var c in _combatController.PlayerParty)
-                {
-                    if (!c.IsFainted) { _activeCreature = c; break; }
-                }
-            }
+            _activeCreature = creature;
 
             if (_activeCreature == null) return;
             BindCreature(_activeCreature);
@@ -106,6 +102,18 @@ namespace GeneForge.UI
         {
             if (_isLocked || _activeCreature == null) return;
             if (slot < 0 || slot >= 4) return;
+
+            // Struggle mode: slot 0 triggers Struggle targeting
+            if (_isStruggleMode && slot == 0)
+            {
+                DeselectAll();
+                _selectedSlot = 0;
+                _moveButtons[0].AddToClassList("move-button--selected");
+                // Signal Struggle targeting — pass null to indicate melee-range targeting
+                MoveHighlightRequested?.Invoke(null);
+                return;
+            }
+
             if (_loadedMoves[slot] == null) return;
 
             // Check if move is usable
@@ -186,7 +194,19 @@ namespace GeneForge.UI
             }
             if (target == null) return;
 
-            if (_selectedSlot >= 0 && _loadedMoves[_selectedSlot] != null)
+            if (_isStruggleMode && _selectedSlot == 0)
+            {
+                // Struggle: use the cached Struggle MoveConfig, MovePPSlot = -1 (no PP deduction).
+                var struggleMove = AIDecisionSystem.GetStruggleMoveConfig();
+                var action = new TurnAction(
+                    ActionType.UseMove,
+                    move: struggleMove,
+                    target: target,
+                    movePPSlot: -1);
+
+                ActionSubmitted?.Invoke(_activeCreature, action);
+            }
+            else if (_selectedSlot >= 0 && _loadedMoves[_selectedSlot] != null)
             {
                 var action = new TurnAction(
                     ActionType.UseMove,
@@ -212,7 +232,7 @@ namespace GeneForge.UI
         public void UpdateTrapCount(int count)
         {
             if (_trapCountLabel != null)
-                _trapCountLabel.text = $"x{count}";
+                _trapCountLabel.text = string.Format(CombatStrings.TrapCountFormat, count);
 
             UpdateGeneTrapState(count);
         }
@@ -265,9 +285,10 @@ namespace GeneForge.UI
             }
 
             // Struggle edge case: all PP depleted
-            if (allPPDepleted && creature.LearnedMoveIds.Count > 0)
+            _isStruggleMode = allPPDepleted && creature.LearnedMoveIds.Count > 0;
+            if (_isStruggleMode)
             {
-                _moveNames[0].text = "STRUGGLE";
+                _moveNames[0].text = CombatStrings.Struggle;
                 _moveTypes[0].text = "";
                 _moveForms[0].text = "Physical";
                 _movePPs[0].text = "—";

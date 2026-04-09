@@ -105,12 +105,19 @@ namespace GeneForge.UI
         /// Wire up dependencies. Called by CombatHUDController or scene setup
         /// after all controllers are created.
         /// </summary>
+        /// <param name="combatController">CombatController driving the combat loop.</param>
+        /// <param name="movePanel">Move selection UI controller.</param>
+        /// <param name="tileHighlight">Tile highlight controller for movement/attack range.</param>
+        /// <param name="switchOverlay">Switch overlay controller for creature swapping.</param>
+        /// <param name="infoPanel">Creature info panel controller.</param>
+        /// <param name="settings">CombatSettings with movement divisor and capture range.</param>
         public void Initialize(
             CombatController combatController,
             MoveSelectionPanelController movePanel,
             TileHighlightController tileHighlight,
             SwitchOverlayController switchOverlay,
-            CreatureInfoPanelController infoPanel)
+            CreatureInfoPanelController infoPanel,
+            CombatSettings settings)
         {
             _combatController = combatController;
             _movePanel = movePanel;
@@ -118,10 +125,10 @@ namespace GeneForge.UI
             _switchOverlay = switchOverlay;
             _infoPanel = infoPanel;
 
-            _settings = Resources.Load<CombatSettings>("Data/CombatSettings");
+            _settings = settings;
             if (_settings == null)
             {
-                Debug.LogWarning("[PlayerInputController] CombatSettings not found. Using defaults.");
+                Debug.LogError("[PlayerInputController] CombatSettings is null. Using defaults.");
                 _settings = ScriptableObject.CreateInstance<CombatSettings>();
             }
 
@@ -250,6 +257,20 @@ namespace GeneForge.UI
                 SetState(InputState.SelectingAction);
                 ShowMovementTiles();
             }
+        }
+
+        /// <summary>
+        /// Open the switch overlay for the active creature.
+        /// Called by CombatHUDController keyboard handler (Alpha6/Keypad6) so that
+        /// keyboard input flows through the same path as panel button clicks.
+        /// </summary>
+        public void RequestSwitch()
+        {
+            if (CurrentState != InputState.SelectingAction &&
+                CurrentState != InputState.SelectingCreature)
+                return;
+
+            OnSwitchRequested();
         }
 
         /// <summary>
@@ -441,7 +462,7 @@ namespace GeneForge.UI
 
             ActiveCreatureChanged?.Invoke(_activeCreature);
             _infoPanel?.SetDefaultTarget(_activeCreature);
-            _movePanel?.RefreshForCreature();
+            _movePanel?.RefreshForCreature(_activeCreature);
             _movePanel?.UpdateTrapCount(_combatController.RemainingTraps);
             _tileHighlight?.ClearCache();
 

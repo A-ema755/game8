@@ -42,6 +42,10 @@ namespace GeneForge.UI
         private CreatureInstance _hoverTarget;
         private CreatureInstance _explicitClickTarget;
 
+        // Named color constants — avoids inline Color literals (D6)
+        private static readonly Color StableColor = new Color(0.18f, 0.80f, 0.35f);
+        private static readonly Color UnstableColor = new Color(0.91f, 0.63f, 0.06f);
+
         // Type badge CSS class lookup
         private static readonly Dictionary<CreatureType, string> TypeBadgeClasses = new()
         {
@@ -89,6 +93,7 @@ namespace GeneForge.UI
         public void SetDefaultTarget(CreatureInstance creature)
         {
             _defaultTarget = creature;
+            _explicitClickTarget = null; // Clear stale click target so default takes effect
             if (_hoverTarget == null)
                 SetTarget(creature);
         }
@@ -211,7 +216,7 @@ namespace GeneForge.UI
 
             // Name + Level
             _nameLabel.text = creature.Nickname ?? creature.DisplayName ?? "Unknown";
-            _levelLabel.text = $"LVL {creature.Level}";
+            _levelLabel.text = string.Format(CombatStrings.LevelFormat, creature.Level);
 
             // Type badges
             RefreshTypeBadge(_primaryTypeBadge,
@@ -247,10 +252,11 @@ namespace GeneForge.UI
             else
                 _hpBarFill.AddToClassList("hp-bar--critical");
 
-            // Instability bar — max 100 per GDD instability-system.md §4
-            const float MaxInstability = 100f;
+            // Instability bar — max from InstabilityThresholds (GDD instability-system.md §4)
             int instability = creature.Instability;
-            float instabilityRatio = instability / MaxInstability;
+            float instabilityRatio = InstabilityThresholds.Max > 0
+                ? (float)instability / InstabilityThresholds.Max
+                : 0f;
             _instabilityValue.text = instability.ToString();
             _instabilityBarFill.style.width = Length.Percent(instabilityRatio * 100f);
 
@@ -259,15 +265,15 @@ namespace GeneForge.UI
             _instabilityBarFill.RemoveFromClassList("instability--volatile");
             _instabilityBarFill.RemoveFromClassList("instability--critical");
 
-            if (instability >= 75)
+            if (instability >= InstabilityThresholds.CriticalMin)
                 _instabilityBarFill.AddToClassList("instability--critical");
-            else if (instability >= 50)
+            else if (instability >= InstabilityThresholds.UnstableMin)
                 _instabilityBarFill.AddToClassList("instability--volatile");
             else
                 _instabilityBarFill.AddToClassList("instability--stable");
 
             // Instability warning
-            if (instability >= 50)
+            if (instability >= InstabilityThresholds.UnstableMin)
                 _instabilityWarning.AddToClassList("instability-warning--visible");
             else
                 _instabilityWarning.RemoveFromClassList("instability-warning--visible");
@@ -305,7 +311,7 @@ namespace GeneForge.UI
                 if (parts != null && parts.TryGetValue(slots[i], out var partId) && !string.IsNullOrEmpty(partId))
                 {
                     slotElement.tooltip = partId;
-                    slotElement.style.borderBottomColor = new Color(0.18f, 0.80f, 0.35f); // equipped indicator
+                    slotElement.style.borderBottomColor = StableColor; // equipped indicator
                     slotElement.style.borderBottomWidth = 2f;
                 }
                 else
@@ -343,7 +349,7 @@ namespace GeneForge.UI
                         {
                             badge = new Label { name = "overflow-badge", text = "+" };
                             badge.AddToClassList("status-badge");
-                            badge.style.backgroundColor = new Color(0.91f, 0.63f, 0.06f); // #E8A020
+                            badge.style.backgroundColor = UnstableColor; // #E8A020
                             badge.style.color = Color.white;
                             iconElement.Add(badge);
                         }

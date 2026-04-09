@@ -19,6 +19,10 @@ namespace GeneForge.UI
         private float _lastCalloutTime;
         private int _queueOffset;
 
+        // Generation counter: incremented on ClearAll so pending schedule closures
+        // can detect they are stale and skip their work (use-after-return guard).
+        private int _generation;
+
         private const int PoolSize = 3;
         private const float CalloutQueueWindow = 0.5f;
         private const float CalloutYOffset = 40f;
@@ -65,18 +69,21 @@ namespace GeneForge.UI
             var calloutLabel = AcquireFromPool();
             if (calloutLabel == null) return;
 
+            // Capture generation at schedule time — closures check this before acting.
+            int capturedGeneration = _generation;
+
             // Configure
             calloutLabel.RemoveFromClassList("type-callout--super-effective");
             calloutLabel.RemoveFromClassList("type-callout--not-very-effective");
 
             if (label == EffectivenessLabel.SuperEffective)
             {
-                calloutLabel.text = "Super Effective!";
+                calloutLabel.text = CombatStrings.SuperEffective;
                 calloutLabel.AddToClassList("type-callout--super-effective");
             }
             else
             {
-                calloutLabel.text = "Not Very Effective...";
+                calloutLabel.text = CombatStrings.NotVeryEffective;
                 calloutLabel.AddToClassList("type-callout--not-very-effective");
             }
 
@@ -90,44 +97,63 @@ namespace GeneForge.UI
             calloutLabel.style.opacity = 1f;
             calloutLabel.style.display = DisplayStyle.Flex;
 
-            // Animation
+            // Animation — each closure guards against stale generation before executing.
             if (label == EffectivenessLabel.SuperEffective)
             {
                 calloutLabel.schedule.Execute(() =>
-                    calloutLabel.style.scale = new Scale(new Vector3(1.1f, 1.1f, 1f))
-                ).ExecuteLater(10);
+                {
+                    if (_generation != capturedGeneration) return;
+                    calloutLabel.style.scale = new Scale(new Vector3(1.1f, 1.1f, 1f));
+                }).ExecuteLater(10);
 
                 calloutLabel.schedule.Execute(() =>
-                    calloutLabel.style.scale = new Scale(Vector3.one)
-                ).ExecuteLater(200);
+                {
+                    if (_generation != capturedGeneration) return;
+                    calloutLabel.style.scale = new Scale(Vector3.one);
+                }).ExecuteLater(200);
 
                 calloutLabel.schedule.Execute(() =>
-                    calloutLabel.style.opacity = 0f
-                ).ExecuteLater(1400);
+                {
+                    if (_generation != capturedGeneration) return;
+                    calloutLabel.style.opacity = 0f;
+                }).ExecuteLater(1400);
 
                 calloutLabel.schedule.Execute(() =>
-                    ReturnToPool(calloutLabel)
-                ).ExecuteLater(1700);
+                {
+                    if (_generation != capturedGeneration) return;
+                    ReturnToPool(calloutLabel);
+                }).ExecuteLater(1700);
             }
             else
             {
                 calloutLabel.schedule.Execute(() =>
-                    calloutLabel.style.scale = new Scale(new Vector3(0.9f, 0.9f, 1f))
-                ).ExecuteLater(10);
+                {
+                    if (_generation != capturedGeneration) return;
+                    calloutLabel.style.scale = new Scale(new Vector3(0.9f, 0.9f, 1f));
+                }).ExecuteLater(10);
 
                 calloutLabel.schedule.Execute(() =>
-                    calloutLabel.style.opacity = 0f
-                ).ExecuteLater(1400);
+                {
+                    if (_generation != capturedGeneration) return;
+                    calloutLabel.style.opacity = 0f;
+                }).ExecuteLater(1400);
 
                 calloutLabel.schedule.Execute(() =>
-                    ReturnToPool(calloutLabel)
-                ).ExecuteLater(1700);
+                {
+                    if (_generation != capturedGeneration) return;
+                    ReturnToPool(calloutLabel);
+                }).ExecuteLater(1700);
             }
         }
 
-        /// <summary>Clear all active callouts (e.g., on combat end).</summary>
+        /// <summary>
+        /// Clear all active callouts (e.g., on combat end).
+        /// Increments the generation counter so any pending scheduled callbacks
+        /// will detect they are stale and skip their work.
+        /// </summary>
         public void ClearAll()
         {
+            _generation++;
             foreach (var label in _pool)
                 ReturnToPool(label);
         }

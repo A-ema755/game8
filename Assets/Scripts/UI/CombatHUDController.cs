@@ -23,6 +23,9 @@ namespace GeneForge.UI
 
         [SerializeField] CombatController combatController;
 
+        [SerializeField] private PlayerInputController _playerInputController;
+        [SerializeField] private TileHighlightController _tileHighlight;
+
         // ── Sub-Panel Controllers ─────────────────────────────────────────
 
         private TurnOrderBarController _turnOrderBar;
@@ -126,17 +129,43 @@ namespace GeneForge.UI
                 _moveSelectionPanelElement,
                 combatController);
 
-            _moveSelectionPanel.ActionSubmitted += OnActionSubmitted;
-            _moveSelectionPanel.SwitchRequested += OnSwitchRequested;
+            // ActionSubmitted and SwitchRequested are handled by PlayerInputController —
+            // do not double-subscribe here.
 
             _switchOverlay = new SwitchOverlayController(
                 _switchOverlayElement,
                 combatController);
 
-            _switchOverlay.SwitchConfirmed += OnSwitchConfirmed;
+            // SwitchConfirmed is handled by PlayerInputController — do not double-subscribe.
             _switchOverlay.Closed += () => _switchOverlayOpen = false;
 
             _typeCallout = new TypeEffectivenessCallout(_calloutContainer);
+
+            // ── Wire PlayerInputController ────────────────────────────────
+            if (_playerInputController != null)
+            {
+                var combatSettings = Resources.Load<CombatSettings>("Data/CombatSettings");
+                if (combatSettings == null)
+                {
+                    Debug.LogError(
+                        "[CombatHUDController] CombatSettings not found at Resources/Data/CombatSettings.");
+                    combatSettings = ScriptableObject.CreateInstance<CombatSettings>();
+                }
+
+                _playerInputController.Initialize(
+                    combatController,
+                    _moveSelectionPanel,
+                    _tileHighlight,
+                    _switchOverlay,
+                    _creatureInfoPanel,
+                    combatSettings);
+            }
+            else
+            {
+                Debug.LogError(
+                    "[CombatHUDController] PlayerInputController is not assigned. " +
+                    "Drag the PlayerInputController component into the Inspector field.");
+            }
         }
 
         // ── Event Subscriptions ───────────────────────────────────────────
@@ -165,14 +194,10 @@ namespace GeneForge.UI
             combatController.RoundStarted -= OnRoundStarted;
             combatController.RoundEnded -= OnRoundEnded;
 
-            // Unsubscribe sub-panel events
-            if (_moveSelectionPanel != null)
-            {
-                _moveSelectionPanel.ActionSubmitted -= OnActionSubmitted;
-                _moveSelectionPanel.SwitchRequested -= OnSwitchRequested;
-            }
+            // Unsubscribe sub-panel events (ActionSubmitted, SwitchRequested, and
+            // SwitchConfirmed are owned by PlayerInputController — not subscribed here).
             if (_switchOverlay != null)
-                _switchOverlay.SwitchConfirmed -= OnSwitchConfirmed;
+                _switchOverlay.Closed -= () => _switchOverlayOpen = false;
 
             _subscribed = false;
         }
@@ -209,8 +234,19 @@ namespace GeneForge.UI
                     ShowElement(_creatureInfoPanelElement);
                     ShowElement(_moveSelectionPanelElement);
                     _moveSelectionPanel.SetLocked(false);
-                    _moveSelectionPanel.RefreshForCreature();
                     HideElement(_combatEndOverlay);
+
+                    // Delegate creature-by-creature input flow to PlayerInputController.
+                    // It will call RefreshForCreature(creature) for each creature in turn.
+                    if (_playerInputController != null)
+                    {
+                        var activeCreatures = new List<CreatureInstance>();
+                        foreach (var c in combatController.PlayerParty)
+                        {
+                            if (!c.IsFainted) activeCreatures.Add(c);
+                        }
+                        _playerInputController.BeginCreatureSelection(activeCreatures);
+                    }
                     break;
 
                 case CombatUIPhase.PlayerExecuting:
@@ -343,42 +379,9 @@ namespace GeneForge.UI
 
         // ── Action Routing ────────────────────────────────────────────────
 
-        private void OnActionSubmitted(CreatureInstance creature, TurnAction action)
-        {
-            combatController.SubmitAction(creature, action);
-        }
-
-        private void OnSwitchRequested()
-        {
-            var party = new List<CreatureInstance>(combatController.PlayerParty);
-            CreatureInstance active = null;
-            foreach (var c in party)
-            {
-                if (!c.IsFainted) { active = c; break; }
-            }
-
-            _switchOverlay.Show(party, active);
-            _switchOverlayOpen = true;
-        }
-
-        private void OnSwitchConfirmed(CreatureInstance switchTo)
-        {
-            _switchOverlayOpen = false;
-            // ActionType enum has no Switch value — use Wait to consume the turn.
-            // TurnManager treats Wait as "no action, turn consumed."
-            // Post-MVP: add ActionType.Switch and handle bench swap in TurnManager.
-            var switchAction = new TurnAction(ActionType.Wait);
-
-            // Submit for current active creature (the one being switched out)
-            CreatureInstance active = null;
-            foreach (var c in combatController.PlayerParty)
-            {
-                if (!c.IsFainted) { active = c; break; }
-            }
-
-            if (active != null)
-                combatController.SubmitAction(active, switchAction);
-        }
+        // Action submission, switch overlay open/confirm are fully delegated to
+        // PlayerInputController. CombatHUDController only tracks _switchOverlayOpen
+        // (set via _switchOverlay.Closed lambda) for keyboard input gating.
 
         // ── Keyboard Input ────────────────────────────────────────────────
 
@@ -427,7 +430,7 @@ namespace GeneForge.UI
                     break;
                 case KeyCode.Alpha6:
                 case KeyCode.Keypad6:
-                    OnSwitchRequested();
+                    _playerInputController?.RequestSwitch();
                     evt.StopPropagation();
                     break;
                 case KeyCode.Escape:
@@ -436,6 +439,7 @@ namespace GeneForge.UI
                     break;
                 case KeyCode.Tab:
                     _moveSelectionPanel.CycleTarget(evt.shiftKey);
+                    evt.PreventDefault();
                     evt.StopPropagation();
                     break;
                 case KeyCode.Return:
@@ -450,15 +454,16 @@ namespace GeneForge.UI
 
         private void ShowCombatEndOverlay()
         {
+            _typeCallout?.ClearAll();
             ShowElement(_combatEndOverlay);
 
             var result = combatController.TurnManager?.Stats?.Result ?? CombatResult.Ongoing;
             string text = result switch
             {
-                CombatResult.Victory => "VICTORY",
-                CombatResult.Defeat => "DEFEAT",
-                CombatResult.Fled => "ESCAPED",
-                CombatResult.Draw => "DRAW",
+                CombatResult.Victory => CombatStrings.Victory,
+                CombatResult.Defeat => CombatStrings.Defeat,
+                CombatResult.Fled => CombatStrings.Escaped,
+                CombatResult.Draw => CombatStrings.Draw,
                 _ => ""
             };
 
