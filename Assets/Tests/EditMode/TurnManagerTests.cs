@@ -645,43 +645,47 @@ namespace GeneForge.Tests
         [Test]
         public void Initiative_PriorityPlusOneBeatsZeroRegardlessOfDistance()
         {
-            // Arrange: Enemy with Priority +1 move acts before player with Priority 0, despite distance
-            PlaceCreature(_player1, 1, 0); // Very close
-            PlaceCreature(_enemy1, 8, 0); // Far away
+            // Arrange: Two players — one with Priority +1, one with Priority 0.
+            // Priority within the same party determines who acts first in PlayerAction phase.
+            PlaceCreature(_player1, 1, 0); // Close, Priority 0
+            PlaceCreature(_player2, 8, 0); // Far, Priority +1
+            PlaceCreature(_enemy1, 5, 0);
 
             var orderSeen = new List<CreatureInstance>();
             var tm = new TurnManager(
-                _grid, new List<CreatureInstance> { _player1 }, new List<CreatureInstance> { _enemy1 },
+                _grid, new List<CreatureInstance> { _player1, _player2 }, new List<CreatureInstance> { _enemy1 },
                 EncounterType.Wild, _settings,
                 new StubDamageCalculator(0),
                 new StubCaptureSystem(),
-                new StubAIDecisionSystem(() => new TurnAction(ActionType.UseMove, move: _priorityMove, target: _player1, movePPSlot: 0)),
+                new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
                 new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
                 new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                 {
-                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) }
+                    { _player1, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1, movePPSlot: 0) },
+                    { _player2, new TurnAction(ActionType.UseMove, move: _priorityMove, target: _enemy1, movePPSlot: 0) }
                 }));
 
             tm.CreatureActed += (args) => orderSeen.Add(args.Actor);
 
             SetField(_player1, "_learnedMoveIds", new List<string> { "damage-move" });
             SetField(_player1, "_learnedMovePP", new List<int> { 20 });
-            SetField(_enemy1, "_learnedMoveIds", new List<string> { "priority-move" });
-            SetField(_enemy1, "_learnedMovePP", new List<int> { 20 });
+            SetField(_player2, "_learnedMoveIds", new List<string> { "priority-move" });
+            SetField(_player2, "_learnedMovePP", new List<int> { 20 });
 
             // Act
             tm.AdvanceRound();
 
-            // Assert: Enemy with Priority +1 acts first despite distance
-            Assert.That(orderSeen[0], Is.EqualTo(_enemy1));
+            // Assert: Player2 with Priority +1 acts before Player1 with Priority 0
+            Assert.That(orderSeen[0], Is.EqualTo(_player2),
+                "Priority +1 should act before Priority 0 regardless of distance");
         }
 
         [Test]
         public void Initiative_SamePriorityBracketUsesInitiativeScore()
         {
-            // Arrange: Both creatures Priority 0, but one closer
+            // Arrange: Both creatures Priority 0, but one clearly closer
             PlaceCreature(_player1, 1, 0); // Distance 1 from enemy
-            PlaceCreature(_player2, 3, 0); // Distance 2 from enemy (farther)
+            PlaceCreature(_player2, 5, 0); // Distance 3 from enemy (clearly farther)
             PlaceCreature(_enemy1, 2, 0);
 
             var orderSeen = new List<CreatureInstance>();
