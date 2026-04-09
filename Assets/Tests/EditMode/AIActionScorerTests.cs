@@ -664,6 +664,47 @@ namespace GeneForge.Tests
                 "Physical adjacency bonus (+0.3) must only fire at dist <= 1, not dist 2");
         }
 
+        // ══════════════════════════════════════════════════════════════════
+        // Phase F5 — AIDecisionSystem Struggle Generation
+        // ══════════════════════════════════════════════════════════════════
+
+        [Test]
+        public void test_AIDecisionSystem_PP_exhausted_generates_Struggle_candidate()
+        {
+            // Arrange — creature with one learned move, PP = 0.
+            // AIDecisionSystem must fall back to Struggle (id == "__struggle__", power == 10).
+            var personality = CreatePersonality(randomness: 0f);
+            var move = CreateMove("flame-claw", CreatureType.Thermal, DamageForm.Physical, 60);
+            Func<string, MoveConfig> moveLookup = id => id == "flame-claw" ? move : null;
+
+            var attacker = CreatureInstance.Create(_thermalConfig, 10);
+            var target = CreatureInstance.Create(_aquaConfig, 10);
+            attacker.SetGridPosition(new Vector2Int(0, 0));
+            target.SetGridPosition(new Vector2Int(1, 0)); // within Struggle range 1
+
+            // Give attacker a move with PP = 0 (exhausted).
+            SetField(attacker, "_learnedMoveIds", new List<string> { "flame-claw" });
+            SetField(attacker, "_learnedMovePP", new List<int> { 0 });
+
+            var system = new AIDecisionSystem(personality, new System.Random(42), moveLookup);
+            var opponents = new List<CreatureInstance> { target };
+            var allies = new List<CreatureInstance>();
+
+            // Act
+            var result = system.DecideAction(attacker, opponents, allies, _grid);
+
+            // Assert — must return UseMove with Struggle (id "__struggle__", power 10).
+            Assert.AreEqual(ActionType.UseMove, result.Action,
+                "All-PP-exhausted creature must use Struggle, not Wait");
+            Assert.IsNotNull(result.Move, "Struggle TurnAction must have a non-null Move");
+            Assert.AreEqual(AIDecisionSystem.StruggleMoveId, result.Move.Id,
+                "Move id must be '__struggle__'");
+            Assert.AreEqual(10, result.Move.Power,
+                "Struggle power must be 10 per GDD");
+            Assert.AreEqual(-1, result.MovePPSlot,
+                "Struggle TurnAction must use MovePPSlot = -1 (no PP deduction)");
+        }
+
         [Test]
         public void test_AIActionScorer_STAB_not_double_counted_in_genome_matchup()
         {

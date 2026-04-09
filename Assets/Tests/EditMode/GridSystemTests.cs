@@ -606,6 +606,39 @@ namespace GeneForge.Tests
         }
 
         // ================================================================
+        // Phase F4 — Height-3 Passability
+        // ================================================================
+
+        [Test]
+        public void test_GridSystem_height3_tile_is_impassable_for_pathfinding()
+        {
+            // Arrange — 6x6 grid with a height-3 column at x=3 (all z).
+            // GDD encounter-system.md §3.3: height 3 = cliff/unreachable → IsPassable false.
+            var grid = new GridSystem(6, 6);
+            for (int x = 0; x < 6; x++)
+            for (int z = 0; z < 6; z++)
+                grid.SetTile(new TileData(new Vector2Int(x, z), 0, TerrainType.Neutral));
+
+            for (int z = 0; z < 6; z++)
+                grid.SetTile(new TileData(new Vector2Int(3, z), 3, TerrainType.Neutral));
+
+            // Assert — every height-3 tile must report IsPassable == false.
+            for (int z = 0; z < 6; z++)
+            {
+                var tile = grid.GetTile(3, z);
+                Assert.IsFalse(tile.IsPassable,
+                    $"Height-3 tile at (3,{z}) must be impassable");
+            }
+
+            // Act — A* from left side to right side must find no path (wall blocks all rows).
+            var path = grid.FindPath(new Vector2Int(0, 0), new Vector2Int(5, 0));
+
+            // Assert — no path exists because the height-3 column is fully impassable.
+            Assert.IsEmpty(path,
+                "A* must return empty path when height-3 cliff column blocks all routes");
+        }
+
+        // ================================================================
         // Performance
         // ================================================================
 

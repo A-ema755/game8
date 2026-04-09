@@ -1093,6 +1093,104 @@ namespace GeneForge.Tests
         }
 
         // ────────────────────────────────────────────────────────────────
+        // § Phase F2 — Struggle & Trainer Capture Guard
+        // ────────────────────────────────────────────────────────────────
+
+        [Test]
+        public void test_TurnManager_Struggle_fallback_when_all_PP_exhausted()
+        {
+            // Arrange — player has one move slot, PP = 0; AI returns Struggle (MovePPSlot -1).
+            var struggleMove = AIDecisionSystem.GetStruggleMoveConfig();
+            SetField(_player1, "_learnedMoveIds", new List<string> { "damage-move" });
+            SetField(_player1, "_learnedMovePP", new List<int> { 0 });
+
+            var actedArgs = new List<CreatureActedArgs>();
+            var tm = new TurnManager(
+                _grid, new List<CreatureInstance> { _player1 }, new List<CreatureInstance> { _enemy1 },
+                EncounterType.Wild, _settings,
+                new StubDamageCalculator(10),
+                new StubCaptureSystem(),
+                new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
+                new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
+                {
+                    // MovePPSlot -1 signals Struggle; damage dealt regardless of PP.
+                    { _player1, new TurnAction(ActionType.UseMove, move: struggleMove, target: _enemy1, movePPSlot: -1) }
+                }));
+
+            tm.CreatureActed += (args) => actedArgs.Add(args);
+
+            // Act
+            tm.AdvanceRound();
+
+            // Assert — CreatureActed fired, enemy took damage (StubDamageCalculator returns 10).
+            Assert.That(actedArgs.Count, Is.GreaterThanOrEqualTo(1));
+            var playerAct = actedArgs.Find(a => a.Actor == _player1);
+            Assert.IsNotNull(playerAct, "Player CreatureActed event must fire");
+            Assert.That(_enemy1.CurrentHP, Is.LessThan(_enemy1.MaxHP),
+                "Enemy must take damage from Struggle action");
+        }
+
+        [Test]
+        public void test_TurnManager_Struggle_applies_25_percent_self_recoil()
+        {
+            // Arrange — Struggle with StubDamageCalculator(20): damage=20, recoil=max(1, floor(20*0.25))=5.
+            var struggleMove = AIDecisionSystem.GetStruggleMoveConfig();
+            SetField(_player1, "_learnedMoveIds", new List<string> { "damage-move" });
+            SetField(_player1, "_learnedMovePP", new List<int> { 0 });
+
+            int initialHP = _player1.CurrentHP;
+            var tm = new TurnManager(
+                _grid, new List<CreatureInstance> { _player1 }, new List<CreatureInstance> { _enemy1 },
+                EncounterType.Wild, _settings,
+                new StubDamageCalculator(20),
+                new StubCaptureSystem(),
+                new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
+                new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
+                {
+                    { _player1, new TurnAction(ActionType.UseMove, move: struggleMove, target: _enemy1, movePPSlot: -1) }
+                }));
+
+            // Act
+            tm.AdvanceRound();
+
+            // Assert — actor takes 25% of 20 = 5 self-recoil (Mathf.FloorToInt, min 1).
+            int expectedRecoil = Mathf.Max(1, Mathf.FloorToInt(20 * 0.25f)); // 5
+            Assert.That(_player1.CurrentHP, Is.EqualTo(initialHP - expectedRecoil),
+                $"Struggle recoil must be 25% of damage dealt ({expectedRecoil} HP lost by actor)");
+        }
+
+        [Test]
+        public void test_TurnManager_trainer_encounter_capture_blocked()
+        {
+            // Arrange — trainer encounter, StubCaptureSystem always succeeds (100%).
+            // TurnManager must block capture before the stub is invoked.
+            var captureResults = new List<bool>();
+            var tm = new TurnManager(
+                _grid, new List<CreatureInstance> { _player1 }, new List<CreatureInstance> { _enemy1 },
+                EncounterType.Trainer, _settings,
+                new StubDamageCalculator(0),
+                new StubCaptureSystem(successRate: 1.0f),
+                new StubAIDecisionSystem(() => new TurnAction(ActionType.Wait)),
+                new StubMoveEffectApplier(), new StubStatusEffectProcessor(),
+                new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
+                {
+                    { _player1, new TurnAction(ActionType.Capture, target: _enemy1) }
+                }));
+
+            tm.CreatureCaptured += (args) => captureResults.Add(args.Success);
+
+            // Act
+            tm.AdvanceRound();
+
+            // Assert — capture must not succeed; event may fire but Success must be false.
+            bool captureSucceeded = captureResults.Exists(r => r);
+            Assert.IsFalse(captureSucceeded,
+                "Trainer encounter must block capture: Success must never be true");
+        }
+
+        // ────────────────────────────────────────────────────────────────
         // § Determinism Tests
         // ────────────────────────────────────────────────────────────────
 
