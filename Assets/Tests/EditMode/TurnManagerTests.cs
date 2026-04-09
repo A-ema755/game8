@@ -905,7 +905,7 @@ namespace GeneForge.Tests
                     new TestPlayerInputProvider((players) => new Dictionary<CreatureInstance, TurnAction>
                     {
                         { player, new TurnAction(ActionType.UseMove, move: _damageMove, target: _enemy1) }
-                    },
+                    }),
                     seed: 12345 + i);
 
                 tm2.CreatureActed += (args) =>
@@ -1183,6 +1183,11 @@ namespace GeneForge.Tests
             public int Calculate(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid)
             {
                 return Mathf.Max(1, _damageToReturn);
+            }
+
+            public int CalculateRaw(int power, DamageForm form, CreatureInstance attacker, CreatureInstance defender)
+            {
+                return _damageToReturn; // Use the same fixed value for test predictability
             }
         }
 

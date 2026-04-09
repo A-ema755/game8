@@ -248,14 +248,15 @@ namespace GeneForge.Combat
 
         /// <summary>
         /// Maps TerrainType and height to TileData constructor properties.
-        /// Height at MaxHeight (4) is impassable cliff.
+        /// Height 3+ is cliff/unreachable per GDD encounter-system.md §3.3.
         /// MVP: no terrain provides cover.
         /// </summary>
         private static (bool isPassable, bool blocksLoS, bool providesCover) GetTileProperties(
             TerrainType terrain, int height)
         {
-            // Cliff: impassable at max height
-            if (height >= GridSystem.MaxHeight)
+            // Cliff: height 3+ is impassable (GDD encounter-system.md §3.3:
+            // "0=Ground, 1=Elevated low, 2=Elevated high, 3=Cliff/unreachable")
+            if (height >= 3)
                 return (false, true, false);
 
             // All terrain types are passable at MVP

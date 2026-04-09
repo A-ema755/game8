@@ -74,7 +74,7 @@ namespace GeneForge.Combat
         /// <param name="estimatedDamage">Pre-computed damage from EstimateDamage().</param>
         public static float ScoreDamage(CandidateAction action, int estimatedDamage)
         {
-            if (action.Target == null || estimatedDamage <= 0)
+            if (action.Target == null || estimatedDamage <= 0 || action.Target.MaxHP <= 0)
                 return 0f;
 
             return Mathf.Clamp(estimatedDamage / (float)action.Target.MaxHP, 0f, 2f);
@@ -102,7 +102,7 @@ namespace GeneForge.Combat
         /// </summary>
         public static float ScoreFinishTarget(CandidateAction action)
         {
-            if (action.Target == null)
+            if (action.Target == null || action.Target.MaxHP <= 0)
                 return 0f;
 
             return 1.0f - ((float)action.Target.CurrentHP / action.Target.MaxHP);

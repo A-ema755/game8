@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using GeneForge.Core;
 using GeneForge.Creatures;
 using GeneForge.Grid;
+using UnityEngine;
 
 namespace GeneForge.Combat
 {
@@ -21,6 +23,12 @@ namespace GeneForge.Combat
 
         /// <summary>Score difference below which tiebreaker logic triggers (GDD §3.7).</summary>
         private const float TieTolerance = 0.01f;
+
+        /// <summary>Cached Struggle MoveConfig: power 10, Physical, typeless, always hits, range 1.</summary>
+        private static MoveConfig _struggleMove;
+
+        /// <summary>Struggle move ID used to identify Struggle actions.</summary>
+        public const string StruggleMoveId = "__struggle__";
 
         /// <summary>
         /// Create an AI decision system with injected dependencies.
@@ -235,10 +243,64 @@ namespace GeneForge.Combat
                 }
             }
 
+            // Struggle fallback: when all move slots have PP <= 0, generate Struggle
+            // candidates against each opponent in range (GDD: power 10, Physical, typeless).
+            if (candidates.Count == 0)
+            {
+                var struggle = GetStruggleMoveConfig();
+                for (int i = 0; i < opponents.Count; i++)
+                {
+                    if (opponents[i].IsFainted) continue;
+                    int dist = GridSystem.ChebyshevDistance(
+                        creature.GridPosition, opponents[i].GridPosition);
+                    if (dist <= struggle.Range)
+                        candidates.Add(new CandidateAction(struggle, opponents[i], creature.GridPosition));
+                }
+
+                // If no opponents in Struggle range, add untargeted Struggle (will miss).
+                if (candidates.Count == 0)
+                    candidates.Add(new CandidateAction(struggle, null, creature.GridPosition));
+            }
+
             // Always include Wait as baseline candidate (score 0)
             candidates.Add(new CandidateAction(null, null, creature.GridPosition));
 
             return candidates;
+        }
+
+        /// <summary>
+        /// Returns a cached Struggle MoveConfig. Created once via ScriptableObject.CreateInstance.
+        /// Power 10, Physical, GenomeType.None (typeless), always hits (accuracy 0), range 1.
+        /// </summary>
+        public static MoveConfig GetStruggleMoveConfig()
+        {
+            if (_struggleMove != null) return _struggleMove;
+
+            _struggleMove = ScriptableObject.CreateInstance<MoveConfig>();
+            SetField(_struggleMove, "id", StruggleMoveId);
+            SetField(_struggleMove, "displayName", "Struggle");
+            SetField(_struggleMove, "genomeType", CreatureType.None);
+            SetField(_struggleMove, "form", DamageForm.Physical);
+            SetField(_struggleMove, "power", 10);
+            SetField(_struggleMove, "accuracy", 0); // always hits
+            SetField(_struggleMove, "pp", 0);
+            SetField(_struggleMove, "priority", 0);
+            SetField(_struggleMove, "targetType", TargetType.Single);
+            SetField(_struggleMove, "range", 1);
+            SetField(_struggleMove, "effects", new System.Collections.Generic.List<MoveEffect>());
+            return _struggleMove;
+        }
+
+        private static void SetField(object obj, string fieldName, object value)
+        {
+            var type = obj.GetType();
+            FieldInfo field = null;
+            while (type != null && field == null)
+            {
+                field = type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+                type = type.BaseType;
+            }
+            field?.SetValue(obj, value);
         }
     }
 }

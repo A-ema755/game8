@@ -486,6 +486,19 @@ namespace GeneForge.Combat
             ResolvePostDamageEffects(actor, move, action.Target, damageDealt);
             if (!CombatActive) return;
 
+            // Struggle recoil: 25% of damage dealt as self-damage (GDD combat-ui.md).
+            // Identified by MovePPSlot == -1 with a non-null Move (normal moves always have slot >= 0).
+            if (action.MovePPSlot < 0 && move != null && damageDealt > 0)
+            {
+                int recoil = Mathf.Max(1, Mathf.FloorToInt(damageDealt * 0.25f));
+                actor.TakeDamage(recoil);
+                if (actor.IsFainted)
+                {
+                    HandleFaint(actor);
+                    if (!CombatActive) return;
+                }
+            }
+
             // Step 10: Fire CreatureActed.
             Stats.ActionsThisRound++;
             actor.SetActed(true);
@@ -600,6 +613,15 @@ namespace GeneForge.Combat
         /// </summary>
         private void ExecuteCapture(CreatureInstance actor, TurnAction action)
         {
+            // GDD §3.8: cannot capture trainer-owned creatures.
+            if (_encounterType == EncounterType.Trainer)
+            {
+                Debug.LogError("[TurnManager] Capture attempted in trainer encounter — blocked.");
+                actor.SetActed(true);
+                CreatureActed?.Invoke(new CreatureActedArgs(actor, ActionType.Capture, CurrentRound));
+                return;
+            }
+
             bool success = false;
 
             if (action.Target != null)
@@ -800,26 +822,13 @@ namespace GeneForge.Combat
         // ── Confusion Self-Hit Damage ──────────────────────────────────────
 
         /// <summary>
-        /// Calculate confusion self-hit damage using a synthetic Power-40 Physical move.
-        /// No STAB (GenomeType.None). No type effectiveness. Minimum 1 damage.
+        /// Calculate confusion self-hit damage. Delegates to IDamageCalculator.CalculateRaw
+        /// with Physical form, actor as both attacker and defender. No STAB, no type effectiveness.
         /// Implements GDD §4.5.
-        ///
-        /// The IDamageCalculator is called with a synthetic MoveConfig that cannot be
-        /// a real ScriptableObject at runtime, so we create a substitute data object.
-        /// The calculator receives the actor as both attacker and target to produce
-        /// a "hits self" calculation.
         /// </summary>
         private int CalculateConfusionSelfHitDamage(CreatureInstance actor)
         {
-            // Approximation without creating a ScriptableObject at runtime:
-            // confusion self-hit = max(1, floor(ATK * ConfusionSelfHitPower / (DEF * 50)))
-            // This is a simplified formula matching the intent of GDD §4.5.
-            // Post-MVP: expose IDamageCalculator.CalculateRaw(power, form, attacker, target) overload.
-            int atk   = actor.ComputedStats.ATK;
-            int def   = Mathf.Max(1, actor.ComputedStats.DEF);
-            int power = _settings.ConfusionSelfHitPower;
-            int raw   = Mathf.FloorToInt((float)(atk * power) / (def * 50f));
-            return Mathf.Max(1, raw);
+            return _damageCalculator.CalculateRaw(_settings.ConfusionSelfHitPower, DamageForm.Physical, actor, actor);
         }
 
         // ── Recoil & Drain ────────────────────────────────────────────────

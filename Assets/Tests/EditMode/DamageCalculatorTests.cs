@@ -782,5 +782,50 @@ namespace GeneForge.Tests
             Assert.IsFalse(TypeChart.TerrainMatchesCreatureType(TerrainType.Neutral, CreatureType.Thermal));
             Assert.IsFalse(TypeChart.TerrainMatchesCreatureType(TerrainType.Neutral, CreatureType.Aqua));
         }
+
+        // ── CalculateRaw Tests ────────────────────────────────────────────
+
+        [Test]
+        public void test_DamageCalculator_CalculateRaw_level50_balancedStats_matchesGddFormula()
+        {
+            // Arrange
+            // Balanced stats: ATK=30, DEF=20 (from _balancedStats defined in SetUp)
+            // GDD §4.5 formula: floor((2*50/5 + 2) * 40 * ATK / (DEF * 50)) + 2, min 1
+            // = floor((20 + 2) * 40 * 30 / (20 * 50)) + 2
+            // = floor(22 * 1200 / 1000) + 2
+            // = floor(26.4) + 2
+            // = 26 + 2 = 28
+            var creature = CreateCreature(_thermalConfig, level: 50);
+            var calc = new DamageCalculator(_combatSettings);
+            const int confusionPower = 40;
+
+            // Act
+            int result = calc.CalculateRaw(confusionPower, DamageForm.Physical, creature, creature);
+
+            // Assert
+            // _combatSettings defaults: StatDivisor=50, BaseDamageFloor=2, MinDamage=1
+            float levelCoeff = (2f * 50f / 5f) + 2f; // 22
+            float statRatio = 30f / 20f;              // 1.5
+            float expected = (levelCoeff * confusionPower * statRatio / 50f) + 2f; // (22*40*1.5/50)+2 = 28.4 -> 28
+            int expectedDamage = Mathf.Max(1, (int)expected);
+            Assert.AreEqual(expectedDamage, result,
+                $"CalculateRaw at level 50, ATK=30, DEF=20, power=40 should yield {expectedDamage}");
+        }
+
+        [Test]
+        public void test_DamageCalculator_CalculateRaw_minimumDamageEnforced()
+        {
+            // Arrange — very weak attacker vs very strong defender should still deal MinDamage
+            var weakConfig = CreateCreatureConfig("weak", new BaseStats(1, 1, 1, 1, 1));
+            var weakCreature = CreateCreature(weakConfig, level: 1);
+            var calc = new DamageCalculator(_combatSettings);
+
+            // Act
+            int result = calc.CalculateRaw(1, DamageForm.Physical, weakCreature, weakCreature);
+
+            // Assert
+            Assert.GreaterOrEqual(result, _combatSettings.MinDamage,
+                "CalculateRaw must always return at least MinDamage");
+        }
     }
 }

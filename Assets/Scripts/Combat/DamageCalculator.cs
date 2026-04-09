@@ -43,6 +43,16 @@ namespace GeneForge.Combat
             return Mathf.Max(_settings.MinDamage, (int)(baseDamage * critMult * variance));
         }
 
+        /// <inheritdoc/>
+        public int CalculateRaw(int power, DamageForm form, CreatureInstance attacker, CreatureInstance defender)
+        {
+            GetFormStatPairing(form, attacker, defender, out int offStat, out int defStat);
+            float levelCoeff = (2f * attacker.Level / 5f) + 2f;
+            float statRatio = (float)offStat / Mathf.Max(1, defStat);
+            float baseDamage = (levelCoeff * power * statRatio / _settings.StatDivisor) + _settings.BaseDamageFloor;
+            return Mathf.Max(_settings.MinDamage, (int)baseDamage);
+        }
+
         /// <summary>
         /// Estimate damage without randomness (for AI decision-making).
         /// Uses fixed variance (default 0.925 midpoint). No critical hit.
@@ -185,6 +195,8 @@ namespace GeneForge.Combat
         /// </summary>
         private bool RollCritical(MoveConfig move)
         {
+            if (move.Effects == null) return false;
+
             float critChance = _settings.CritBaseChance;
 
             foreach (var effect in move.Effects)

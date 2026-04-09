@@ -20,5 +20,11 @@ namespace GeneForge.Combat
         /// <param name="grid">The combat grid (used for height and flanking bonuses).</param>
         /// <returns>Final damage value. Always >= 1 for damaging moves (min damage enforced).</returns>
         int Calculate(MoveConfig move, CreatureInstance attacker, CreatureInstance target, GridSystem grid);
+
+        /// <summary>
+        /// Calculate raw damage without crit, variance, or type effectiveness.
+        /// Used for confusion self-hit and other fixed-formula damage.
+        /// </summary>
+        int CalculateRaw(int power, DamageForm form, CreatureInstance attacker, CreatureInstance defender);
     }
 }

@@ -260,6 +260,20 @@ namespace GeneForge.UI
         }
 
         /// <summary>
+        /// Open the switch overlay for the active creature.
+        /// Called by CombatHUDController keyboard handler (Alpha6/Keypad6) so that
+        /// keyboard input flows through the same path as panel button clicks.
+        /// </summary>
+        public void RequestSwitch()
+        {
+            if (CurrentState != InputState.SelectingAction &&
+                CurrentState != InputState.SelectingCreature)
+                return;
+
+            OnSwitchRequested();
+        }
+
+        /// <summary>
         /// Restart all action selections for this round.
         /// Clears all submitted actions and begins from the first creature.
         /// </summary>
@@ -448,7 +462,7 @@ namespace GeneForge.UI
 
             ActiveCreatureChanged?.Invoke(_activeCreature);
             _infoPanel?.SetDefaultTarget(_activeCreature);
-            _movePanel?.RefreshForCreature();
+            _movePanel?.RefreshForCreature(_activeCreature);
             _movePanel?.UpdateTrapCount(_combatController.RemainingTraps);
             _tileHighlight?.ClearCache();
 
